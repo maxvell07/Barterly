@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "288922242993",
+    "project_id": "barterly-9190f",
+    "storage_bucket": "barterly-9190f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288922242993:android:bcc225a71134a638e3f790",
+        "android_client_info": {
+          "package_name": "com.example.barterly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBwrO8JwsjvT4K5AzXzETcG-PzC2qTtS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
