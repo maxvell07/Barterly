@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.barterly.OnCardClickListener
+//import com.example.barterly.OnCardClickListener
 import com.example.barterly.R
 
 class CardAdapter(
     private val items: List<CardItem>,
-    private val listener: OnCardClickListener
+//    private val listener: OnCardClickListener
 ) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
     class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,7 +31,7 @@ class CardAdapter(
         holder.textView.text = item.title
 
         holder.itemView.setOnClickListener {
-            listener.onCardClick(position) // Передаём позицию
+//            listener.onCardClick(position) // Передаём позицию
         }
     }
 

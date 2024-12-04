@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="@string/ad">
+    <menu>
+        <item android:title="@string/ad1"
+            android:id="@+id/my_ads"/>
+    </menu>
+    </item>
+    <item android:title="@string/ad2">
+    <menu>
+        <item android:title="@string/ad1"
+            android:id="@+id/my_ads2"/>
+    </menu>
+    </item>
+    </menu>
