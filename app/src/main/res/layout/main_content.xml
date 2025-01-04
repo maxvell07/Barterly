@@ -13,7 +13,7 @@
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:background="?attr/colorPrimary"
-        android:backgroundTint="#4E0D7C"
+        android:backgroundTint="#3733AD"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"

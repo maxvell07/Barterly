@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         init()
     }
     private fun init(){
-        var toggle = ActionBarDrawerToggle(this,binding.drawerid,findViewById(R.id.toolbar),R.string.open,R.string.close   )
+        var toggle = ActionBarDrawerToggle(this,binding.drawerid,binding.mainContent.toolbar,R.string.open,R.string.close   )
         binding.drawerid.addDrawerListener(toggle)
         toggle.syncState()
         binding.navview.setNavigationItemSelectedListener(this)
