@@ -10,8 +10,10 @@
     </item>
     <item android:title="@string/ad2">
     <menu>
-        <item android:title="@string/ad1"
-            android:id="@+id/my_ads2"/>
+        <item android:title="@string/sign_up"
+            android:id="@+id/id_sign_up"/>
+        <item android:title="@string/sign_in"
+            android:id="@+id/id_sign_in"/>
     </menu>
     </item>
     </menu>
