@@ -14,8 +14,25 @@ class AccountHelper(private val act: MainActivity) {
 
                 if (task.isSuccessful){
                     sendEmailVerification(task.result.user!!)
+                    act.uiUpdate(task.result?.user)
                 } else{
                     Toast.makeText(act, act.resources.getString(R.string.sign_up_err), Toast.LENGTH_LONG).show()
+                }
+            }
+
+        }
+
+    }
+
+    fun signInWithEmail(email:String,password:String){
+
+        if (email.isNotEmpty() && password.isNotEmpty()){
+            act.myAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
+
+                if (task.isSuccessful){
+                    act.uiUpdate(task.result?.user)
+                } else{
+                    Toast.makeText(act, act.resources.getString(R.string.sign_in_err), Toast.LENGTH_LONG).show()
                 }
             }
 
