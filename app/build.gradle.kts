@@ -45,6 +45,7 @@ dependencies {
 
     implementation ("androidx.recyclerview:recyclerview:1.3.1")
     implementation ("com.google.android.material:material:1.2.0")
+    implementation ("com.google.android.gms:play-services-auth:19.0.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

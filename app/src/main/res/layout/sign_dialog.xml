@@ -23,10 +23,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="@string/email_hint"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:inputType="textEmailAddress"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,9 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="@string/password_hint"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         android:inputType="textPassword"
         android:text=""
-        android:hint="@string/password_hint"
         app:layout_constraintEnd_toEndOf="@+id/edSignEmail"
         app:layout_constraintStart_toStartOf="@+id/edSignEmail"
         app:layout_constraintTop_toBottomOf="@+id/edSignEmail" />
@@ -53,13 +55,23 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:text="@string/sign_up_action"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/edSignEmail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edSignEmail"
-        app:layout_constraintTop_toBottomOf="@+id/edSignPassword"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintTop_toBottomOf="@+id/butGoogleSignup"
+        app:layout_constraintVertical_bias="0.0" />
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/butGoogleSignup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="@+id/butSignup"
+        app:layout_constraintStart_toStartOf="@+id/butSignup"
+        app:layout_constraintTop_toBottomOf="@+id/edSignPassword" />
     <Button
         android:id="@+id/butForgetPas"
         android:layout_width="0dp"
@@ -70,5 +82,23 @@
         app:layout_constraintEnd_toEndOf="@+id/edSignEmail"
         app:layout_constraintStart_toStartOf="@+id/edSignEmail"
         app:layout_constraintTop_toBottomOf="@+id/butSignup" />
+
+    <TextView
+        android:id="@+id/tvDialogMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/dialog_email_reset_message"
+        android:textColor="@color/color_red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/edSignEmail"
+        app:layout_constraintEnd_toEndOf="@+id/edSignEmail"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/edSignEmail"
+        app:layout_constraintTop_toBottomOf="@+id/tvSign" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
