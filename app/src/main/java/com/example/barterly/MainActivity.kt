@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
     }
 
     fun uiUpdate(user: FirebaseUser?){
+
         tvAccount.text = if (user ==null){
             resources.getString(R.string.not_reg_email_title)
         }else {
