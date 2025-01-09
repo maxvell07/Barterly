@@ -3,6 +3,7 @@ import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.barterly.accounthelper.GoogleAccConst
+import com.example.barterly.act.EditAdsAct
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
@@ -31,6 +33,19 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { //переход в новое активити
+        if (item.itemId == R.id.id_new_ads){
+            val i = Intent(this,EditAdsAct::class.java)
+            startActivity(i)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu,menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -55,6 +70,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         uiUpdate(myAuth.currentUser)
     }
     private fun init(){
+        setSupportActionBar(binding.mainContent.toolbar)
         var toggle = ActionBarDrawerToggle(this,binding.drawerid,binding.mainContent.toolbar,R.string.open,R.string.close   )
         binding.drawerid.addDrawerListener(toggle)
         toggle.syncState()
@@ -79,6 +95,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
                 R.id.id_sign_out ->{
                     uiUpdate(null)
                     myAuth.signOut()
+                    dialoghelper.accHelper.signOutGoogle()
                 }
             }
 

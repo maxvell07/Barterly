@@ -24,6 +24,7 @@ class DialogHelper(private val act: MainActivity)  {
 
         bindingDialogElement.butGoogleSignup.setOnClickListener{
             accHelper.signInWithGoogle()
+            dialog.dismiss()
         }
         bindingDialogElement.butSignup.setOnClickListener{
         setOnClickSignUpIn(index,bindingDialogElement,dialog)
