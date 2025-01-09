@@ -12,7 +12,12 @@
           "package_name": "com.example.barterly"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "288922242993-iduqt3875c7tjm4tc3gd2k9mt2tpo4o9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDBwrO8JwsjvT4K5AzXzETcG-PzC2qTtS4"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "288922242993-iduqt3875c7tjm4tc3gd2k9mt2tpo4o9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

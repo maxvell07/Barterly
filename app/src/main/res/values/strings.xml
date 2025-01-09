@@ -1,8 +1,29 @@
 <resources>
     <string name="app_name">Barterly</string>
+    <!-- Menu Drawer Strings -->
     <string name="ad">Объявления</string>
     <string name="ad1">Мои объявления</string>
     <string name="ad2">Аккаунт</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="not_reg_email_title">Войдите или Зарегистрируйтесь!</string>
+    <string name="sign_out">Выйти</string>
+    <!-- Sign Dialog -->
+    <string name="email_hint">Email</string>
+    <string name="dialog_email_reset_message">Для востановления пароля укажите ваш Email!</string>
+    <string name="email_reset_password_was_sent">Сообщение для сброса пароля отправлено!</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_in_action">Войти</string>
+    <string name="sign_up_action">Зарегистрироваться</string>
+    <string name="forget_pass">Забыли пароль?</string>
+    <string name="sign_up_err">Неудалось зарегистрироваться</string>
+    <string name="sign_in_err">Неудалось войти</string>
+    <string name="send_verification_email_error">Неудалось отправить сообщение для подтверждения!</string>
+    <string name="send_verification_email_done">На вашу почту была отправленна ссылка для подтверждения вашего аккаунта, пожалуйста подтвердите ваш аккаунт!</string>
+    <!-- Sign Dialog -->
+    <string name="link_email_done">Email успешно привязан к Google аккаунту!</string>
+    <string name="enter_to_g">У вас уже есть аккаунт с этим Email войдите по нему чтобы связать их!</string>
+
 </resources>
