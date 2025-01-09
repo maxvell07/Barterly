@@ -1,13 +1,10 @@
  package com.example.barterly.act
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.barterly.R
 import com.example.barterly.databinding.ActivityEditAdsBinding
-import com.example.barterly.databinding.ActivityMainBinding
+import com.example.barterly.utils.CityHelper
 
  class EditAdsAct : AppCompatActivity() {
     private lateinit var binding: ActivityEditAdsBinding
@@ -15,6 +12,8 @@ import com.example.barterly.databinding.ActivityMainBinding
         super.onCreate(savedInstanceState)
         binding =ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,CityHelper.getAllCountries(this))
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spCountry.adapter = adapter
     }
 }
