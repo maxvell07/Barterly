@@ -25,5 +25,8 @@
     <!-- Sign Dialog -->
     <string name="link_email_done">Email успешно привязан к Google аккаунту!</string>
     <string name="enter_to_g">У вас уже есть аккаунт с этим Email войдите по нему чтобы связать их!</string>
+    <!-- EditActivity-->
+    <string name="select_country">*Выберите страну</string>
+    <string name="select_city">Выберите город</string>
 
 </resources>

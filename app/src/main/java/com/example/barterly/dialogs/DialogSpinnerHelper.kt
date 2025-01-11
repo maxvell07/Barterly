@@ -12,16 +12,18 @@ import com.example.barterly.utils.CityHelper
 class DialogSpinnerHelper {
     fun showSpinnerDialog(context: Context, list: ArrayList<String>) {
         val builder = AlertDialog.Builder(context)
+        val dialog = builder.create()
         val rootView = LayoutInflater.from(context).inflate(R.layout.spinner_layout, null)
-        val adapter = RecyclerDialogSpinner()
+        val adapter = RecyclerDialogSpinner(context,dialog)
         val rcview = rootView.findViewById<RecyclerView>(R.id.rcSpView)
         val srView = rootView.findViewById<SearchView>(R.id.svSpinner)
         rcview.layoutManager = LinearLayoutManager(context)
         rcview.adapter = adapter
-        builder.setView(rootView)
+        dialog.setView(rootView)
         adapter.updateAdapter(list)
         setSearchView(adapter, list, srView)
-        builder.show()
+
+        dialog.show()
     }
 
     private fun setSearchView(
