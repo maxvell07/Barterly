@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.barterly.R
 import com.example.barterly.databinding.ActivityEditAdsBinding
@@ -26,7 +27,21 @@ import com.example.barterly.utils.CityHelper
      }
      //OnClicks
      fun onClickSelectCountry(view:View){
+         if (binding.selectCity.text != getString(R.string.select_city)){
+             binding.selectCity.text = getString(R.string.select_city)
+         }
          val listCountry = CityHelper.getAllCountries(this)
-         dialog.showSpinnerDialog(this,listCountry)
+         dialog.showSpinnerDialog(this,listCountry,binding.selectCountry)
+
      }
+     fun onClickSelectCity(view:View){
+         var city =binding.selectCountry.text.toString()
+         if (city != view.context.getString(R.string.select_country)) {
+             val listCity = CityHelper.getAllCities(this, city)
+             dialog.showSpinnerDialog(this, listCity,binding.selectCity)
+         } else{
+             Toast.makeText(this,"No countryselected",Toast.LENGTH_LONG).show()
+         }
+     }
+
 }

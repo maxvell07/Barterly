@@ -39,6 +39,17 @@
                 android:padding="10dp"
                 android:text="@string/select_country"
                 android:textColor="#000000" />
+            <TextView
+                android:onClick="onClickSelectCity"
+                android:id="@+id/select_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@android:drawable/editbox_background"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text = "@string/select_city"
+                android:textColor="#000000" />
 
 
         </LinearLayout>

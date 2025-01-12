@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
 import com.example.barterly.act.EditAdsAct
 
-class RecyclerDialogSpinner(var context: Context, var dialog: AlertDialog) : RecyclerView.Adapter<RecyclerDialogSpinner.SpViewHolder>() {
+class RecyclerDialogSpinner(var tvSelection:TextView, var dialog: AlertDialog) : RecyclerView.Adapter<RecyclerDialogSpinner.SpViewHolder>() {
 
     private val mainlist = ArrayList<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.sp_list_item, parent, false)
-        return SpViewHolder(view, context,dialog)
+        return SpViewHolder(view, tvSelection,dialog)
     }
 
     override fun getItemCount(): Int {
@@ -29,7 +29,7 @@ class RecyclerDialogSpinner(var context: Context, var dialog: AlertDialog) : Rec
     }
 
 
-    class SpViewHolder(itemView: View, var context: Context, var dialog: AlertDialog) : RecyclerView.ViewHolder(itemView),
+    class SpViewHolder(itemView: View, var tvSelection: TextView, var dialog: AlertDialog) : RecyclerView.ViewHolder(itemView),
         OnClickListener {
 
         private var sctext = ""
@@ -41,7 +41,7 @@ class RecyclerDialogSpinner(var context: Context, var dialog: AlertDialog) : Rec
         }
 
         override fun onClick(v: View?) {
-            (context as EditAdsAct).binding.selectCountry.text = sctext
+            tvSelection.text = sctext
             dialog.dismiss()
         }
     }

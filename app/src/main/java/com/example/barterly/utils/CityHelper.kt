@@ -19,8 +19,30 @@ object CityHelper {
             val jsonFile = String(byteSArray)
             val jsonObject = JSONObject(jsonFile)
             val countryName = jsonObject.names()
-            for (i in 0 until countryName.length()) {
-                arr.add(countryName.getString(i))
+            if (countryName != null) {
+                for (i in 0 until countryName.length()) {
+                    arr.add(countryName.getString(i))
+                }
+            }
+
+        } catch (e: IOException) {
+
+        }
+        return arr
+    }
+
+    fun getAllCities(context: Context, country:String): ArrayList<String> {
+        var arr = ArrayList<String>()
+        try {
+            val inputStream: InputStream = context.assets.open("countriesToCities.json")
+            val size: Int = inputStream.available()// узнаем размер
+            val byteSArray = ByteArray(size)
+            inputStream.read(byteSArray)
+            val jsonFile = String(byteSArray)
+            val jsonObject = JSONObject(jsonFile)
+            val cityNames = jsonObject.getJSONArray(country)
+            for (i in 0 until cityNames.length()) {
+                arr.add(cityNames.getString(i))
             }
 
         } catch (e: IOException) {
