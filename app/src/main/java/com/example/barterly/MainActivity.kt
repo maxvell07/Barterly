@@ -1,5 +1,4 @@
 package com.example.barterly
-import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -33,6 +32,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //переход в новое активити
