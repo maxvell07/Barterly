@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".act.EditAdsAct">
 
     <ScrollView
@@ -18,37 +19,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vpImages"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_margin="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp" />
+                android:layout_height="match_parent"
+                android:layout_margin="5dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@android:drawable/editbox_background"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:onClick="onClickGetImages"
+                    app:layout_constraintEnd_toEndOf="@+id/vpImages"
+                    app:layout_constraintTop_toTopOf="@+id/vpImages"
+                    app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:onClick="onClickSelectCountry"
                 android:id="@+id/select_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center"
+                android:onClick="onClickSelectCountry"
                 android:padding="10dp"
                 android:text="@string/select_country"
                 android:textColor="#000000" />
+
             <TextView
-                android:onClick="onClickSelectCity"
                 android:id="@+id/select_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center"
+                android:onClick="onClickSelectCity"
                 android:padding="10dp"
-                android:text = "@string/select_city"
+                android:text="@string/select_city"
                 android:textColor="#000000" />
 
 
