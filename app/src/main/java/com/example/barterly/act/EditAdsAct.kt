@@ -1,6 +1,7 @@
  package com.example.barterly.act
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -16,6 +17,8 @@ import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
+import com.fxn.pix.Pix
+import com.fxn.utility.PermUtil
 
 
  class EditAdsAct : AppCompatActivity() {
@@ -29,6 +32,30 @@ import com.example.barterly.utils.ImagePiker
         setContentView(binding.root)
         init()
     }
+
+     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+         super.onActivityResult(requestCode, resultCode, data)
+         if (requestCode == RESULT_OK && requestCode == ImagePiker.REQuest_CODE_GET_IMAGES){
+             val returnvalue:ArrayList<String>
+             if (data != null) {
+                 data.getStringArrayExtra(Pix.IMAGE_RESULTS)
+             }
+         }
+     }
+
+     @SuppressLint("MissingSuperCall")
+     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+         when(requestCode){
+             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS ->{
+                 if (grantResults.size>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    ImagePiker.getImages(this)
+                 }else{
+                     Toast.makeText(this,"Approve perm",Toast.LENGTH_LONG)
+                 }
+                 return
+             }
+         }
+     }
 
 
      private fun init(){
@@ -51,9 +78,9 @@ import com.example.barterly.utils.ImagePiker
              Toast.makeText(this,"No countryselected",Toast.LENGTH_LONG).show()
          }
      }
-//     fun onClickGetImages(view:View){
-//         var per =0
-//         ImagePiker.getOptions(per)
-//     }
+     fun onClickGetImages(view:View){
+         var per =0
+         ImagePiker.getImages(this)
+     }
 
 }

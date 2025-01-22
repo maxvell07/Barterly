@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
-    implementation  ("io.ak1.pix:piximagepicker:1.6.2")
+    implementation(files("sampledata/pix-1.5.6.aar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

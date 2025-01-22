@@ -1,19 +1,26 @@
 package com.example.barterly.utils
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import io.ak1.pix.models.Mode
-import io.ak1.pix.models.Options
+import com.fxn.pix.Options
+import com.fxn.pix.Pix
+
+//import io.ak1.pix.models.Mode
+//import io.ak1.pix.models.Options
 
 
 object ImagePiker {
     const val MAX_IMAGE_COUNT = 5
-     fun getOptions(imageCounter: Int): Options {
-        return Options().apply {
-            count = imageCounter
-            isFrontFacing = false
-            mode = Mode.Picture
-            ratio
-            path = "/pix/images"
-        }
-    }
+    const val REQuest_CODE_GET_IMAGES = 999
+
+     fun getImages(context: AppCompatActivity) {
+        var options = Options.init()
+            .setRequestCode(REQuest_CODE_GET_IMAGES)
+            .setCount(MAX_IMAGE_COUNT)
+            .setFrontfacing(false)
+            .setMode(Options.Mode.Picture)
+            .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)
+            .setPath("/pix/images")
+            Pix.start(context,options)
+     }
 }
