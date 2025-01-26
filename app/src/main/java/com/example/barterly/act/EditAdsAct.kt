@@ -37,10 +37,16 @@ import com.fxn.utility.PermUtil
 
      override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
          super.onActivityResult(requestCode, resultCode, data)
-         if (requestCode == RESULT_OK && requestCode == ImagePiker.REQuest_CODE_GET_IMAGES){
-             val returnvalue:ArrayList<String>
-             if (data != null) {
-                 data.getStringArrayExtra(Pix.IMAGE_RESULTS)
+         if(resultCode == RESULT_OK && requestCode == ImagePiker.REQuest_CODE_GET_IMAGES){
+             if (data != null){
+                 val valueReturn = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+
+                 if(valueReturn?.size!! > 1) {
+                     binding.scrolview.visibility = View.GONE
+                     supportFragmentManager.beginTransaction()
+                         .replace(R.id.placeholder, ImageListFragment(this, valueReturn))
+                         .commit()
+                 }
              }
          }
      }
@@ -81,10 +87,7 @@ import com.fxn.utility.PermUtil
          }
      }
      fun onClickGetImages(view:View){
-         binding.scrolview.visibility = View.GONE
-         val frm = supportFragmentManager.beginTransaction()
-         frm.replace(R.id.placeholder,ImageListFragment(this))
-         frm.commit()
+         ImagePiker.getImages(this,2)
      }
 
      override fun onFragClose() {
