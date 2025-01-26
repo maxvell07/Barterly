@@ -15,13 +15,15 @@ import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.dialogs.DialogSpinnerHelper
+import com.example.barterly.fragment.FragmentCloseInterface
+import com.example.barterly.fragment.ImageListFragment
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 
- class EditAdsAct : AppCompatActivity() {
+ class EditAdsAct : AppCompatActivity(),FragmentCloseInterface {
      lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var ispermisssionGranted = false
@@ -48,7 +50,7 @@ import com.fxn.utility.PermUtil
          when(requestCode){
              PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS ->{
                  if (grantResults.size>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    ImagePiker.getImages(this)
+                    ImagePiker.getImages(this,3)
                  }else{
                      Toast.makeText(this,"Approve perm",Toast.LENGTH_LONG)
                  }
@@ -79,8 +81,15 @@ import com.fxn.utility.PermUtil
          }
      }
      fun onClickGetImages(view:View){
-         var per =0
-         ImagePiker.getImages(this)
+         binding.scrolview.visibility = View.GONE
+         val frm = supportFragmentManager.beginTransaction()
+         frm.replace(R.id.placeholder,ImageListFragment(this))
+         frm.commit()
      }
 
-}
+     override fun onFragClose() {
+         binding.scrolview.visibility = View.VISIBLE
+
+     }
+
+ }
