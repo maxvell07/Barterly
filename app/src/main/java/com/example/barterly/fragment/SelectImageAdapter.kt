@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
+import com.example.barterly.utils.ItemTouchMoveCallback
 
-class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>() {
+class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
 
     var list = ArrayList<SelectImageItem>()
 
@@ -20,6 +21,14 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>() 
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    override fun onMove(startPos: Int, targetPos: Int) {
+        val target = list[targetPos]
+        list[targetPos] = list[startPos]
+        list[startPos] = target
+        notifyItemMoved(startPos,targetPos)
+
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
@@ -44,4 +53,6 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>() 
         list.addAll(newlist)
         notifyDataSetChanged()
     }
+
+
 }

@@ -87,7 +87,7 @@ import com.fxn.utility.PermUtil
          }
      }
      fun onClickGetImages(view:View){
-         ImagePiker.getImages(this,2)
+         ImagePiker.getImages(this,3)
      }
 
      override fun onFragClose() {
