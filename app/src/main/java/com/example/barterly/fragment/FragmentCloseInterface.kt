@@ -1,5 +1,5 @@
 package com.example.barterly.fragment
 
 interface FragmentCloseInterface {
-    fun onFragClose()
+    fun onFragClose(list:ArrayList<SelectImageItem>)
 }

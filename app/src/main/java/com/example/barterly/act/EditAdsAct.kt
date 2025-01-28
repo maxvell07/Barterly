@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PackageManagerCompat
 import com.example.barterly.R
+import com.example.barterly.adapters.ImageAdapter
 import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
+import com.example.barterly.fragment.SelectImageItem
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
 import com.fxn.pix.Pix
@@ -27,6 +29,7 @@ import com.fxn.utility.PermUtil
      lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var ispermisssionGranted = false
+    private lateinit var imageViewAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,10 @@ import com.fxn.utility.PermUtil
 
 
      private fun init(){
+
+         imageViewAdapter = ImageAdapter()
+         binding.vpImages.adapter = imageViewAdapter
+
      }
      //OnClicks
      fun onClickSelectCountry(view:View){
@@ -90,8 +97,9 @@ import com.fxn.utility.PermUtil
          ImagePiker.getImages(this,3)
      }
 
-     override fun onFragClose() {
+     override fun onFragClose(list: ArrayList<SelectImageItem>) {
          binding.scrolview.visibility = View.VISIBLE
+         imageViewAdapter.update(list)
 
      }
 

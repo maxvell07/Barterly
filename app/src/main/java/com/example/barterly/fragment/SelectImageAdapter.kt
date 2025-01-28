@@ -26,9 +26,16 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
     override fun onMove(startPos: Int, targetPos: Int) {
         val target = list[targetPos]
         list[targetPos] = list[startPos]
+        val titleStart = list[targetPos].title
+        list[targetPos].title = target.title
         list[startPos] = target
+        list[startPos].title = titleStart
         notifyItemMoved(startPos,targetPos)
 
+    }
+
+    override fun onClear() {
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
