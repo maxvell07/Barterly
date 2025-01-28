@@ -1,4 +1,4 @@
- package com.example.barterly.act
+package com.example.barterly.act
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -25,82 +25,96 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 
- class EditAdsAct : AppCompatActivity(),FragmentCloseInterface {
-     lateinit var binding: ActivityEditAdsBinding
+class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
+    lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var ispermisssionGranted = false
     private lateinit var imageViewAdapter: ImageAdapter
-
+    private var chooseImageFrag: ImageListFragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding =ActivityEditAdsBinding.inflate(layoutInflater)
+        binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
     }
 
-     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-         super.onActivityResult(requestCode, resultCode, data)
-         if(resultCode == RESULT_OK && requestCode == ImagePiker.REQuest_CODE_GET_IMAGES){
-             if (data != null){
-                 val valueReturn = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-                 if(valueReturn?.size!! > 1) {
-                     binding.scrolview.visibility = View.GONE
-                     supportFragmentManager.beginTransaction()
-                         .replace(R.id.placeholder, ImageListFragment(this, valueReturn))
-                         .commit()
-                 }
-             }
-         }
-     }
+        if (resultCode == RESULT_OK && requestCode == ImagePiker.REQuest_CODE_GET_IMAGES) {
 
-     @SuppressLint("MissingSuperCall")
-     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-         when(requestCode){
-             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS ->{
-                 if (grantResults.size>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    ImagePiker.getImages(this,3)
-                 }else{
-                     Toast.makeText(this,"Approve perm",Toast.LENGTH_LONG)
-                 }
-                 return
-             }
-         }
-     }
+            if (data != null) {
+
+                val valueReturn = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+
+                if (valueReturn?.size!! > 1 && chooseImageFrag == null) {
+                    chooseImageFrag = ImageListFragment(this, valueReturn)
+                    binding.scrolview.visibility = View.GONE
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.placeholder, chooseImageFrag!!)
+                        .commit()
+                } else if (chooseImageFrag != null) {
+                    chooseImageFrag?.updateAdapter(valueReturn)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ImagePiker.getImages(this, 3)
+                } else {
+                    Toast.makeText(this, "Approve perm", Toast.LENGTH_LONG)
+                }
+                return
+            }
+        }
+    }
 
 
-     private fun init(){
+    private fun init() {
 
-         imageViewAdapter = ImageAdapter()
-         binding.vpImages.adapter = imageViewAdapter
+        imageViewAdapter = ImageAdapter()
+        binding.vpImages.adapter = imageViewAdapter
 
-     }
-     //OnClicks
-     fun onClickSelectCountry(view:View){
-         if (binding.selectCity.text != getString(R.string.select_city)){
-             binding.selectCity.text = getString(R.string.select_city)
-         }
-         val listCountry = CityHelper.getAllCountries(this)
-         dialog.showSpinnerDialog(this,listCountry,binding.selectCountry)
+    }
 
-     }
-     fun onClickSelectCity(view:View){
-         var city =binding.selectCountry.text.toString()
-         if (city != view.context.getString(R.string.select_country)) {
-             val listCity = CityHelper.getAllCities(this, city)
-             dialog.showSpinnerDialog(this, listCity,binding.selectCity)
-         } else{
-             Toast.makeText(this,"No countryselected",Toast.LENGTH_LONG).show()
-         }
-     }
-     fun onClickGetImages(view:View){
-         ImagePiker.getImages(this,3)
-     }
+    //OnClicks
+    fun onClickSelectCountry(view: View) {
+        if (binding.selectCity.text != getString(R.string.select_city)) {
+            binding.selectCity.text = getString(R.string.select_city)
+        }
+        val listCountry = CityHelper.getAllCountries(this)
+        dialog.showSpinnerDialog(this, listCountry, binding.selectCountry)
 
-     override fun onFragClose(list: ArrayList<SelectImageItem>) {
-         binding.scrolview.visibility = View.VISIBLE
-         imageViewAdapter.update(list)
+    }
 
-     }
+    fun onClickSelectCity(view: View) {
+        var city = binding.selectCountry.text.toString()
+        if (city != view.context.getString(R.string.select_country)) {
+            val listCity = CityHelper.getAllCities(this, city)
+            dialog.showSpinnerDialog(this, listCity, binding.selectCity)
+        } else {
+            Toast.makeText(this, "No countryselected", Toast.LENGTH_LONG).show()
+        }
+    }
 
- }
+    fun onClickGetImages(view: View) {
+        imageViewAdapter.update(java.util.ArrayList())//   *** мб лишнее ***
+        ImagePiker.getImages(this, 3)
+    }
+
+    override fun onFragClose(list: ArrayList<SelectImageItem>) {
+        binding.scrolview.visibility = View.VISIBLE
+        imageViewAdapter.update(list)
+        chooseImageFrag = null
+    }
+
+}
