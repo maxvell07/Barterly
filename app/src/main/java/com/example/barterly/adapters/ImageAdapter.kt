@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
-import com.example.barterly.fragment.SelectImageItem
 
 class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
 
-    val array = ArrayList<SelectImageItem>()
+    val array = ArrayList<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_adapter_item,parent,false)
@@ -23,7 +22,7 @@ class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
-        holder.setData(array[position].image)
+        holder.setData(array[position])
     }
 
     class ImageHolder(itemView: View):RecyclerView.ViewHolder(itemView){
@@ -35,7 +34,7 @@ class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
             imitem.setImageURI(Uri.parse(link))
         }
     }
-    fun update(newlist:ArrayList<SelectImageItem>){
+    fun update(newlist:ArrayList<String>){
         array.clear()
         array.addAll(newlist)
         notifyDataSetChanged()

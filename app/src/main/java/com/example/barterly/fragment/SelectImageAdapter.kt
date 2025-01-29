@@ -1,5 +1,6 @@
 package com.example.barterly.fragment
 
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,11 @@ import com.example.barterly.utils.ItemTouchMoveCallback
 
 class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
 
-    var list = ArrayList<SelectImageItem>()
+    var list = ArrayList<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
-        return ImageHolder(view)
+        return ImageHolder(view, parent.context)
     }
 
     override fun getItemCount(): Int {
@@ -26,10 +27,8 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
     override fun onMove(startPos: Int, targetPos: Int) {
         val target = list[targetPos]
         list[targetPos] = list[startPos]
-        val titleStart = list[targetPos].title
-        list[targetPos].title = target.title
         list[startPos] = target
-        list[startPos].title = titleStart
+
         notifyItemMoved(startPos,targetPos)
 
     }
@@ -42,20 +41,21 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         holder.setData(list[position])
     }
 
-    class ImageHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    class ImageHolder(itemView: View, var context:Context):RecyclerView.ViewHolder(itemView){
         lateinit var tv:TextView
         lateinit var image:ImageView
-        fun setData(item:SelectImageItem){
+
+        fun setData(item:String){
             tv = itemView.findViewById(R.id.textTitle)
             image = itemView.findViewById(R.id.imageContent)
-            tv.text = item.title
-            image.setImageURI(Uri.parse(item.image))
+            tv.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
+            image.setImageURI(Uri.parse(item))
 
         }
 
     }
 
-    fun updateAdapter(newlist : List<SelectImageItem>, needclearorno:Boolean){
+    fun updateAdapter(newlist : List<String>, needclearorno:Boolean){
         if (needclearorno) list.clear()
         list.addAll(newlist)
         notifyDataSetChanged()

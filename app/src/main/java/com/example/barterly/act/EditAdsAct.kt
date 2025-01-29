@@ -18,7 +18,6 @@ import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
-import com.example.barterly.fragment.SelectImageItem
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
 import com.fxn.pix.Pix
@@ -48,13 +47,13 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 val valueReturn = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
 
                 if (valueReturn?.size!! > 1 && chooseImageFrag == null) {
-                    chooseImageFrag = ImageListFragment(this, valueReturn)
-                    binding.scrolview.visibility = View.GONE
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.placeholder, chooseImageFrag!!)
-                        .commit()
+
+                    openChoosenImageFrag(valueReturn)
+
                 } else if (chooseImageFrag != null) {
+
                     chooseImageFrag?.updateAdapter(valueReturn)
+
                 }
             }
         }
@@ -107,14 +106,26 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickGetImages(view: View) {
-        imageViewAdapter.update(java.util.ArrayList())//   *** мб лишнее ***
-        ImagePiker.getImages(this, 3)
+         if (imageViewAdapter.array.size == 0){
+
+             ImagePiker.getImages(this, 3)
+
+         } else {
+            openChoosenImageFrag(imageViewAdapter.array)
+         }
     }
 
-    override fun onFragClose(list: ArrayList<SelectImageItem>) {
+    override fun onFragClose(list: ArrayList<String>) {
         binding.scrolview.visibility = View.VISIBLE
         imageViewAdapter.update(list)
         chooseImageFrag = null
     }
 
+    private fun openChoosenImageFrag(newlist:ArrayList<String>){
+        chooseImageFrag = ImageListFragment(this, newlist)
+        binding.scrolview.visibility = View.GONE
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.placeholder, chooseImageFrag!!)
+            .commit()
+    }
 }

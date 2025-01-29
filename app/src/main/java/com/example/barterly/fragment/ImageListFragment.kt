@@ -37,11 +37,8 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         touchHelper.attachToRecyclerView(binding.rcvSelectImage)
         binding.rcvSelectImage.layoutManager = LinearLayoutManager(activity)
         binding.rcvSelectImage.adapter =adapter
-        val updatelist = ArrayList<SelectImageItem>()
-        for (n in 0 until newlist.size ){
-            updatelist.add(SelectImageItem(n.toString(),newlist[n]))
-        }
-        adapter.updateAdapter(updatelist,true)
+
+        adapter.updateAdapter(newlist,true)
 
     }
 
@@ -76,11 +73,8 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
 
     }
     fun updateAdapter(newlist:ArrayList<String>){
-        val updatelist = ArrayList<SelectImageItem>()
-        for (n in adapter.itemCount until newlist.size +adapter.itemCount ){
-            updatelist.add(SelectImageItem(n.toString(),newlist[n-adapter.itemCount]))
-        }
-        adapter.updateAdapter(updatelist,false)
+
+        adapter.updateAdapter(newlist,false)
 
     }
 
