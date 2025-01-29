@@ -1,7 +1,5 @@
 package com.example.barterly.utils
 
-import android.annotation.SuppressLint
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.fxn.pix.Options
 import com.fxn.pix.Pix
@@ -12,12 +10,12 @@ import com.fxn.pix.Pix
 
 object ImagePiker {
     const val MAX_IMAGE_COUNT = 3
-    const val REQuest_CODE_GET_IMAGES = 999
+    const val REQUEST_CODE_GET_IMAGES = 999
+    const val REQUEST_CODE_GET_SINGLE_IMAGE = 888
 
-     @SuppressLint("SuspiciousIndentation")
-     fun getImages(context: AppCompatActivity, imageCounter:Int) {
+     fun getImages(context: AppCompatActivity, imageCounter:Int,rCode:Int) {
         var options = Options.init()
-            .setRequestCode(REQuest_CODE_GET_IMAGES)
+            .setRequestCode(rCode)
             .setCount(imageCounter)
             .setFrontfacing(false)
             .setMode(Options.Mode.Picture)

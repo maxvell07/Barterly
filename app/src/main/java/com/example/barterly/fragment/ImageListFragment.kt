@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
 import com.example.barterly.databinding.ListImageFragBinding
 import com.example.barterly.utils.ImagePiker
@@ -65,7 +63,7 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
                 Toast.makeText(binding.root.context, "text3", Toast.LENGTH_SHORT).show()
                 ImagePiker.getImages(
                     activity as AppCompatActivity,
-                    ImagePiker.MAX_IMAGE_COUNT - adapter.itemCount
+                    ImagePiker.MAX_IMAGE_COUNT - adapter.list.size,ImagePiker.REQUEST_CODE_GET_IMAGES
                 )
             }
                 true
@@ -75,6 +73,11 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
     fun updateAdapter(newlist:ArrayList<String>){
 
         adapter.updateAdapter(newlist,false)
+
+    }
+    fun selectsingleImage(uri:String,pos:Int){
+        adapter.list[pos] = uri
+        adapter.notifyDataSetChanged()
 
     }
 

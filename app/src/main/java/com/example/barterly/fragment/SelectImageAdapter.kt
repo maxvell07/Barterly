@@ -5,10 +5,13 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
+import com.example.barterly.act.EditAdsAct
+import com.example.barterly.utils.ImagePiker
 import com.example.barterly.utils.ItemTouchMoveCallback
 
 class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
@@ -41,16 +44,23 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         holder.setData(list[position])
     }
 
-    class ImageHolder(itemView: View, var context:Context):RecyclerView.ViewHolder(itemView){
+    class ImageHolder(itemView: View, val context:Context):RecyclerView.ViewHolder(itemView){
         lateinit var tv:TextView
         lateinit var image:ImageView
-
+        lateinit var editImageButton: ImageButton
         fun setData(item:String){
+            editImageButton = itemView.findViewById(R.id.btEditImage)
             tv = itemView.findViewById(R.id.textTitle)
             image = itemView.findViewById(R.id.imageContent)
+            editImageButton.setOnClickListener{
+
+                ImagePiker.getImages(context as EditAdsAct,1,ImagePiker.REQUEST_CODE_GET_SINGLE_IMAGE)
+                context.editimagepos =adapterPosition
+
+            }
+
             tv.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
             image.setImageURI(Uri.parse(item))
-
         }
 
     }
@@ -60,6 +70,7 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         list.addAll(newlist)
         notifyDataSetChanged()
     }
+
 
 
 }
