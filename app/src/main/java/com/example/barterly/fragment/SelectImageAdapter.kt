@@ -20,7 +20,7 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
-        return ImageHolder(view, parent.context)
+        return ImageHolder(view, parent.context,this)
     }
 
     override fun getItemCount(): Int {
@@ -44,12 +44,15 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         holder.setData(list[position])
     }
 
-    class ImageHolder(itemView: View, val context:Context):RecyclerView.ViewHolder(itemView){
+    class ImageHolder(itemView: View, val context:Context, val adapter:SelectImageAdapter):RecyclerView.ViewHolder(itemView){
         lateinit var tv:TextView
         lateinit var image:ImageView
         lateinit var editImageButton: ImageButton
+        lateinit var deleteImageButton: ImageButton
+
         fun setData(item:String){
             editImageButton = itemView.findViewById(R.id.btEditImage)
+            deleteImageButton = itemView.findViewById(R.id.btdeleteimage)
             tv = itemView.findViewById(R.id.textTitle)
             image = itemView.findViewById(R.id.imageContent)
             editImageButton.setOnClickListener{
@@ -58,6 +61,14 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
                 context.editimagepos =adapterPosition
 
             }
+            deleteImageButton.setOnClickListener{
+                adapter.list.removeAt(adapterPosition)
+                adapter.notifyItemRemoved(adapterPosition)
+                for(n in 0 until adapter.list.size){ //для обновления списка с анимацией
+                    adapter.notifyItemChanged(n)
+                }
+            }
+
 
             tv.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
             image.setImageURI(Uri.parse(item))
