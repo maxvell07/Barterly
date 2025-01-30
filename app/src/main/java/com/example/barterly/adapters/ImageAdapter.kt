@@ -1,5 +1,6 @@
 package com.example.barterly.adapters
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import com.example.barterly.R
 
 class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
 
-    val array = ArrayList<String>()
+    val array = ArrayList<Bitmap>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_adapter_item,parent,false)
@@ -29,12 +30,12 @@ class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
 
         lateinit var imitem:ImageView
 
-        fun setData(link:String){
+        fun setData(bitmap:Bitmap){
             imitem = itemView.findViewById(R.id.ViewPagerItem)
-            imitem.setImageURI(Uri.parse(link))
+            imitem.setImageBitmap(bitmap)
         }
     }
-    fun update(newlist:ArrayList<String>){
+    fun update(newlist:ArrayList<Bitmap>){
         array.clear()
         array.addAll(newlist)
         notifyDataSetChanged()

@@ -3,6 +3,7 @@ package com.example.barterly.act
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
 import com.example.barterly.utils.CityHelper
+import com.example.barterly.utils.ImageManager
 import com.example.barterly.utils.ImagePiker
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
@@ -48,7 +50,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
                 } else if (valueReturn.size == 1 && chooseImageFrag == null) {
 
-                    imageViewAdapter.update(valueReturn)
+                  //  imageViewAdapter.update(valueReturn)
+                    val  templist = ImageManager.getImageSize(valueReturn[0])
 
                 } else if (chooseImageFrag != null) {
 
@@ -115,17 +118,18 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
              ImagePiker.getImages(this, 3,ImagePiker.REQUEST_CODE_GET_IMAGES)
 
          } else {
-            openChoosenImageFrag(imageViewAdapter.array)
+            openChoosenImageFrag(null)
+             chooseImageFrag?.updateAdapterFromEdit(imageViewAdapter.array)
          }
     }
 
-    override fun onFragClose(list: ArrayList<String>) {
+    override fun onFragClose(list: ArrayList<Bitmap>) {
         binding.scrolview.visibility = View.VISIBLE
         imageViewAdapter.update(list)
         chooseImageFrag = null
     }
 
-    private fun openChoosenImageFrag(newlist:ArrayList<String>){
+    private fun openChoosenImageFrag(newlist:ArrayList<String>?){
         chooseImageFrag = ImageListFragment(this, newlist)
         binding.scrolview.visibility = View.GONE
         supportFragmentManager.beginTransaction()

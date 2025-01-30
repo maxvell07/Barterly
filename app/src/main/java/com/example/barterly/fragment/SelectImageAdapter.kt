@@ -1,6 +1,7 @@
 package com.example.barterly.fragment
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,7 @@ import com.example.barterly.utils.ItemTouchMoveCallback
 
 class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
 
-    var list = ArrayList<String>()
+    var list = ArrayList<Bitmap>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
@@ -50,7 +51,7 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         lateinit var editImageButton: ImageButton
         lateinit var deleteImageButton: ImageButton
 
-        fun setData(item:String){
+        fun setData(item:Bitmap){
             editImageButton = itemView.findViewById(R.id.btEditImage)
             deleteImageButton = itemView.findViewById(R.id.btdeleteimage)
             tv = itemView.findViewById(R.id.textTitle)
@@ -71,12 +72,12 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
 
 
             tv.text = context.resources.getStringArray(R.array.title_array)[adapterPosition]
-            image.setImageURI(Uri.parse(item))
+            image.setImageBitmap(item)
         }
 
     }
 
-    fun updateAdapter(newlist : List<String>, needclearorno:Boolean){
+    fun updateAdapter(newlist : List<Bitmap>, needclearorno:Boolean){
         if (needclearorno) list.clear()
         list.addAll(newlist)
         notifyDataSetChanged()
