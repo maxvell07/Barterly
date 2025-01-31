@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
@@ -50,14 +51,16 @@ class SelectImageAdapter:RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),
         lateinit var image:ImageView
         lateinit var editImageButton: ImageButton
         lateinit var deleteImageButton: ImageButton
+        lateinit var loadbar: ProgressBar
 
         fun setData(item:Bitmap){
             editImageButton = itemView.findViewById(R.id.btEditImage)
             deleteImageButton = itemView.findViewById(R.id.btdeleteimage)
             tv = itemView.findViewById(R.id.textTitle)
             image = itemView.findViewById(R.id.imageContent)
-            editImageButton.setOnClickListener{
+            loadbar = itemView.findViewById(R.id.loadbarimage)
 
+            editImageButton.setOnClickListener{
                 ImagePiker.getImages(context as EditAdsAct,1,ImagePiker.REQUEST_CODE_GET_SINGLE_IMAGE)
                 context.editimagepos =adapterPosition
 

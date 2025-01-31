@@ -1,17 +1,21 @@
 package com.example.barterly.fragment
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
 import com.example.barterly.databinding.ListImageFragBinding
+import com.example.barterly.dialoghelper.ProgressDialog
 import com.example.barterly.utils.ImageManager
 import com.example.barterly.utils.ImagePiker
 import com.example.barterly.utils.ItemTouchMoveCallback
@@ -43,12 +47,8 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         binding.rcvSelectImage.layoutManager = LinearLayoutManager(activity)
         binding.rcvSelectImage.adapter =adapter
 
-        if (newlist != null){
-       job = CoroutineScope(Dispatchers.Main).launch {
-            val bitmaplist = ImageManager.imageResize(newlist)
-            adapter.updateAdapter(bitmaplist,true)
+        if (newlist != null) resizeSelectedImages(newlist,true)
 
-        }}
 
 
     }
@@ -60,6 +60,16 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         super.onDetach()
         fragClose.onFragClose(adapter.list)
         job?.cancel()
+    }
+    private fun resizeSelectedImages(newlist:ArrayList<String>,needclear :Boolean){
+
+        job = CoroutineScope(Dispatchers.Main).launch {
+            val dialog = ProgressDialog.createLoadingDialog(activity as Activity)
+            val bitmaplist = ImageManager.imageResize(newlist)
+            dialog.dismiss()
+            adapter.updateAdapter(bitmaplist,needclear)
+        }
+
     }
     private fun setUpToolBar(){
         binding.toolbarfrag.inflateMenu(R.menu.menu_imagefrag)
@@ -77,7 +87,6 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         }
         additem.setOnMenuItemClickListener {
             if (adapter.itemCount < 3) {
-                Toast.makeText(binding.root.context, "text3", Toast.LENGTH_SHORT).show()
                 ImagePiker.getImages(
                     activity as AppCompatActivity,
                     ImagePiker.MAX_IMAGE_COUNT - adapter.list.size,ImagePiker.REQUEST_CODE_GET_IMAGES
@@ -88,18 +97,18 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
 
     }
     fun updateAdapter(newlist:ArrayList<String>){
-        job = CoroutineScope(Dispatchers.Main).launch {
-            val bitmaplist = ImageManager.imageResize(newlist)
-            adapter.updateAdapter(bitmaplist,false)
-        }
+        resizeSelectedImages(newlist,false)
 
     }
     fun selectsingleImage(uri:String,pos:Int){
 
+        val loadbar = binding.rcvSelectImage[pos].findViewById<ProgressBar>(R.id.loadbarimage)
         job = CoroutineScope(Dispatchers.Main).launch {
+            loadbar.visibility = View.VISIBLE
             val bitmaplist = ImageManager.imageResize(listOf(uri))
+            loadbar.visibility = View.GONE
             adapter.list[pos] = bitmaplist[0]
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemChanged(pos)
 
         }
 
