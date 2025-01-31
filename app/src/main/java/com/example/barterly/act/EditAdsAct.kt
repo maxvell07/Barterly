@@ -25,8 +25,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var ispermisssionGranted = false
-    private lateinit var imageViewAdapter: ImageAdapter
-    private var chooseImageFrag: ImageListFragment? = null
+    lateinit var imageViewAdapter: ImageAdapter
+    var chooseImageFrag: ImageListFragment? = null
     var editimagepos = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,33 +38,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && requestCode == ImagePiker.REQUEST_CODE_GET_IMAGES) {
+        ImagePiker.imagePresenter(resultCode,requestCode,data,this)
 
-            if (data != null) {
-
-                val valueReturn = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-
-                if (valueReturn?.size!! > 1 && chooseImageFrag == null) {
-
-                    openChoosenImageFrag(valueReturn)
-
-                } else if (valueReturn.size == 1 && chooseImageFrag == null) {
-
-                  //  imageViewAdapter.update(valueReturn)
-                    val  templist = ImageManager.getImageSize(valueReturn[0])
-
-                } else if (chooseImageFrag != null) {
-
-                    chooseImageFrag?.updateAdapter(valueReturn)
-
-                }
-            }
-        } else if(resultCode == RESULT_OK && requestCode == ImagePiker.REQUEST_CODE_GET_SINGLE_IMAGE){
-            if (data != null){
-                val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                chooseImageFrag?.selectsingleImage(uris?.get(0)!!, editimagepos)
-            }
-        }
     }
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
@@ -129,7 +104,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFrag = null
     }
 
-    private fun openChoosenImageFrag(newlist:ArrayList<String>?){
+    fun openChoosenImageFrag(newlist:ArrayList<String>?){
         chooseImageFrag = ImageListFragment(this, newlist)
         binding.scrolview.visibility = View.GONE
         supportFragmentManager.beginTransaction()
