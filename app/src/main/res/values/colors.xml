@@ -3,4 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="color_red">#EC1101</color>
+    <color name="minimalistic_green">#86C232</color>
+    <color name="minimalistic_black">#222629</color>
+    <color name="minimalistic_white_1">#EAE7DC</color>
+    <color name="minimalistic_white12">#D8C3A5</color>
+    <color name="minimalistic_pink1">#E85A4F</color>
+    <color name="gray">#E2DEDE</color>
 </resources>
