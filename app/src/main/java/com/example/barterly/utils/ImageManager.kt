@@ -2,6 +2,7 @@ package com.example.barterly.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.exifinterface.media.ExifInterface
 import com.squareup.picasso.Picasso
@@ -45,6 +46,12 @@ object ImageManager {
             rotation = 0
         }
         return rotation
+    }
+    fun chooseScaleType(im:ImageView,bitmap:Bitmap){
+
+        if (bitmap.width> bitmap.height){
+            im.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else im.scaleType = ImageView.ScaleType.CENTER_INSIDE
     }
 
     suspend fun imageResize(uri: List<String>): List<Bitmap> = withContext(Dispatchers.IO){
