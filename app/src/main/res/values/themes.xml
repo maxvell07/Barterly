@@ -14,4 +14,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="ActionBarCustom">
+        <item name="android:textColorSecondary">@color/minimalistic_green</item>
+    </style>
 </resources>

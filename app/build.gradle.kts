@@ -14,8 +14,8 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
 
         buildFeatures {
             viewBinding = true
@@ -47,6 +47,11 @@ dependencies {
     implementation ("com.google.android.material:material:1.2.0")
     implementation ("com.google.android.gms:play-services-auth:19.0.0")
     implementation(libs.androidx.core.ktx)
+    implementation ("com.otaliastudios:cameraview:2.7.1")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
+    implementation ("com.squareup.picasso:picasso:2.8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -54,7 +59,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
-    implementation  ("io.ak1.pix:piximagepicker:1.6.2")
+    implementation(files("sampledata/pix.aar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
