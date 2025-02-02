@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "288922242993-19eu25t48u5ttrjvds80ocr2c1dh9bev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.barterly",
+            "certificate_hash": "604a80614980a86326db734baaa57e788cee9b4e"
+          }
+        },
+        {
           "client_id": "288922242993-iduqt3875c7tjm4tc3gd2k9mt2tpo4o9.apps.googleusercontent.com",
           "client_type": 3
         }
