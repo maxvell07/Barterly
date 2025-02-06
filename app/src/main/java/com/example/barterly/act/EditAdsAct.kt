@@ -5,11 +5,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
+import com.example.barterly.data.Offer
+import com.example.barterly.database.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
@@ -27,6 +30,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var ispermisssionGranted = false
     lateinit var imageViewAdapter: ImageAdapter
     var chooseImageFrag: ImageListFragment? = null
+    private val dbmanager = DbManager()
     var editimagepos = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,19 +87,46 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
             val listCity = CityHelper.getAllCities(this, city)
             dialog.showSpinnerDialog(this, listCity, binding.selectCity)
         } else {
-            Toast.makeText(this, "No countryselected", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "No country selected", Toast.LENGTH_LONG).show()
         }
+    }
+    fun onClickSelectCat(view:View){
+
+        val listCity = resources.getStringArray(R.array.category).toMutableList() as ArrayList
+        dialog.showSpinnerDialog(this, listCity, binding.selectCategory)
+
     }
 
     fun onClickGetImages(view: View) {
-         if (imageViewAdapter.array.size == 0){
+        if (imageViewAdapter.array.size == 0){
 
-             ImagePiker.getImages(this, 3,ImagePiker.REQUEST_CODE_GET_IMAGES)
+            ImagePiker.getImages(this, 3,ImagePiker.REQUEST_CODE_GET_IMAGES)
 
-         } else {
+        } else {
             openChoosenImageFrag(null)
-             chooseImageFrag?.updateAdapterFromEdit(imageViewAdapter.array)
-         }
+            chooseImageFrag?.updateAdapterFromEdit(imageViewAdapter.array)
+        }
+    }
+
+    fun onClickPublish(view:View){
+
+
+        dbmanager.publishOffer(filloffer())
+        Log.d("asdvxzcvzxzv","send firebase")
+
+    }
+    fun filloffer():Offer{
+        val offer:Offer
+        binding.apply {
+            offer = Offer(binding.selectCountry.text.toString(),binding.selectCity.text.toString(),binding.phoneeditText.text.toString(),
+                binding.adresseditText.text.toString(),
+                binding.selectCategory.text.toString(),
+                binding.priceeditrext.text.toString(),
+                binding.editTextdiscription.text.toString(),
+                dbmanager.db.push().key // генерируем уникальный ключ офера
+            )
+        }
+        return offer
     }
 
     override fun onFragClose(list: ArrayList<Bitmap>) {

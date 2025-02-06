@@ -135,6 +135,7 @@ class AccountHelper(private val act: MainActivity) {
         }
     }}
 
+
     fun signInFireBaseWithGoogle(token: String) {
         val credential = GoogleAuthProvider.getCredential(token, null)
         act.myAuth.signInWithCredential(credential).addOnCompleteListener { task ->

@@ -117,13 +117,6 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
             loadbar.visibility = View.GONE
             adapter.list[pos] = bitmaplist[0]
             adapter.notifyItemChanged(pos)
-
         }
-
-
     }
-
-
-
-
 }

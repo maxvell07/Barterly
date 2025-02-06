@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.barterly.accounthelper.GoogleAccConst
 import com.example.barterly.act.EditAdsAct
+import com.example.barterly.database.DbManager
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
     val myAuth = FirebaseAuth.getInstance()
+    val dbManager = DbManager()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        dbManager.readDataFromDb()
 
     }
 

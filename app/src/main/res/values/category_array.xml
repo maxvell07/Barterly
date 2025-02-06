@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="category">
+
+        <item>Машины</item>
+        <item>Техника</item>
+        <item>Одежда</item>
+        <item>Для дома</item>
+
+    </string-array>
+
+</resources>

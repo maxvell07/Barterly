@@ -31,5 +31,14 @@
     <string name="city">Город</string>
     <string name="country">Страна</string>
     <string name="phone">Телефон</string>
+    <string name="category">Категория</string>
+    <string name="select_category">*Выберите категорию</string>
+    <string name="price">Цена</string>
+    <string name="price_Hint">*Цена</string>
+    <string name="description">Описание</string>
+    <string name="description_hint">*Описание</string>
+    <string name="adress_hint">*Адресс</string>
+    <string name="adress">Адресс</string>
+    <string name="publish">Опубликовать</string>
 
 </resources>
