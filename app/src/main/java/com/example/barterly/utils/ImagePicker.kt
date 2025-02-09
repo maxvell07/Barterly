@@ -13,9 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-//import io.ak1.pix.models.Mode
-//import io.ak1.pix.models.Options
-
 
 object ImagePiker {
     const val MAX_IMAGE_COUNT = 3

@@ -1,6 +1,7 @@
 package com.example.barterly.data
 
 data class Offer(
+    val title :String? = null,
     val country:String? = null,
     val city:String? = null,
     val phone:String? = null,

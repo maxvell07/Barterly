@@ -30,7 +30,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var ispermisssionGranted = false
     lateinit var imageViewAdapter: ImageAdapter
     var chooseImageFrag: ImageListFragment? = null
-    private val dbmanager = DbManager()
+    private val dbmanager = DbManager(null)
     var editimagepos = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +118,11 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun filloffer():Offer{
         val offer:Offer
         binding.apply {
-            offer = Offer(binding.selectCountry.text.toString(),binding.selectCity.text.toString(),binding.phoneeditText.text.toString(),
+            offer = Offer(
+                binding.editTitleOffer.text.toString(),
+                binding.selectCountry.text.toString(),
+                binding.selectCity.text.toString(),
+                binding.phoneEditText.text.toString(),
                 binding.adresseditText.text.toString(),
                 binding.selectCategory.text.toString(),
                 binding.priceeditrext.text.toString(),

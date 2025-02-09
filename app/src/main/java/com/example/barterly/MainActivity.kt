@@ -9,9 +9,13 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.accounthelper.GoogleAccConst
 import com.example.barterly.act.EditAdsAct
+import com.example.barterly.adapters.OffersRcAdapter
+import com.example.barterly.data.Offer
 import com.example.barterly.database.DbManager
+import com.example.barterly.database.ReadDataCallback
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
@@ -21,13 +25,13 @@ import com.google.android.material.navigation.NavigationView.OnNavigationItemSel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener,ReadDataCallback {
     private lateinit var tvAccount:TextView
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
     val myAuth = FirebaseAuth.getInstance()
-    val dbManager = DbManager()
-
+    val dbManager = DbManager(this)
+    val offeradapter = OffersRcAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +39,7 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        initRcView()
         dbManager.readDataFromDb()
 
     }
@@ -82,7 +87,16 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         tvAccount = binding.navview.getHeaderView(0).findViewById(R.id.tvaccountemail)
     }
 
+    private fun initRcView(){
+        binding.apply {
+
+            mainContent.rcView.layoutManager = LinearLayoutManager(this@MainActivity)
+            mainContent.rcView.adapter = offeradapter
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
             when(item.itemId){
 
                 R.id.my_ads ->{
@@ -114,6 +128,10 @@ class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener {
         }else {
             user.email
         }
+    }
+
+    override fun readData(list: List<Offer>) {
+        offeradapter.updateAdapter(list)
     }
 }
 
