@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
-@Suppress("DEPRECATION")
 class AccountHelper(private val act: MainActivity) {
 
     private lateinit var signInClient: GoogleSignInClient
@@ -33,8 +32,7 @@ class AccountHelper(private val act: MainActivity) {
                         sendEmailVerification(task.result.user!!)
                         act.uiUpdate(task.result?.user)
                     } else {
-//                    Log.d("MyLog","Exeption: ${task.exception}" )
-//                    Toast.makeText(act, act.resources.getString(R.string.sign_up_err), Toast.LENGTH_LONG).show()
+
                         if (task.exception is FirebaseAuthUserCollisionException) {
                             val exception = task.exception as FirebaseAuthUserCollisionException
                             if (exception.errorCode == FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
@@ -99,8 +97,7 @@ class AccountHelper(private val act: MainActivity) {
                 if (task.isSuccessful) {
                     act.uiUpdate(task.result?.user)
                 } else {
-//                    Log.d("MyLog","Exeption${task.exception}")
-//                    Toast.makeText(act, act.resources.getString(R.string.sign_in_err), Toast.LENGTH_LONG).show()
+
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         val exception = task.exception as FirebaseAuthInvalidCredentialsException
 

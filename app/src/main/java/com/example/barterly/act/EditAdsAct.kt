@@ -1,6 +1,5 @@
 package com.example.barterly.act
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -8,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
@@ -18,9 +18,7 @@ import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
 import com.example.barterly.utils.CityHelper
-import com.example.barterly.utils.ImageManager
 import com.example.barterly.utils.ImagePiker
-import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 
@@ -32,6 +30,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var chooseImageFrag: ImageListFragment? = null
     private val dbmanager = DbManager(null)
     var editimagepos = 0
+    var launcherSeveralSelectImage:ActivityResultLauncher<Intent>? = null
+    var launcherSingleSelectImage :ActivityResultLauncher<Intent>? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
@@ -39,13 +41,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         init()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        ImagePiker.imagePresenter(resultCode,requestCode,data,this)
-
-    }
-    @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -54,13 +49,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ImagePiker.getImages(this, 3,ImagePiker.REQUEST_CODE_GET_IMAGES)
+//                    ImagePiker.
                 } else {
                     Toast.makeText(this, "Approve perm", Toast.LENGTH_LONG)
                 }
                 return
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
 
@@ -68,7 +64,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
         imageViewAdapter = ImageAdapter()
         binding.vpImages.adapter = imageViewAdapter
-
+        launcherSeveralSelectImage = ImagePiker.getLauncherForSeveralImages(this)
+        launcherSingleSelectImage = ImagePiker.getLauncherForSingleImage(this)
     }
 
     //OnClicks
@@ -100,7 +97,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun onClickGetImages(view: View) {
         if (imageViewAdapter.array.size == 0){
 
-            ImagePiker.getImages(this, 3,ImagePiker.REQUEST_CODE_GET_IMAGES)
+            ImagePiker.launcher(this,launcherSeveralSelectImage,3)
 
         } else {
             openChoosenImageFrag(null)

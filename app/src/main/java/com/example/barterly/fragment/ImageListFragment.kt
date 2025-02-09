@@ -9,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
+import com.example.barterly.act.EditAdsAct
 import com.example.barterly.databinding.ListImageFragBinding
 import com.example.barterly.dialoghelper.ProgressDialog
 import com.example.barterly.utils.AdapterDeleteCallback
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newlist: ArrayList<String>?) : Fragment(),AdapterDeleteCallback {
 
     lateinit var binding: ListImageFragBinding
-    val adapter = SelectImageAdapter(this)
+    val adapter = SelectedImageRcvAdapter(this)
     val dragcallback = ItemTouchMoveCallback(adapter)
     val touchHelper = ItemTouchHelper(dragcallback)
     private var additem:MenuItem? = null
@@ -94,11 +94,9 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
             true
         }
         additem?.setOnMenuItemClickListener {
+            val imageCounter = ImagePiker.MAX_IMAGE_COUNT - adapter.list.size
             if (adapter.itemCount < 3) {
-                ImagePiker.getImages(
-                    activity as AppCompatActivity,
-                    ImagePiker.MAX_IMAGE_COUNT - adapter.list.size,ImagePiker.REQUEST_CODE_GET_IMAGES
-                )
+                ImagePiker.launcher(activity as EditAdsAct,(activity as EditAdsAct).launcherSeveralSelectImage,imageCounter )
             }
                 true
         }

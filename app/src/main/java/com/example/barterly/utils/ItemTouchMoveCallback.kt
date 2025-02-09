@@ -3,7 +3,6 @@ package com.example.barterly.utils
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-@Suppress("DEPRECATION")
 class ItemTouchMoveCallback(val adapter:ItemTouchChangeAdapter):ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,

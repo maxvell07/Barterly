@@ -4,10 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
 import com.example.barterly.act.EditAdsAct
@@ -17,7 +13,7 @@ import com.example.barterly.utils.ImageManager
 import com.example.barterly.utils.ImagePiker
 import com.example.barterly.utils.ItemTouchMoveCallback
 
-class SelectImageAdapter(val adapterDeleteCallback: AdapterDeleteCallback) :RecyclerView.Adapter<SelectImageAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
+class SelectedImageRcvAdapter(val adapterDeleteCallback: AdapterDeleteCallback) :RecyclerView.Adapter<SelectedImageRcvAdapter.ImageHolder>(),ItemTouchMoveCallback.ItemTouchChangeAdapter {
 
     var list = ArrayList<Bitmap>()
 
@@ -47,12 +43,12 @@ class SelectImageAdapter(val adapterDeleteCallback: AdapterDeleteCallback) :Recy
         holder.setData(list[position])
     }
 
-    class ImageHolder(val viewBinding: SelectImageFragItemBinding, val context:Context, val adapter:SelectImageAdapter):RecyclerView.ViewHolder(viewBinding.root){
+    class ImageHolder(val viewBinding: SelectImageFragItemBinding, val context:Context, val adapter:SelectedImageRcvAdapter):RecyclerView.ViewHolder(viewBinding.root){
 
         fun setData(item:Bitmap){
 
             viewBinding.btEditImage.setOnClickListener{
-                ImagePiker.getImages(context as EditAdsAct,1,ImagePiker.REQUEST_CODE_GET_SINGLE_IMAGE)
+                ImagePiker.launcher(context as EditAdsAct, context.launcherSingleSelectImage, 1)
                 context.editimagepos =adapterPosition
 
             }

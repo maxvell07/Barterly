@@ -56,7 +56,7 @@ object CityHelper {
         filterlist.clear()
         if (text != null) {
             for (Selection: String in list) {
-                if (Selection.toLowerCase(Locale.ROOT).startsWith(text.toLowerCase(Locale.ROOT))) {
+                if (Selection.lowercase(Locale.ROOT).startsWith(text.lowercase(Locale.ROOT))) {
                     filterlist.add(Selection)
                 }
             }
