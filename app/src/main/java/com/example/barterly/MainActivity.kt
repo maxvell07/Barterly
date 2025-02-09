@@ -22,16 +22,17 @@ import com.example.barterly.dialoghelper.DialogHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity(),OnNavigationItemSelectedListener,ReadDataCallback {
     private lateinit var tvAccount:TextView
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
-    val myAuth = FirebaseAuth.getInstance()
+    val myAuth = Firebase.auth
     val dbManager = DbManager(this)
-    val offeradapter = OffersRcAdapter()
+    val offeradapter = OffersRcAdapter(myAuth)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

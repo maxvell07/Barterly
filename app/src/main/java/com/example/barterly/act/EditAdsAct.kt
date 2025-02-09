@@ -124,7 +124,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 binding.selectCategory.text.toString(),
                 binding.priceeditrext.text.toString(),
                 binding.editTextdiscription.text.toString(),
-                dbmanager.db.push().key // генерируем уникальный ключ офера
+                dbmanager.db.push().key,
+                dbmanager.auth.uid// генерируем уникальный ключ офера
+
             )
         }
         return offer
