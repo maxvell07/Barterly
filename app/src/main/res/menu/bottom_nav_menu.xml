@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/new_offer"
+        android:title="New add"
+        android:icon="@drawable/ic_new_ads"
+        android:orderInCategory="400"/>
+
+    <item
+        android:id="@+id/my_offers"
+        android:title="My offers"
+        android:icon="@drawable/ic_my_offers"
+        android:orderInCategory="300"/>
+    <item
+        android:id="@+id/favorites"
+        android:title="Fav"
+        android:icon="@drawable/baseline_favorite_pressed"
+        android:orderInCategory="200"/>
+
+    <item
         android:id="@+id/home"
-        android:title="Search"
-        android:icon="@drawable/ic_launcher_foreground"/>
-    <item
-        android:id="@+id/chat"
-        android:title="Chat"
-        android:icon="@drawable/ic_launcher_foreground"/>
-    <item
-        android:id="@+id/settings"
-        android:title="Profile"
-        android:icon="@drawable/ic_launcher_foreground"/>
+        android:title="Home"
+        android:icon="@drawable/ic_home"
+        android:orderInCategory="100"/>
 </menu>

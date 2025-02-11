@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.barterly.data.Offer
+import com.example.barterly.model.Offer
 import com.example.barterly.databinding.CardItemBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 
 class OffersRcAdapter(val auth:FirebaseAuth):RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
     val offerArray = ArrayList<Offer>()

@@ -19,7 +19,7 @@
             android:name=".act.EditAdsAct"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".act.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

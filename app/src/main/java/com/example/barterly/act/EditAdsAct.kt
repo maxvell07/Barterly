@@ -11,8 +11,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
-import com.example.barterly.data.Offer
-import com.example.barterly.database.DbManager
+import com.example.barterly.model.Offer
+import com.example.barterly.model.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
@@ -28,7 +28,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var ispermisssionGranted = false
     lateinit var imageViewAdapter: ImageAdapter
     var chooseImageFrag: ImageListFragment? = null
-    private val dbmanager = DbManager(null)
+    private val dbmanager = DbManager()
     var editimagepos = 0
     var launcherSeveralSelectImage:ActivityResultLauncher<Intent>? = null
     var launcherSingleSelectImage :ActivityResultLauncher<Intent>? = null

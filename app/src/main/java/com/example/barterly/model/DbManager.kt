@@ -1,6 +1,5 @@
-package com.example.barterly.database
+package com.example.barterly.model
 
-import com.example.barterly.data.Offer
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -8,7 +7,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class DbManager (val readCallback : ReadDataCallback?){
+class DbManager {
 
     val db =  Firebase.database.getReference("main")
     val auth = Firebase.auth
@@ -20,7 +19,7 @@ class DbManager (val readCallback : ReadDataCallback?){
        }
 
     }
-    fun readDataFromDb(){ // слушатель изменения данных
+    fun readDataFromDb(readCallback : ReadDataCallback?){ // слушатель изменения данных
 
         db.addListenerForSingleValueEvent(object :ValueEventListener{
 
@@ -39,4 +38,9 @@ class DbManager (val readCallback : ReadDataCallback?){
         })
     }
 
+}
+
+interface ReadDataCallback {
+
+    fun readData(list:ArrayList<Offer>)
 }

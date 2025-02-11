@@ -1,4 +1,4 @@
-package com.example.barterly.data
+package com.example.barterly.model
 
 data class Offer(
     val title :String? = null,

@@ -2,15 +2,13 @@ package com.example.barterly.accounthelper
 
 import android.util.Log
 import android.widget.Toast
-import androidx.browser.trusted.Token
-import com.example.barterly.MainActivity
+import com.example.barterly.act.MainActivity
 import com.example.barterly.R
 import com.example.barterly.constants.FirebaseAuthConstants
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException

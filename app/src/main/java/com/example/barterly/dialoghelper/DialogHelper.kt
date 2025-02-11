@@ -3,7 +3,7 @@ package com.example.barterly.dialoghelper
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.example.barterly.MainActivity
+import com.example.barterly.act.MainActivity
 import com.example.barterly.R
 import com.example.barterly.accounthelper.AccountHelper
 import com.example.barterly.databinding.SignDialogBinding
