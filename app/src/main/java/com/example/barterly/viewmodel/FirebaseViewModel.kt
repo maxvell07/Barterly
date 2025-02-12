@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.barterly.model.DbManager
 import com.example.barterly.model.Offer
 import com.example.barterly.model.ReadDataCallback
+import com.example.barterly.model.finishLoadListener
 
 class FirebaseViewModel : ViewModel() {
 
@@ -20,10 +21,20 @@ class FirebaseViewModel : ViewModel() {
     }
 
     fun loadMyOffers() {
-        dbManager.getMyOffers(object : ReadDataCallback {
+        dbManager.getMyOffers( object : ReadDataCallback {
             override fun readData(list: ArrayList<Offer>) {
                 liveOffersData.value = list
             }
+        })
+    }
+    fun deleteoffer(offer: Offer){
+        dbManager.deleteoffer(offer,object :finishLoadListener{
+            override fun onFinish() {
+                val updatedlist = liveOffersData.value
+                updatedlist?.remove(offer)
+                liveOffersData.postValue(updatedlist)
+            }
+
         })
     }
 }

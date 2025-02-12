@@ -1,5 +1,6 @@
 package com.example.barterly.model
 
+import android.content.Context
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,10 +14,16 @@ class DbManager {
     val db =  Firebase.database.getReference("main")
     val auth = Firebase.auth
 
-    fun publishOffer(offer:Offer) {
+    fun publishOffer(offer:Offer, finishLoadListener: finishLoadListener) {
 
        if (auth.uid !=null) {
-           db.child(offer.key ?: "empty").child(auth.uid!!).child("offer").setValue(offer)
+           db.child(offer.key ?: "empty").child(auth.uid!!)
+               .child("offer")
+               .setValue(offer).addOnCompleteListener{
+                if (it.isSuccessful)
+                finishLoadListener.onFinish()
+               }
+
        }
 
     }
@@ -29,6 +36,15 @@ class DbManager {
     fun getAllOffers( readCallback: ReadDataCallback?){
         val query = db.orderByChild(auth.uid + "/offer/price")
         readDataFromDb(query, readCallback)
+    }
+
+    fun deleteoffer(offer: Offer,listener: finishLoadListener){
+        if (offer.key == null || offer.uid == null) return
+        db.child(offer.key).child(offer.uid).removeValue().addOnCompleteListener{
+            if (it.isSuccessful){
+                listener.onFinish()
+            }
+        }
     }
 
   private  fun readDataFromDb(query: Query, readCallback : ReadDataCallback?){ // слушатель изменения данных
@@ -55,4 +71,7 @@ class DbManager {
 interface ReadDataCallback {
 
     fun readData(list:ArrayList<Offer>)
+}
+interface finishLoadListener {
+    fun onFinish()
 }

@@ -17,6 +17,7 @@ import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
+import com.example.barterly.model.finishLoadListener
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
 import com.fxn.utility.PermUtil
@@ -30,9 +31,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     var chooseImageFrag: ImageListFragment? = null
     private val dbmanager = DbManager()
     var editimagepos = 0
+    private var iseditstate = false
     var launcherSeveralSelectImage:ActivityResultLauncher<Intent>? = null
     var launcherSingleSelectImage :ActivityResultLauncher<Intent>? = null
-
+    private var offer:Offer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,15 +44,17 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         checkeditstate()
     }
     private fun checkeditstate(){
-        if (iseditstate()){
-            fillViews(intent.getSerializableExtra(MainActivity.OFFER_DATA) as Offer)
+        iseditstate = iseditstate()
+        if (iseditstate){
+            offer = intent.getSerializableExtra(MainActivity.OFFER_DATA) as Offer
+            if (offer != null) {fillViews(offer!!)}
         }
     }
 
     private fun iseditstate():Boolean{
         return intent.getBooleanExtra(MainActivity.EDIT_STATE,false) //проверяем у интента открывшего true или false
     }
-    private fun fillViews(offer: Offer) = with(binding){
+    private fun fillViews(offer: Offer) = with(binding){ // заполняем оффер при редактировании
         selectCountry.text = offer.country
         selectCity.text = offer.city
         editTitleOffer.setText(offer.title)
@@ -127,12 +131,22 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickPublish(view:View){
-
-
-        dbmanager.publishOffer(filloffer())
-        Log.d("asdvxzcvzxzv","send firebase")
+        val offertemp =  filloffer()
+        if (iseditstate){
+        dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())}
+        else {
+            dbmanager.publishOffer(offertemp,onPublishFinish())
+        }
 
     }
+    private fun onPublishFinish():finishLoadListener{
+        return object: finishLoadListener{
+            override fun onFinish() {
+                finish()
+            }
+        }
+    }
+
     fun filloffer():Offer{
         val offer:Offer
         binding.apply {

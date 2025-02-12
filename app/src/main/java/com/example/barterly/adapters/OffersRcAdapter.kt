@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.act.EditAdsAct
 import com.example.barterly.act.MainActivity
@@ -29,9 +30,11 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
     }
 
     fun updateAdapter(arr: List<Offer>){
+        val difresul = DiffUtil.calculateDiff(DiffUtilHelper(offerArray, arr))
+        difresul.dispatchUpdatesTo(this)
         offerArray.clear()
         offerArray.addAll(arr)
-        notifyDataSetChanged()
+
 
     }
 
@@ -42,8 +45,10 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
             showEditPanel(isOwner(offer))
-
             ibEditOffer.setOnClickListener(onClickEdit(offer))
+            ibDeleteOffer.setOnClickListener{
+                act.ondeleteoffer(offer)
+            }
         }
         private fun onClickEdit(offer: Offer): View.OnClickListener{
             return View.OnClickListener {
@@ -67,5 +72,10 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             }
         }
     }
+}
+
+interface Deleteofferlistener{
+
+    fun ondeleteoffer(offer: Offer)
 
 }

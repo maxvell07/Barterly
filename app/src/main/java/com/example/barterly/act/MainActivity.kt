@@ -14,10 +14,12 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
 import com.example.barterly.accounthelper.GoogleAccConst
+import com.example.barterly.adapters.Deleteofferlistener
 import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
+import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -26,7 +28,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, Deleteofferlistener {
     private lateinit var tvAccount: TextView
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
@@ -79,7 +81,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.mainContent.bnavview.selectedItemId = R.id.home
     }
 
-    private fun initViewModel() {
+    private fun initViewModel() { //отслеживаем изменения в данных и обновляем адаптер
         firebaseViewModel.liveOffersData.observe(this) {
             offeradapter.updateAdapter(it)
         }
@@ -176,5 +178,9 @@ companion object {
     const val OFFER_DATA = "offer_data"
 
 }
+
+    override fun ondeleteoffer(offer: Offer) {
+        firebaseViewModel.deleteoffer(offer)
+    }
 }
 
