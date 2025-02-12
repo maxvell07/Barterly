@@ -1,5 +1,7 @@
 package com.example.barterly.model
 
+import java.io.Serializable
+
 data class Offer(
     val title :String? = null,
     val country:String? = null,
@@ -11,4 +13,4 @@ data class Offer(
     val description:String? = null,
     val key:String? = null,
     val uid:String? = null
-)
+): Serializable

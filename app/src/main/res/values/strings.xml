@@ -3,6 +3,7 @@
     <!-- Menu Drawer Strings -->
     <string name="ad">Объявления</string>
     <string name="ad1">Мои объявления</string>
+    <string name="other">Разное</string>
     <string name="ad2">Аккаунт</string>
     <string name="open">open</string>
     <string name="close">close</string>

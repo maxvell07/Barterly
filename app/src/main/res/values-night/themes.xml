@@ -18,4 +18,8 @@
         <item name="android:textColorSecondary">@color/minimalistic_green</item>
     </style>
 
+    <style name="ToolBarMainStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal"> @color/minimalistic_green</item>
+        <item name="fontFamily">sans-serif-condensed</item>
+    </style>
 </resources>

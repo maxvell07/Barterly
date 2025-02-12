@@ -39,6 +39,27 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        checkeditstate()
+    }
+    private fun checkeditstate(){
+        if (iseditstate()){
+            fillViews(intent.getSerializableExtra(MainActivity.OFFER_DATA) as Offer)
+        }
+    }
+
+    private fun iseditstate():Boolean{
+        return intent.getBooleanExtra(MainActivity.EDIT_STATE,false) //проверяем у интента открывшего true или false
+    }
+    private fun fillViews(offer: Offer) = with(binding){
+        selectCountry.text = offer.country
+        selectCity.text = offer.city
+        editTitleOffer.setText(offer.title)
+        adresseditText.setText(offer.adress)
+        phoneEditText.setText(offer.phone)
+        selectCategory.setText(offer.category)
+        editTextdiscription.setText(offer.description)
+        priceeditrext.setText(offer.price)
+
     }
 
     override fun onRequestPermissionsResult(

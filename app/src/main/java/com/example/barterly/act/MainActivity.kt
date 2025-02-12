@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private val dialoghelper = DialogHelper(this)
     val myAuth = Firebase.auth
     private val firebaseViewModel: FirebaseViewModel by viewModels()
-    val offeradapter = OffersRcAdapter(myAuth)
+    val offeradapter = OffersRcAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,9 +107,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     startActivity(i)
                 }
 
-                R.id.home -> Toast.makeText(this@MainActivity, "Home", Toast.LENGTH_SHORT).show()
-                R.id.my_offers -> Toast.makeText(this@MainActivity, "MyOffers", Toast.LENGTH_SHORT)
-                    .show()
+                R.id.home -> {
+                    firebaseViewModel.loadoffers()
+                    mainContent.toolbar.title = getString(R.string.other)
+                }
+
+                R.id.my_offers -> {
+
+                    firebaseViewModel.loadMyOffers()
+                    mainContent.toolbar.title = getString(R.string.ad1)
+                }
 
                 R.id.favorites -> Toast.makeText(this@MainActivity, "Favorites", Toast.LENGTH_SHORT)
                     .show()
@@ -163,6 +170,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             user.email
         }
     }
+companion object {
 
+    const val EDIT_STATE = "edit_state"
+    const val OFFER_DATA = "offer_data"
+
+}
 }
 

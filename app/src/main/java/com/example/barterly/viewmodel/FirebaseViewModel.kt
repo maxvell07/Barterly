@@ -12,7 +12,15 @@ class FirebaseViewModel : ViewModel() {
     val liveOffersData = MutableLiveData<ArrayList<Offer>>()
 
     fun loadoffers() {
-        dbManager.readDataFromDb(object : ReadDataCallback{
+        dbManager.getAllOffers(object : ReadDataCallback {
+            override fun readData(list: ArrayList<Offer>) {
+                liveOffersData.value = list
+            }
+        })
+    }
+
+    fun loadMyOffers() {
+        dbManager.getMyOffers(object : ReadDataCallback {
             override fun readData(list: ArrayList<Offer>) {
                 liveOffersData.value = list
             }
