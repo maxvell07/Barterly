@@ -13,6 +13,8 @@ data class Offer(
     val description:String? = null,
     val key:String? = null,
     val uid:String? = null,
+    var isFav:Boolean = false,
+    var favCounter: String = "0",
 
     var viewcounter:String = "0",
     var emailcounter:String = "0",

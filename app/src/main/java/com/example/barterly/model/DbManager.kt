@@ -37,8 +37,36 @@ class DbManager {
         }
     }
 
+    fun onFavClick(offer: Offer,finishLoadListener: finishLoadListener){
+        if (offer.isFav){
+            removefromFavs(offer,finishLoadListener)
+        }else{
+            addtoFavs(offer,finishLoadListener)
+        }
+    }
+
+    private fun addtoFavs(offer: Offer,listener: finishLoadListener){
+        offer.key?.let { //(запись) создаем узел favs и записываем в него uid пользователя
+            offer.uid?.let { uid -> db.child(it).child(FAVS_NOTE).child(uid).setValue(uid).addOnCompleteListener{
+                if (it.isSuccessful) listener.onFinish()
+            } }
+        }
+    }
+    private fun removefromFavs(offer: Offer,listener: finishLoadListener){
+        offer.key?.let { // создаем узел favs и записываем в него uid пользователя
+            offer.uid?.let { uid -> db.child(it).child(FAVS_NOTE).child(uid).removeValue().addOnCompleteListener{
+                if (it.isSuccessful) listener.onFinish()
+            } }
+        }
+    }
+
     fun getMyOffers( readCallback: ReadDataCallback?){
         val query = db.orderByChild(auth.uid + "/offer/uid").equalTo(auth.uid)// путь для фильтрации своих оферов
+        readDataFromDb(query, readCallback)
+    }
+
+    fun getMyFavs( readCallback: ReadDataCallback?){
+        val query = db.orderByChild( "/favs/${auth.uid}").equalTo(auth.uid)// путь для фильтрации своих оферов
         readDataFromDb(query, readCallback)
     }
 
@@ -71,11 +99,14 @@ class DbManager {
                         if(offer == null) offer = it.child(OFFER_NOTE).getValue(Offer::class.java)
                     }
                     var infoItem = item.child(INFO_NOTE).getValue(InfoItem::class.java)
-
+                    val favsCounter = item.child(FAVS_NOTE).childrenCount.toString()
+                    val isFavs = auth.uid?.let { item.child(FAVS_NOTE).child(it).getValue(String::class.java) }
                     offer?.apply {
+                        isFav = isFavs != null
                         viewcounter = infoItem?.viewsCounter ?: "0"
                         emailcounter = infoItem?.emailsCounter ?: "0"
                          callscounter= infoItem?.callsCounter ?: "0"
+                        favCounter =favsCounter
                     }
                     if(offer != null) offerarray.add(offer!!)
                 }
@@ -91,6 +122,7 @@ class DbManager {
         const val OFFER_NOTE = "offer"
         const val MAIN_NOTE = "main"
         const val INFO_NOTE = "info"
+        const val FAVS_NOTE = "favs"
     }
 }
 

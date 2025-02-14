@@ -1,5 +1,6 @@
 package com.example.barterly.viewmodel
 
+import android.webkit.WebView.FindListener
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.barterly.model.DbManager
@@ -17,6 +18,15 @@ class FirebaseViewModel : ViewModel() {
             override fun readData(list: ArrayList<Offer>) {
                 liveOffersData.value = list
             }
+        })
+    }
+
+    fun loadMyFavs(){
+        dbManager.getMyFavs(object :ReadDataCallback{
+            override fun readData(list: ArrayList<Offer>) {
+                liveOffersData.value = list
+            }
+
         })
     }
 
@@ -40,5 +50,22 @@ class FirebaseViewModel : ViewModel() {
 
     fun offerViewed(offer: Offer){
         dbManager.offerViewed(offer)
+    }
+    fun onFavClick(offer: Offer){
+        dbManager.onFavClick(offer, object :finishLoadListener{
+            override fun onFinish() {
+                val updatedlist = liveOffersData.value
+                val pos = updatedlist?.indexOf(offer)
+                if (pos != -1){
+                    pos?.let {
+                        val favCounter = if(offer.isFav) offer.favCounter.toInt() - 1 else offer.favCounter.toInt() + 1
+                        updatedlist[pos] = updatedlist[pos].copy(isFav = !offer.isFav, favCounter = favCounter.toString())
+                    }
+                }
+                liveOffersData.postValue(updatedlist)
+            }
+
+        })
+
     }
 }

@@ -41,5 +41,6 @@
     <string name="adress_hint">*Адресс</string>
     <string name="adress">Адресс</string>
     <string name="publish">Опубликовать</string>
+    <string name="offer_my_favs">Избраное</string>
 
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -20,6 +21,7 @@ import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.model.Offer
+import com.example.barterly.model.finishLoadListener
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -84,6 +86,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     private fun initViewModel() { //отслеживаем изменения в данных и обновляем адаптер
         firebaseViewModel.liveOffersData.observe(this) {
             offeradapter.updateAdapter(it)
+            binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) {
+                View.VISIBLE } else { View.GONE}
         }
     }
 
@@ -120,8 +124,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                     mainContent.toolbar.title = getString(R.string.ad1)
                 }
 
-                R.id.favorites -> Toast.makeText(this@MainActivity, "Favorites", Toast.LENGTH_SHORT)
-                    .show()
+                R.id.favorites ->{
+                    firebaseViewModel.loadMyFavs()
+                    mainContent.toolbar.title = getString(R.string.offer_my_favs)
+                }
             }
             true
         }
@@ -179,9 +185,14 @@ companion object {
 
 }
 
+    override fun onFavClick(offer: Offer) {
+        firebaseViewModel.onFavClick(offer)
+    }
+
     override fun onOfferViewed(offer: Offer) {
         firebaseViewModel.offerViewed(offer)
     }
+
 
     override fun ondeleteoffer(offer: Offer) {
         firebaseViewModel.deleteoffer(offer)

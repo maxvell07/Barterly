@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.barterly.R
 import com.example.barterly.act.EditAdsAct
 import com.example.barterly.act.MainActivity
 import com.example.barterly.model.Offer
@@ -44,14 +45,23 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
             tvViewCounter.text = offer.viewcounter
+            tvFav.text = offer.favCounter
             showEditPanel(isOwner(offer))
             ibEditOffer.setOnClickListener(onClickEdit(offer))
+            if (offer.isFav){
+                ibFav.setImageResource(R.drawable.ic_favorite_pressed)
+            }else {
+                ibFav.setImageResource(R.drawable.ic_favorite_normal)
+            }
             ibDeleteOffer.setOnClickListener{
                 act.ondeleteoffer(offer)
             }
             itemView.setOnClickListener{
                 act.onOfferViewed(offer)
                 Toast.makeText(act,"click",Toast.LENGTH_SHORT).show()
+            }
+            ibFav.setOnClickListener{
+                act.onFavClick(offer)
             }
         }
         private fun onClickEdit(offer: Offer): View.OnClickListener{
@@ -80,6 +90,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
 
 interface offerlistener{
 
+    fun onFavClick(offer: Offer)
     fun onOfferViewed(offer: Offer)
 
     fun ondeleteoffer(offer: Offer)
