@@ -12,5 +12,10 @@ data class Offer(
     val price:String? = null,
     val description:String? = null,
     val key:String? = null,
-    val uid:String? = null
+    val uid:String? = null,
+
+    var viewcounter:String = "0",
+    var emailcounter:String = "0",
+    var callscounter:String = "0"
+
 ): Serializable

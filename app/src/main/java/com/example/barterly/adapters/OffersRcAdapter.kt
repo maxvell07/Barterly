@@ -4,13 +4,13 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.act.EditAdsAct
 import com.example.barterly.act.MainActivity
 import com.example.barterly.model.Offer
 import com.example.barterly.databinding.CardItemBinding
-import com.google.firebase.auth.FirebaseAuth
 
 class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
     val offerArray = ArrayList<Offer>()
@@ -35,7 +35,6 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
         offerArray.clear()
         offerArray.addAll(arr)
 
-
     }
 
     class OfferViewHolder(val binding: CardItemBinding,val act: MainActivity) :RecyclerView.ViewHolder(binding.root) {
@@ -44,10 +43,15 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             cardtitle.text = offer.title
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
+            tvViewCounter.text = offer.viewcounter
             showEditPanel(isOwner(offer))
             ibEditOffer.setOnClickListener(onClickEdit(offer))
             ibDeleteOffer.setOnClickListener{
                 act.ondeleteoffer(offer)
+            }
+            itemView.setOnClickListener{
+                act.onOfferViewed(offer)
+                Toast.makeText(act,"click",Toast.LENGTH_SHORT).show()
             }
         }
         private fun onClickEdit(offer: Offer): View.OnClickListener{
@@ -74,7 +78,9 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
     }
 }
 
-interface Deleteofferlistener{
+interface offerlistener{
+
+    fun onOfferViewed(offer: Offer)
 
     fun ondeleteoffer(offer: Offer)
 

@@ -37,4 +37,8 @@ class FirebaseViewModel : ViewModel() {
 
         })
     }
+
+    fun offerViewed(offer: Offer){
+        dbManager.offerViewed(offer)
+    }
 }

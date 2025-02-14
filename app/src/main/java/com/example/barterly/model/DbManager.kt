@@ -1,6 +1,5 @@
 package com.example.barterly.model
 
-import android.content.Context
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,21 +10,31 @@ import com.google.firebase.ktx.Firebase
 
 class DbManager {
 
-    val db =  Firebase.database.getReference("main")
+    val db =  Firebase.database.getReference(MAIN_NOTE)
     val auth = Firebase.auth
 
     fun publishOffer(offer:Offer, finishLoadListener: finishLoadListener) {
 
        if (auth.uid !=null) {
            db.child(offer.key ?: "empty").child(auth.uid!!)
-               .child("offer")
+               .child(OFFER_NOTE)
                .setValue(offer).addOnCompleteListener{
-                if (it.isSuccessful)
                 finishLoadListener.onFinish()
-               }
+               } }
+    }
 
-       }
+    fun offerViewed(offer: Offer){
+        var counter = offer.viewcounter.toInt() + 1
 
+        if(auth.uid != null){
+            db.child(offer.key ?: "empty")
+                .child(INFO_NOTE)
+                .setValue(InfoItem(
+                    viewsCounter = counter.toString(),
+                    emailsCounter = offer.emailcounter,
+                    callsCounter = offer.callscounter
+                ))
+        }
     }
 
     fun getMyOffers( readCallback: ReadDataCallback?){
@@ -51,12 +60,24 @@ class DbManager {
 
         query.addListenerForSingleValueEvent(object :ValueEventListener{
 
-            override fun onDataChange(snapshot: DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) { //snapshot все объявления по пути main
                 val offerarray =  ArrayList<Offer>()
 
                 for (item in snapshot.children){
-                    val offer = item.children.iterator().next().child("offer").getValue(Offer::class.java)//получаем данные в виде объекта
-                    if (offer!=null) offerarray.add(offer)
+
+                    var offer:Offer? = null
+
+                    item.children.forEach {
+                        if(offer == null) offer = it.child(OFFER_NOTE).getValue(Offer::class.java)
+                    }
+                    var infoItem = item.child(INFO_NOTE).getValue(InfoItem::class.java)
+
+                    offer?.apply {
+                        viewcounter = infoItem?.viewsCounter ?: "0"
+                        emailcounter = infoItem?.emailsCounter ?: "0"
+                         callscounter= infoItem?.callsCounter ?: "0"
+                    }
+                    if(offer != null) offerarray.add(offer!!)
                 }
                 readCallback?.readData(offerarray)
             }
@@ -66,6 +87,11 @@ class DbManager {
         })
     }
 
+    companion object {
+        const val OFFER_NOTE = "offer"
+        const val MAIN_NOTE = "main"
+        const val INFO_NOTE = "info"
+    }
 }
 
 interface ReadDataCallback {

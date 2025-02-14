@@ -14,7 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
 import com.example.barterly.accounthelper.GoogleAccConst
-import com.example.barterly.adapters.Deleteofferlistener
+import com.example.barterly.adapters.offerlistener
 import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, Deleteofferlistener {
+class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offerlistener {
     private lateinit var tvAccount: TextView
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
@@ -178,6 +178,10 @@ companion object {
     const val OFFER_DATA = "offer_data"
 
 }
+
+    override fun onOfferViewed(offer: Offer) {
+        firebaseViewModel.offerViewed(offer)
+    }
 
     override fun ondeleteoffer(offer: Offer) {
         firebaseViewModel.deleteoffer(offer)
