@@ -61,7 +61,11 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
                 Toast.makeText(act,"click",Toast.LENGTH_SHORT).show()
             }
             ibFav.setOnClickListener{
+                if (act.myAuth.currentUser?.isAnonymous == true){
+                    Toast.makeText(act,"Зарегистрируйтесь",Toast.LENGTH_SHORT).show()
+                }else{
                 act.onFavClick(offer)
+                }
             }
         }
         private fun onClickEdit(offer: Offer): View.OnClickListener{

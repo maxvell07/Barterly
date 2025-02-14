@@ -15,6 +15,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
 import com.example.barterly.accounthelper.GoogleAccConst
+import com.example.barterly.accounthelper.listener
 import com.example.barterly.adapters.offerlistener
 import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
@@ -160,6 +161,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             }
 
             R.id.id_sign_out -> {
+                if (myAuth.currentUser?.isAnonymous == true){
+                    binding.drawerid.closeDrawer(GravityCompat.START)
+                    return true
+                }
                 uiUpdate(null)
                 myAuth.signOut()
                 dialoghelper.accHelper.signOutGoogle()
@@ -172,10 +177,15 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     fun uiUpdate(user: FirebaseUser?) {
 
-        tvAccount.text = if (user == null) {
-            resources.getString(R.string.not_reg_email_title)
+        if (user == null) {
+           dialoghelper.accHelper.signInAnonymously(object :listener{
+               override fun onCompete() {
+                   tvAccount.text = "Guest"
+               }
+
+           })
         } else {
-            user.email
+            tvAccount.text = user.email
         }
     }
 companion object {
