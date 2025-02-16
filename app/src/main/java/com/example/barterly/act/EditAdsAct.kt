@@ -1,10 +1,8 @@
 package com.example.barterly.act
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -20,7 +18,6 @@ import com.example.barterly.fragment.ImageListFragment
 import com.example.barterly.model.finishLoadListener
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
-import com.fxn.utility.PermUtil
 
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
@@ -65,25 +62,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         priceeditrext.setText(offer.price)
 
     }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    ImagePiker.
-                } else {
-                    Toast.makeText(this, "Approve perm", Toast.LENGTH_LONG)
-                }
-                return
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
 
     private fun init() {
 
@@ -141,7 +119,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
     private fun onPublishFinish():finishLoadListener{
         return object: finishLoadListener{
-            override fun onFinish() {
+            override fun onFinish(Bol:Boolean) {
                 finish()
             }
         }

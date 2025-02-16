@@ -19,7 +19,7 @@ class DbManager {
            db.child(offer.key ?: "empty").child(auth.uid!!)
                .child(OFFER_NOTE)
                .setValue(offer).addOnCompleteListener{
-                finishLoadListener.onFinish()
+                finishLoadListener.onFinish(true)
                } }
     }
 
@@ -45,17 +45,19 @@ class DbManager {
         }
     }
 
-    private fun addtoFavs(offer: Offer,listener: finishLoadListener){
-        offer.key?.let { //(запись) создаем узел favs и записываем в него uid пользователя
-            offer.uid?.let { uid -> db.child(it).child(FAVS_NOTE).child(uid).setValue(uid).addOnCompleteListener{
-                if (it.isSuccessful) listener.onFinish()
-            } }
+    private fun addtoFavs(offer: Offer, listener: finishLoadListener) {
+        offer.key?.let { key ->
+            auth.uid?.let { uid ->
+                db.child(key).child(FAVS_NOTE).child(uid).setValue(uid).addOnCompleteListener {
+                    if (it.isSuccessful) listener.onFinish(true)
+                }
+            }
         }
     }
     private fun removefromFavs(offer: Offer,listener: finishLoadListener){
         offer.key?.let { // создаем узел favs и записываем в него uid пользователя
             offer.uid?.let { uid -> db.child(it).child(FAVS_NOTE).child(uid).removeValue().addOnCompleteListener{
-                if (it.isSuccessful) listener.onFinish()
+                if (it.isSuccessful) listener.onFinish(true)
             } }
         }
     }
@@ -79,7 +81,7 @@ class DbManager {
         if (offer.key == null || offer.uid == null) return
         db.child(offer.key).child(offer.uid).removeValue().addOnCompleteListener{
             if (it.isSuccessful){
-                listener.onFinish()
+                listener.onFinish(true)
             }
         }
     }
@@ -131,5 +133,5 @@ interface ReadDataCallback {
     fun readData(list:ArrayList<Offer>)
 }
 interface finishLoadListener {
-    fun onFinish()
+    fun onFinish(bol:Boolean)
 }

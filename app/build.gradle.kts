@@ -43,15 +43,12 @@ android {
 
 dependencies {
 
-    implementation ("androidx.recyclerview:recyclerview:1.3.1")
-    implementation ("com.google.android.material:material:1.2.0")
+    implementation ("androidx.recyclerview:recyclerview:1.4.0")
+    implementation ("com.google.android.material:material:1.12.0")
     implementation (libs.play.services.auth)
     implementation(libs.androidx.core.ktx)
-    implementation ("com.otaliastudios:cameraview:2.7.1")
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
-    implementation ("com.squareup.picasso:picasso:2.8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
+    implementation (libs.picasso)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation (libs.firebase.bom)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -60,7 +57,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
-    implementation(files("sampledata/pix.aar"))
+    implementation  ("io.ak1.pix:piximagepicker:1.6.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

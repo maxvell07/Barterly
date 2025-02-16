@@ -39,7 +39,7 @@ class FirebaseViewModel : ViewModel() {
     }
     fun deleteoffer(offer: Offer){
         dbManager.deleteoffer(offer,object :finishLoadListener{
-            override fun onFinish() {
+            override fun onFinish(bol:Boolean) {
                 val updatedlist = liveOffersData.value
                 updatedlist?.remove(offer)
                 liveOffersData.postValue(updatedlist)
@@ -53,7 +53,7 @@ class FirebaseViewModel : ViewModel() {
     }
     fun onFavClick(offer: Offer){
         dbManager.onFavClick(offer, object :finishLoadListener{
-            override fun onFinish() {
+            override fun onFinish(bol:Boolean) {
                 val updatedlist = liveOffersData.value
                 val pos = updatedlist?.indexOf(offer)
                 if (pos != -1){
