@@ -1,12 +1,10 @@
 package com.example.barterly.act
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
@@ -97,7 +95,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun onClickGetImages(view: View) {
         if (imageViewAdapter.array.size == 0){
 
-            ImagePiker.launcher(this,3)
+            ImagePiker.pickSeveralImages(this,3)
 
         } else {
             openChoosenImageFrag(null)
@@ -149,7 +147,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun openChoosenImageFrag(newlist:ArrayList<Uri>?){
-        chooseImageFrag = ImageListFragment(this, newlist)
+        chooseImageFrag = ImageListFragment(this)
+        if (newlist != null) chooseImageFrag?.resizeSelectedImages(newlist,true,this)
         binding.scrolview.visibility = View.GONE
         supportFragmentManager.beginTransaction()
             .replace(R.id.placeholder, chooseImageFrag!!)

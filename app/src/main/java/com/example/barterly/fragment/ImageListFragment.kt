@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newlist: ArrayList<Uri>?) : Fragment(),AdapterDeleteCallback {
+class ImageListFragment(val fragClose:FragmentCloseInterface) : Fragment(),AdapterDeleteCallback {
 
     lateinit var binding: ListImageFragBinding
     val adapter = SelectedImageRcvAdapter(this)
@@ -50,12 +50,8 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         touchHelper.attachToRecyclerView(binding.rcvSelectImage)
         binding.rcvSelectImage.layoutManager = LinearLayoutManager(activity)
         binding.rcvSelectImage.adapter =adapter
-
-        if (newlist != null) resizeSelectedImages(newlist,true)
-
-
-
     }
+
     fun updateAdapterFromEdit(bitmaplist: List<Bitmap>){
         adapter.updateAdapter(bitmaplist,true)
     }
@@ -69,11 +65,12 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         fragClose.onFragClose(adapter.list)
         job?.cancel()
     }
-    private fun resizeSelectedImages(newlist:ArrayList<Uri>,needclear :Boolean){
+
+    fun resizeSelectedImages(newlist:ArrayList<Uri>,needclear :Boolean,activity: Activity){
 
         job = CoroutineScope(Dispatchers.Main).launch {
-            val dialog = ProgressDialog.createLoadingDialog(activity as Activity)
-            val bitmaplist = ImageManager.imageResize(newlist, activity as Activity)
+            val dialog = ProgressDialog.createLoadingDialog(activity)
+            val bitmaplist = ImageManager.imageResize(newlist, activity)
             dialog.dismiss()
             adapter.updateAdapter(bitmaplist,needclear)
             if (adapter.list.size == 3) additem?.isVisible = false
@@ -84,6 +81,7 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         binding.toolbarfrag.inflateMenu(R.menu.menu_imagefrag)
         val deleteitem = binding.toolbarfrag.menu.findItem(R.id.delete_image)
         additem = binding.toolbarfrag.menu.findItem(R.id.add_image)
+        if (adapter.list.size == 3) additem?.isVisible = false
 
         binding.toolbarfrag.setNavigationOnClickListener{
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
@@ -96,15 +94,14 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         }
         additem?.setOnMenuItemClickListener {
             val imageCounter = ImagePiker.MAX_IMAGE_COUNT - adapter.list.size
-            if (adapter.itemCount < 3) {
-                ImagePiker.launcher(activity as EditAdsAct,imageCounter )
-            }
-                true
+            ImagePiker.pickImages(activity as EditAdsAct,imageCounter )
+            true
         }
 
     }
-    fun updateAdapter(newlist:ArrayList<Uri>){
-        resizeSelectedImages(newlist,false)
+    fun updateAdapter(newlist:ArrayList<Uri>,activity:Activity){
+
+        resizeSelectedImages(newlist,false,activity)
 
     }
     fun selectsingleImage(uri:Uri,pos:Int){
