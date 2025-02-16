@@ -2,6 +2,7 @@ package com.example.barterly.fragment
 
 import android.app.Activity
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -26,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newlist: ArrayList<String>?) : Fragment(),AdapterDeleteCallback {
+class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newlist: ArrayList<Uri>?) : Fragment(),AdapterDeleteCallback {
 
     lateinit var binding: ListImageFragBinding
     val adapter = SelectedImageRcvAdapter(this)
@@ -68,11 +69,11 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         fragClose.onFragClose(adapter.list)
         job?.cancel()
     }
-    private fun resizeSelectedImages(newlist:ArrayList<String>,needclear :Boolean){
+    private fun resizeSelectedImages(newlist:ArrayList<Uri>,needclear :Boolean){
 
         job = CoroutineScope(Dispatchers.Main).launch {
             val dialog = ProgressDialog.createLoadingDialog(activity as Activity)
-            val bitmaplist = ImageManager.imageResize(newlist)
+            val bitmaplist = ImageManager.imageResize(newlist, activity as Activity)
             dialog.dismiss()
             adapter.updateAdapter(bitmaplist,needclear)
             if (adapter.list.size == 3) additem?.isVisible = false
@@ -96,22 +97,22 @@ class ImageListFragment(val fragClose:FragmentCloseInterface, private  val newli
         additem?.setOnMenuItemClickListener {
             val imageCounter = ImagePiker.MAX_IMAGE_COUNT - adapter.list.size
             if (adapter.itemCount < 3) {
-                ImagePiker.launcher(activity as EditAdsAct,(activity as EditAdsAct).launcherSeveralSelectImage,imageCounter )
+                ImagePiker.launcher(activity as EditAdsAct,imageCounter )
             }
                 true
         }
 
     }
-    fun updateAdapter(newlist:ArrayList<String>){
+    fun updateAdapter(newlist:ArrayList<Uri>){
         resizeSelectedImages(newlist,false)
 
     }
-    fun selectsingleImage(uri:String,pos:Int){
+    fun selectsingleImage(uri:Uri,pos:Int){
 
         val loadbar = binding.rcvSelectImage[pos].findViewById<ProgressBar>(R.id.loadbarimage)
         job = CoroutineScope(Dispatchers.Main).launch {
             loadbar.visibility = View.VISIBLE
-            val bitmaplist = ImageManager.imageResize(listOf(uri))
+            val bitmaplist = ImageManager.imageResize(arrayListOf(uri),activity as Activity)
             loadbar.visibility = View.GONE
             adapter.list[pos] = bitmaplist[0]
             adapter.notifyItemChanged(pos)

@@ -2,6 +2,7 @@ package com.example.barterly.act
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -29,8 +30,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private val dbmanager = DbManager()
     var editimagepos = 0
     private var iseditstate = false
-    var launcherSeveralSelectImage:ActivityResultLauncher<Intent>? = null
-    var launcherSingleSelectImage :ActivityResultLauncher<Intent>? = null
     private var offer:Offer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +66,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
         imageViewAdapter = ImageAdapter()
         binding.vpImages.adapter = imageViewAdapter
-        launcherSeveralSelectImage = ImagePiker.getLauncherForSeveralImages(this)
-        launcherSingleSelectImage = ImagePiker.getLauncherForSingleImage(this)
     }
 
     //OnClicks
@@ -100,7 +97,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun onClickGetImages(view: View) {
         if (imageViewAdapter.array.size == 0){
 
-            ImagePiker.launcher(this,launcherSeveralSelectImage,3)
+            ImagePiker.launcher(this,3)
 
         } else {
             openChoosenImageFrag(null)
@@ -151,7 +148,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFrag = null
     }
 
-    fun openChoosenImageFrag(newlist:ArrayList<String>?){
+    fun openChoosenImageFrag(newlist:ArrayList<Uri>?){
         chooseImageFrag = ImageListFragment(this, newlist)
         binding.scrolview.visibility = View.GONE
         supportFragmentManager.beginTransaction()

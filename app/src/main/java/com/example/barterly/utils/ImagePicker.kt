@@ -2,12 +2,11 @@ package com.example.barterly.utils
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.util.Log
+import android.net.Uri
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import com.example.barterly.R
 import com.example.barterly.act.EditAdsAct
 import io.ak1.pix.helpers.PixEventCallback
@@ -34,58 +33,47 @@ object ImagePiker {
     return options
     }
 
-    fun launcher(
-        context: EditAdsAct,
-        launcher: ActivityResultLauncher<Intent>?,
-        imageCounter: Int
-    ) {
+    fun launcher(context: EditAdsAct, imageCounter: Int) {
         context.addPixToActivity(R.id.placeholder, getOptions(imageCounter)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
-                    val flist = context.supportFragmentManager.fragments
-                    flist.forEach{
-                        if (it.isVisible) context.supportFragmentManager.beginTransaction().remove(it).commit()
-                    }
+                    getSeveralSelectedImages(context,result.data)
+                    closePixFragment(context)
                 }
                     PixEventCallback.Status.BACK_PRESSED -> {}// back pressed called
             }
         }
     }
 
-    fun getLauncherForSeveralImages(context: EditAdsAct): ActivityResultLauncher<Intent> { // добавление картинки(ок) в эдитактивити
-//
-        return context.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//            result: ActivityResult ->
-//            if (result.resultCode == RESULT_OK) {
+    private fun closePixFragment(context: EditAdsAct){
+        val flist = context.supportFragmentManager.fragments
+        flist.forEach{
+            if (it.isVisible) context.supportFragmentManager.beginTransaction().remove(it).commit()
         }
-//
-//                if (result.data != null) {
-//
-//                    val valueReturn = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-//
-//                    if (valueReturn?.size!! > 1 && context.chooseImageFrag == null) {
-//
-//                        context.openChoosenImageFrag(valueReturn)
-//
-//                    } else if (valueReturn.size == 1 && context.chooseImageFrag == null) {
-//
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            context.binding.vploadbar.visibility = View.VISIBLE
-//                            val bitmaparr =
-//                                ImageManager.imageResize(valueReturn) as ArrayList<Bitmap>
-//                            context.binding.vploadbar.visibility = View.GONE
-//                            context.imageViewAdapter.update(bitmaparr)
-//                        }
-//
-//                    } else if (context.chooseImageFrag != null) {
-//
-//                        context.chooseImageFrag?.updateAdapter(valueReturn)
-//
-//                    }
-//                }
-//            }
-//        }
     }
+
+    fun getSeveralSelectedImages(context: EditAdsAct, uris:List<Uri>) { // добавление картинки(ок) в эдитактивити
+
+                    if (uris.size > 1 && context.chooseImageFrag == null) {
+
+                        context.openChoosenImageFrag(uris as ArrayList<Uri>)
+
+                    } else if (uris.size == 1 && context.chooseImageFrag == null) {
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            context.binding.vploadbar.visibility = View.VISIBLE
+                            val bitmaparr =
+                                ImageManager.imageResize(uris as ArrayList<Uri>,context) as ArrayList<Bitmap>
+                            context.binding.vploadbar.visibility = View.GONE
+                            context.imageViewAdapter.update(bitmaparr)
+                        }
+
+                    } else if (context.chooseImageFrag != null) {
+
+                        context.chooseImageFrag?.updateAdapter(uris as ArrayList<Uri>)
+
+                    }
+            }
 
     fun getLauncherForSingleImage(context: EditAdsAct): ActivityResultLauncher<Intent> { // редактировать выбранную картинку в фрагменте
         return context.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

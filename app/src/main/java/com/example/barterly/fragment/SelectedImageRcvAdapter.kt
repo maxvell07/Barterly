@@ -48,7 +48,7 @@ class SelectedImageRcvAdapter(val adapterDeleteCallback: AdapterDeleteCallback) 
         fun setData(item:Bitmap){
 
             viewBinding.btEditImage.setOnClickListener{
-                ImagePiker.launcher(context as EditAdsAct, context.launcherSingleSelectImage, 1)
+                ImagePiker.launcher(context as EditAdsAct,  1)
                 context.editimagepos =adapterPosition
 
             }
