@@ -88,10 +88,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         firebaseViewModel.liveOffersData.observe(this) {
             offeradapter.updateAdapter(it)
             binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+                View.VISIBLE } else { View.GONE}
         }
     }
 
@@ -128,7 +125,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                     mainContent.toolbar.title = getString(R.string.ad1)
                 }
 
-                R.id.favorites -> {
+                R.id.favorites ->{
                     firebaseViewModel.loadMyFavs()
                     mainContent.toolbar.title = getString(R.string.offer_my_favs)
                 }
@@ -164,7 +161,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             }
 
             R.id.id_sign_out -> {
-                if (myAuth.currentUser?.isAnonymous == true) {
+                if (myAuth.currentUser?.isAnonymous == true){
                     binding.drawerid.closeDrawer(GravityCompat.START)
                     return true
                 }
@@ -181,23 +178,22 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     fun uiUpdate(user: FirebaseUser?) {
 
         if (user == null) {
-            dialoghelper.accHelper.signInAnonymously(object : listener {
-                override fun onCompete() {
-                    tvAccount.text = "Guest"
-                }
+           dialoghelper.accHelper.signInAnonymously(object :listener{
+               override fun onCompete() {
+                   tvAccount.text = "Guest"
+               }
 
-            })
+           })
         } else {
             tvAccount.text = user.email
         }
     }
+companion object {
 
-    companion object {
+    const val EDIT_STATE = "edit_state"
+    const val OFFER_DATA = "offer_data"
 
-        const val EDIT_STATE = "edit_state"
-        const val OFFER_DATA = "offer_data"
-
-    }
+}
 
     override fun onFavClick(offer: Offer) {
         firebaseViewModel.onFavClick(offer)

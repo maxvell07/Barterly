@@ -11,7 +11,6 @@ data class Offer(
     val category:String? = null,
     val price:String? = null,
     val description:String? = null,
-    val mainImage:String? = null,
     val key:String? = null,
     val uid:String? = null,
     var isFav:Boolean = false,
