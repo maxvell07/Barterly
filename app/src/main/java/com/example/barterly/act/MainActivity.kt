@@ -8,11 +8,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.accounthelper.GoogleAccConst
 import com.example.barterly.accounthelper.listener
@@ -22,7 +22,8 @@ import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
 import com.example.barterly.model.Offer
-import com.example.barterly.model.finishLoadListener
+import com.example.barterly.model.OfferResult
+import com.example.barterly.utils.Mapper.mapOfferToOfferResult
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
     val myAuth = Firebase.auth
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private lateinit var firebaseViewModel: FirebaseViewModel
     val offeradapter = OffersRcAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
         initRcView()
         initViewModel()
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                 View.GONE
             }
         }
+
     }
 
 
@@ -199,16 +202,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     }
 
-    override fun onFavClick(offer: Offer) {
+    override fun onFavClick(offer: OfferResult) {
         firebaseViewModel.onFavClick(offer)
     }
 
-    override fun onOfferViewed(offer: Offer) {
+    override fun onOfferViewed(offer: OfferResult) {
         firebaseViewModel.offerViewed(offer)
     }
 
 
-    override fun ondeleteoffer(offer: Offer) {
+    override fun ondeleteoffer(offer: OfferResult) {
         firebaseViewModel.deleteoffer(offer)
     }
 }

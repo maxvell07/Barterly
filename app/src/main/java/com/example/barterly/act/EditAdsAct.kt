@@ -30,6 +30,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private var iseditstate = false
     private var offer:Offer? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
@@ -106,10 +107,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun onClickPublish(view:View){
         val offertemp =  filloffer()
         if (iseditstate){
-        dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())}
+        dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())
+
+        }
         else {
             dbmanager.publishOffer(offertemp,onPublishFinish())
         }
+
+        // отправка на сервер картинок
 
     }
     private fun onPublishFinish():finishLoadListener{
@@ -132,9 +137,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 binding.selectCategory.text.toString(),
                 binding.priceeditrext.text.toString(),
                 binding.editTextdiscription.text.toString(),
-                dbmanager.db.push().key,
-                dbmanager.auth.uid// генерируем уникальный ключ офера
-
+                dbmanager.db.push().key,// генерируем уникальный ключ офера
+                dbmanager.auth.uid
             )
         }
         return offer
@@ -153,5 +157,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         supportFragmentManager.beginTransaction()
             .replace(R.id.placeholder, chooseImageFrag!!)
             .commit()
+    }
+    private fun loadpictures(adapter: ImageAdapter){
+
     }
 }

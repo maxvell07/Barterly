@@ -1,5 +1,7 @@
 package com.example.barterly.model
 
+import com.example.barterly.service.FileRepository
+import com.example.barterly.service.RetrofitClient
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -14,13 +16,13 @@ class DbManager {
     val auth = Firebase.auth
 
     fun publishOffer(offer:Offer, finishLoadListener: finishLoadListener) {
-
        if (auth.uid !=null) {
            db.child(offer.key ?: "empty").child(auth.uid!!)
                .child(OFFER_NOTE)
                .setValue(offer).addOnCompleteListener{
                 finishLoadListener.onFinish(true)
-               } }
+               }
+       }
     }
 
     fun offerViewed(offer: Offer){

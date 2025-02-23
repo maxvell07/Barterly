@@ -1,6 +1,7 @@
 package com.example.barterly.adapters
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,11 @@ import com.example.barterly.act.EditAdsAct
 import com.example.barterly.act.MainActivity
 import com.example.barterly.model.Offer
 import com.example.barterly.databinding.CardItemBinding
+import com.example.barterly.model.OfferResult
+import com.example.barterly.utils.Mapper.mapOfferResultToOffer
 
 class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
-    val offerArray = ArrayList<Offer>()
+    val offerArray = ArrayList<OfferResult>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
@@ -30,7 +33,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
         holder.setData(offerArray[position])
     }
 
-    fun updateAdapter(arr: List<Offer>){
+    fun updateAdapter(arr: List<OfferResult>){
         val difresul = DiffUtil.calculateDiff(DiffUtilHelper(offerArray, arr))
         difresul.dispatchUpdatesTo(this)
         offerArray.clear()
@@ -40,7 +43,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
 
     class OfferViewHolder(val binding: CardItemBinding,val act: MainActivity) :RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(offer:Offer) = with(binding){
+        fun setData(offer: OfferResult) = with(binding){
             cardtitle.text = offer.title
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
@@ -48,6 +51,10 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             tvFav.text = offer.favCounter
             showEditPanel(isOwner(offer))
             ibEditOffer.setOnClickListener(onClickEdit(offer))
+            offer.img1?.let {
+                mainimage.setImageBitmap(it)  // Устанавливаем изображение в ImageView
+                Log.d("image", it.toString())
+            }
             if (offer.isFav){
                 ibFav.setImageResource(R.drawable.ic_favorite_pressed)
             }else {
@@ -68,7 +75,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
                 }
             }
         }
-        private fun onClickEdit(offer: Offer): View.OnClickListener{
+        private fun onClickEdit(offer: OfferResult): View.OnClickListener{
             return View.OnClickListener {
                 val i = Intent(act, EditAdsAct ::class.java).apply {
                     putExtra(MainActivity.EDIT_STATE,true)
@@ -79,7 +86,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             }
         }
 
-        private fun isOwner(offer:Offer):Boolean{
+        private fun isOwner(offer: OfferResult):Boolean{
             return offer.uid == act.myAuth.uid
         }
         private fun showEditPanel(isOwner:Boolean){
@@ -94,9 +101,9 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
 
 interface offerlistener{
 
-    fun onFavClick(offer: Offer)
-    fun onOfferViewed(offer: Offer)
+    fun onFavClick(offer: OfferResult)
+    fun onOfferViewed(offer: OfferResult)
 
-    fun ondeleteoffer(offer: Offer)
+    fun ondeleteoffer(offer: OfferResult)
 
 }
