@@ -79,7 +79,8 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             return View.OnClickListener {
                 val i = Intent(act, EditAdsAct ::class.java).apply {
                     putExtra(MainActivity.EDIT_STATE,true)
-                    putExtra(MainActivity.OFFER_DATA,offer)
+//                    putExtra(MainActivity.OFFER_DATA,offer)
+                    putExtra(MainActivity.OFFER_KEY, offer.key)
                 }
                 act.startActivity(i)
 

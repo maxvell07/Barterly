@@ -54,6 +54,7 @@ class SelectedImageRcvAdapter(val adapterDeleteCallback: AdapterDeleteCallback) 
             }
             viewBinding.btdeleteimage.setOnClickListener{
                 adapter.list.removeAt(adapterPosition)
+
                 adapter.notifyItemRemoved(adapterPosition)
                 for(n in 0 until adapter.list.size){ //для обновления списка с анимацией
                     adapter.notifyItemChanged(n)

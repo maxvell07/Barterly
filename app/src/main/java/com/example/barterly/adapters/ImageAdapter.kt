@@ -11,7 +11,7 @@ import com.example.barterly.R
 
 class ImageAdapter:RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
 
-    val array = ArrayList<Bitmap>()
+    val array = ArrayList<Bitmap>(3)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_adapter_item,parent,false)

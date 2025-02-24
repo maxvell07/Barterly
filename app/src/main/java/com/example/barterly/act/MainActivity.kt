@@ -199,6 +199,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
         const val EDIT_STATE = "edit_state"
         const val OFFER_DATA = "offer_data"
+        const val OFFER_KEY = "offer_key"
 
     }
 

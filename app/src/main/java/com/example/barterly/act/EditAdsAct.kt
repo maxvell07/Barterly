@@ -1,11 +1,14 @@
 package com.example.barterly.act
 
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
 import com.example.barterly.model.Offer
@@ -14,9 +17,17 @@ import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
+import com.example.barterly.model.OfferResult
 import com.example.barterly.model.finishLoadListener
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
+import com.example.barterly.viewmodel.FirebaseViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
@@ -28,20 +39,27 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private val dbmanager = DbManager()
     var editimagepos = 0
     private var iseditstate = false
-    private var offer:Offer? = null
-
+    private var offer:OfferResult? = null
+    private lateinit var firebaseViewModel: FirebaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
         checkeditstate()
+
+
     }
     private fun checkeditstate(){
         iseditstate = iseditstate()
         if (iseditstate){
-            offer = intent.getSerializableExtra(MainActivity.OFFER_DATA) as Offer
+           var key = intent.getSerializableExtra(MainActivity.OFFER_KEY) as String
+            firebaseViewModel.liveOffersData.observe(this) { offers ->
+                offer = offers.find { it.key == key }
+                offer?.let { fillViews(it) }
+            }
             if (offer != null) {fillViews(offer!!)}
         }
     }
@@ -49,7 +67,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private fun iseditstate():Boolean{
         return intent.getBooleanExtra(MainActivity.EDIT_STATE,false) //проверяем у интента открывшего true или false
     }
-    private fun fillViews(offer: Offer) = with(binding){ // заполняем оффер при редактировании
+    private fun fillViews(offer: OfferResult) = with(binding){ // заполняем оффер при редактировании
         selectCountry.text = offer.country
         selectCity.text = offer.city
         editTitleOffer.setText(offer.title)
@@ -58,13 +76,16 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         selectCategory.setText(offer.category)
         editTextdiscription.setText(offer.description)
         priceeditrext.setText(offer.price)
-
+        offer.img1?.let { imageViewAdapter.array.add(it) }
+        offer.img2?.let { imageViewAdapter.array.add(it) }
+        offer.img3?.let { imageViewAdapter.array.add(it) }
     }
 
     private fun init() {
 
         imageViewAdapter = ImageAdapter()
         binding.vpImages.adapter = imageViewAdapter
+
     }
 
     //OnClicks
@@ -107,16 +128,49 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     fun onClickPublish(view:View){
         val offertemp =  filloffer()
         if (iseditstate){
-        dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())
-
+            dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())
+            uploadImagesAndDelete(offer?.key.toString())
         }
         else {
             dbmanager.publishOffer(offertemp,onPublishFinish())
+            uploadImagesAndDelete(offertemp.key.toString())
         }
 
         // отправка на сервер картинок
-
     }
+    private fun uploadImagesAndDelete(offerKey: String) {
+        val fileNames = listOf("img1.jpg", "img2.jpg", "img3.jpg")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            imageViewAdapter.array.forEachIndexed { index, bitmap ->
+                if (index < fileNames.size) {
+                    val fileName = fileNames[index]
+                    val file = saveBitmapToFile(bitmap, fileName)
+
+                    if (file != null) {
+                        firebaseViewModel.filerepository.uploadFile(offerKey, file).let { success ->
+                            if (success.isSuccessful) {
+                                file.delete() // Удаляем файл после успешной загрузки
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun saveBitmapToFile(bitmap: Bitmap, fileName: String): File? {
+        return try {
+            val file = File(this.cacheDir, fileName)
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+            file
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     private fun onPublishFinish():finishLoadListener{
         return object: finishLoadListener{
             override fun onFinish(Bol:Boolean) {
@@ -157,8 +211,5 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         supportFragmentManager.beginTransaction()
             .replace(R.id.placeholder, chooseImageFrag!!)
             .commit()
-    }
-    private fun loadpictures(adapter: ImageAdapter){
-
     }
 }

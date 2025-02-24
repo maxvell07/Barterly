@@ -29,8 +29,10 @@ class FirebaseViewModel(val filerepository:FileRepository) : ViewModel() {
                 val mappedList = list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
                 CoroutineScope(Dispatchers.IO).launch {
                 val updatedList = mappedList.mapIndexed { index, offerResult ->
-                    val img1 = getImage("images", "avatar.jpg")
-                    offerResult.copy(img1 = img1)
+                    val img1 = getImage(offerResult.key.toString(), "img1.jpg")
+                    val img2 = getImage(offerResult.key.toString(), "img2.jpg")
+                    val img3 = getImage(offerResult.key.toString(), "img3.jpg")
+                    offerResult.copy(img1 = img1, img2 = img2, img3 = img3)
                 }
                 // Обновляем LiveData
                 liveOffersData.postValue(ArrayList(updatedList))
@@ -52,10 +54,6 @@ class FirebaseViewModel(val filerepository:FileRepository) : ViewModel() {
             e.printStackTrace()
             null
         }
-    }
-
-    fun loadoffersresult(){
-
     }
 
     // написать метод который вызывает loadoffers а после подгружпет картинки к оферам

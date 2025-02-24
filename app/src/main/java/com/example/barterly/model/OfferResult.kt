@@ -24,4 +24,4 @@ data class OfferResult(
     var emailcounter: String = "0",
     var callscounter: String = "0"
 
-) : Serializable
+):Serializable
