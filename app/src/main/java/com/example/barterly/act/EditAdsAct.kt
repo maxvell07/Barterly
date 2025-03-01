@@ -25,6 +25,7 @@ import com.example.barterly.viewmodel.FirebaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -39,7 +40,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     private val dbmanager = DbManager()
     var editimagepos = 0
     private var iseditstate = false
-    private var offer:OfferResult? = null
+    private var offer: OfferResult? = null
     private lateinit var firebaseViewModel: FirebaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,22 +53,36 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
 
 
     }
-    private fun checkeditstate(){
+
+    private fun checkeditstate() {
         iseditstate = iseditstate()
-        if (iseditstate){
-           var key = intent.getSerializableExtra(MainActivity.OFFER_KEY) as String
+        if (iseditstate) {
+            var key = intent.getSerializableExtra(MainActivity.OFFER_KEY) as String
             firebaseViewModel.liveOffersData.observe(this) { offers ->
                 offer = offers.find { it.key == key }
                 offer?.let { fillViews(it) }
             }
-            if (offer != null) {fillViews(offer!!)}
+            if (offer != null) {
+                fillViews(offer!!)
+            }
         }
     }
 
-    private fun iseditstate():Boolean{
-        return intent.getBooleanExtra(MainActivity.EDIT_STATE,false) //проверяем у интента открывшего true или false
+    private fun iseditstate(): Boolean {
+        return intent.getBooleanExtra(
+            MainActivity.EDIT_STATE,
+            false
+        ) //проверяем у интента открывшего true или false
     }
-    private fun fillViews(offer: OfferResult) = with(binding){ // заполняем оффер при редактировании
+
+    private fun fillViews(offer: OfferResult) = with(binding) {
+        //observelive data
+        val images = listOf(
+            offer.img1, offer.img2, offer.img3
+        )
+
+        // Обновляем поля UI
+
         selectCountry.text = offer.country
         selectCity.text = offer.city
         editTitleOffer.setText(offer.title)
@@ -76,10 +91,13 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         selectCategory.setText(offer.category)
         editTextdiscription.setText(offer.description)
         priceeditrext.setText(offer.price)
-        offer.img1?.let { imageViewAdapter.array.add(it) }
-        offer.img2?.let { imageViewAdapter.array.add(it) }
-        offer.img3?.let { imageViewAdapter.array.add(it) }
+
+        imageViewAdapter.array.addAll(images.filterNotNull())
+        imageViewAdapter.notifyDataSetChanged()
+
+
     }
+
 
     private fun init() {
 
@@ -107,7 +125,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
             Toast.makeText(this, "No country selected", Toast.LENGTH_LONG).show()
         }
     }
-    fun onClickSelectCat(view:View){
+
+    fun onClickSelectCat(view: View) {
 
         val listCity = resources.getStringArray(R.array.category).toMutableList() as ArrayList
         dialog.showSpinnerDialog(this, listCity, binding.selectCategory)
@@ -115,9 +134,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickGetImages(view: View) {
-        if (imageViewAdapter.array.size == 0){
+        if (imageViewAdapter.array.size == 0) {
 
-            ImagePiker.pickSeveralImages(this,3)
+            ImagePiker.pickSeveralImages(this, 3)
 
         } else {
             openChoosenImageFrag(null)
@@ -125,19 +144,19 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         }
     }
 
-    fun onClickPublish(view:View){
-        val offertemp =  filloffer()
-        if (iseditstate){
-            dbmanager.publishOffer(offertemp.copy(key = offer?.key),onPublishFinish())
+    fun onClickPublish(view: View) {
+        val offertemp = filloffer()
+        if (iseditstate) {
+            dbmanager.publishOffer(offertemp.copy(key = offer?.key), onPublishFinish())
             uploadImagesAndDelete(offer?.key.toString())
-        }
-        else {
-            dbmanager.publishOffer(offertemp,onPublishFinish())
+        } else {
+            dbmanager.publishOffer(offertemp, onPublishFinish())
             uploadImagesAndDelete(offertemp.key.toString())
         }
 
         // отправка на сервер картинок
     }
+
     private fun uploadImagesAndDelete(offerKey: String) {
         val fileNames = listOf("img1.jpg", "img2.jpg", "img3.jpg")
 
@@ -158,6 +177,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
             }
         }
     }
+
     private fun saveBitmapToFile(bitmap: Bitmap, fileName: String): File? {
         return try {
             val file = File(this.cacheDir, fileName)
@@ -171,16 +191,16 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         }
     }
 
-    private fun onPublishFinish():finishLoadListener{
-        return object: finishLoadListener{
-            override fun onFinish(Bol:Boolean) {
+    private fun onPublishFinish(): finishLoadListener {
+        return object : finishLoadListener {
+            override fun onFinish(Bol: Boolean) {
                 finish()
             }
         }
     }
 
-    fun filloffer():Offer{
-        val offer:Offer
+    fun filloffer(): Offer {
+        val offer: Offer
         binding.apply {
             offer = Offer(
                 binding.editTitleOffer.text.toString(),
@@ -204,9 +224,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         chooseImageFrag = null
     }
 
-    fun openChoosenImageFrag(newlist:ArrayList<Uri>?){
+    fun openChoosenImageFrag(newlist: ArrayList<Uri>?) {
         chooseImageFrag = ImageListFragment(this)
-        if (newlist != null) chooseImageFrag?.resizeSelectedImages(newlist,true,this)
+        if (newlist != null) chooseImageFrag?.resizeSelectedImages(newlist, true, this)
         binding.scrolview.visibility = View.GONE
         supportFragmentManager.beginTransaction()
             .replace(R.id.placeholder, chooseImageFrag!!)

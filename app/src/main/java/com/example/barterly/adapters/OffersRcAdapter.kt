@@ -16,13 +16,14 @@ import com.example.barterly.databinding.CardItemBinding
 import com.example.barterly.model.OfferResult
 import com.example.barterly.utils.Mapper.mapOfferResultToOffer
 
-class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
+class OffersRcAdapter(val act: MainActivity) :
+    RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
     val offerArray = ArrayList<OfferResult>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
-        val binding = CardItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return OfferViewHolder(binding,act)
+        val binding = CardItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return OfferViewHolder(binding, act)
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +34,7 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
         holder.setData(offerArray[position])
     }
 
-    fun updateAdapter(arr: List<OfferResult>){
+    fun updateAdapter(arr: List<OfferResult>) {
         val difresul = DiffUtil.calculateDiff(DiffUtilHelper(offerArray, arr))
         difresul.dispatchUpdatesTo(this)
         offerArray.clear()
@@ -41,9 +42,10 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
 
     }
 
-    class OfferViewHolder(val binding: CardItemBinding,val act: MainActivity) :RecyclerView.ViewHolder(binding.root) {
+    class OfferViewHolder(val binding: CardItemBinding, val act: MainActivity) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(offer: OfferResult) = with(binding){
+        fun setData(offer: OfferResult) = with(binding) {
             cardtitle.text = offer.title
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
@@ -55,30 +57,31 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
                 mainimage.setImageBitmap(it)  // Устанавливаем изображение в ImageView
                 Log.d("image", it.toString())
             }
-            if (offer.isFav){
+            if (offer.isFav) {
                 ibFav.setImageResource(R.drawable.ic_favorite_pressed)
-            }else {
+            } else {
                 ibFav.setImageResource(R.drawable.ic_favorite_normal)
             }
-            ibDeleteOffer.setOnClickListener{
+            ibDeleteOffer.setOnClickListener {
                 act.ondeleteoffer(offer)
             }
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 act.onOfferViewed(offer)
-                Toast.makeText(act,"click",Toast.LENGTH_SHORT).show()
+                Toast.makeText(act, "click", Toast.LENGTH_SHORT).show()
             }
-            ibFav.setOnClickListener{
-                if (act.myAuth.currentUser?.isAnonymous == true){
-                    Toast.makeText(act,"Зарегистрируйтесь",Toast.LENGTH_SHORT).show()
-                }else{
-                act.onFavClick(offer)
+            ibFav.setOnClickListener {
+                if (act.myAuth.currentUser?.isAnonymous == true) {
+                    Toast.makeText(act, "Зарегистрируйтесь", Toast.LENGTH_SHORT).show()
+                } else {
+                    act.onFavClick(offer)
                 }
             }
         }
-        private fun onClickEdit(offer: OfferResult): View.OnClickListener{
+
+        private fun onClickEdit(offer: OfferResult): View.OnClickListener {
             return View.OnClickListener {
-                val i = Intent(act, EditAdsAct ::class.java).apply {
-                    putExtra(MainActivity.EDIT_STATE,true)
+                val i = Intent(act, EditAdsAct::class.java).apply {
+                    putExtra(MainActivity.EDIT_STATE, true)
 //                    putExtra(MainActivity.OFFER_DATA,offer)
                     putExtra(MainActivity.OFFER_KEY, offer.key)
                 }
@@ -87,20 +90,21 @@ class OffersRcAdapter(val act: MainActivity):RecyclerView.Adapter<OffersRcAdapte
             }
         }
 
-        private fun isOwner(offer: OfferResult):Boolean{
+        private fun isOwner(offer: OfferResult): Boolean {
             return offer.uid == act.myAuth.uid
         }
-        private fun showEditPanel(isOwner:Boolean){
-            if (isOwner){
-                binding.editOfferPanel.visibility=View.VISIBLE
+
+        private fun showEditPanel(isOwner: Boolean) {
+            if (isOwner) {
+                binding.editOfferPanel.visibility = View.VISIBLE
             } else {
-                binding.editOfferPanel.visibility=View.GONE
+                binding.editOfferPanel.visibility = View.GONE
             }
         }
     }
 }
 
-interface offerlistener{
+interface offerlistener {
 
     fun onFavClick(offer: OfferResult)
     fun onOfferViewed(offer: OfferResult)

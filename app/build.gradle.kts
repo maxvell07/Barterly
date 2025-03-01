@@ -48,6 +48,7 @@ dependencies {
     implementation (libs.play.services.auth)
     implementation(libs.androidx.core.ktx)
     implementation (libs.picasso)
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
