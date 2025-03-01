@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
+import com.example.barterly.act.DescriptionAct
 import com.example.barterly.act.EditAdsAct
 import com.example.barterly.act.MainActivity
 import com.example.barterly.model.Offer
@@ -51,24 +52,28 @@ class OffersRcAdapter(val act: MainActivity) :
             descriptiontitle.text = offer.description
             tvViewCounter.text = offer.viewcounter
             tvFav.text = offer.favCounter
+            isFav(offer)
             showEditPanel(isOwner(offer))
-            ibEditOffer.setOnClickListener(onClickEdit(offer))
+            mainonClick(offer)
+
             offer.img1?.let {
                 mainimage.setImageBitmap(it)  // Устанавливаем изображение в ImageView
                 Log.d("image", it.toString())
             }
-            if (offer.isFav) {
-                ibFav.setImageResource(R.drawable.ic_favorite_pressed)
-            } else {
-                ibFav.setImageResource(R.drawable.ic_favorite_normal)
-            }
+        }
+        private fun mainonClick(offer: OfferResult) = with(binding){
+            ibEditOffer.setOnClickListener(onClickEdit(offer))
             ibDeleteOffer.setOnClickListener {
                 act.ondeleteoffer(offer)
             }
             itemView.setOnClickListener {
+                val i = Intent(binding.root.context,DescriptionAct::class.java)
+                i.putExtra(MainActivity.OFFER_KEY,offer.key.toString())
                 act.onOfferViewed(offer)
+                binding.root.context.startActivity(i)
                 Toast.makeText(act, "click", Toast.LENGTH_SHORT).show()
             }
+
             ibFav.setOnClickListener {
                 if (act.myAuth.currentUser?.isAnonymous == true) {
                     Toast.makeText(act, "Зарегистрируйтесь", Toast.LENGTH_SHORT).show()
@@ -76,13 +81,22 @@ class OffersRcAdapter(val act: MainActivity) :
                     act.onFavClick(offer)
                 }
             }
+
         }
+        private fun isFav(offer:OfferResult){
+            if (offer.isFav) {
+                binding.ibFav.setImageResource(R.drawable.ic_favorite_pressed)
+            } else {
+                binding.ibFav.setImageResource(R.drawable.ic_favorite_normal)
+            }
+        }
+
+
 
         private fun onClickEdit(offer: OfferResult): View.OnClickListener {
             return View.OnClickListener {
                 val i = Intent(act, EditAdsAct::class.java).apply {
                     putExtra(MainActivity.EDIT_STATE, true)
-//                    putExtra(MainActivity.OFFER_DATA,offer)
                     putExtra(MainActivity.OFFER_KEY, offer.key)
                 }
                 act.startActivity(i)

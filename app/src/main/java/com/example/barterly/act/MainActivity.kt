@@ -209,6 +209,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     override fun onOfferViewed(offer: OfferResult) {
         firebaseViewModel.offerViewed(offer)
+
     }
 
 

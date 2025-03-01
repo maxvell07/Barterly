@@ -12,7 +12,7 @@ data class OfferResult(
     val category: String? = null,
     val price: String? = null,
     val description: String? = null,
-    val key: String? = null,
+    var key: String? = null,
     val uid: String? = null,
     var isFav: Boolean = false,
     var favCounter: String = "0",
@@ -24,4 +24,4 @@ data class OfferResult(
     var emailcounter: String = "0",
     var callscounter: String = "0"
 
-):Serializable
+)

@@ -51,7 +51,6 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         init()
         checkeditstate()
 
-
     }
 
     private fun checkeditstate() {
