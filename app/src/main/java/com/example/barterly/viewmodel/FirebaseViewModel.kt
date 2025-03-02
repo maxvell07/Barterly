@@ -1,9 +1,7 @@
 package com.example.barterly.viewmodel
 
-import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +13,6 @@ import com.example.barterly.model.finishLoadListener
 import com.example.barterly.service.FileRepository
 import com.example.barterly.utils.Mapper.mapOfferResultToOffer
 import com.example.barterly.utils.Mapper.mapOfferToOfferResult
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -27,7 +24,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     //suspend
     fun loadoffers() {
         dbManager.getAllOffers(object : ReadDataCallback {
-            override fun readData(list: ArrayList<Offer>) {
+            override fun readData(list: MutableList<Offer>) {
                 // Создаем новый список OfferResult с пустыми изображениями
                 val mappedList =
                     list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
@@ -79,7 +76,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
     fun loadMyFavs() {
         dbManager.getMyFavs(object : ReadDataCallback {
-            override fun readData(list: ArrayList<Offer>) {
+            override fun readData(list: MutableList<Offer>) {
                 // Мапим список Offer -> OfferResult (изображения пока null)
                 val mappedList =
                     list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
@@ -92,7 +89,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
     fun loadMyOffers() {
         dbManager.getMyOffers(object : ReadDataCallback {
-            override fun readData(list: ArrayList<Offer>) {
+            override fun readData(list: MutableList<Offer>) {
                 // Мапим список Offer -> OfferResult (изображения пока null)
                 val mappedList =
                     list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }

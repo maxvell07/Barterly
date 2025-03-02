@@ -1,7 +1,5 @@
 package com.example.barterly.model
 
-import com.example.barterly.service.FileRepository
-import com.example.barterly.service.RetrofitClient
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,15 +10,15 @@ import com.google.firebase.ktx.Firebase
 
 class DbManager {
 
-    val db = Firebase.database.getReference(MAIN_NOTE)
+    val db = Firebase.database.getReference(MAIN_NODE)
     val auth = Firebase.auth
 
     fun publishOffer(offer: Offer, finishLoadListener: finishLoadListener) {
         if (auth.uid != null) {
             db.child(offer.key ?: "empty").child(auth.uid!!)
-                .child(OFFER_NOTE)
+                .child(OFFER_NODE)
                 .setValue(offer).addOnCompleteListener {
-                    finishLoadListener.onFinish(true)
+                    finishLoadListener.onFinish(it.isSuccessful)
                 }
         }
     }
@@ -30,7 +28,7 @@ class DbManager {
 
         if (auth.uid != null) {
             db.child(offer.key ?: "empty")
-                .child(INFO_NOTE)
+                .child(INFO_NODE)
                 .setValue(
                     InfoItem(
                         viewsCounter = counter.toString(),
@@ -52,7 +50,7 @@ class DbManager {
     private fun addtoFavs(offer: Offer, listener: finishLoadListener) {
         offer.key?.let { key ->
             auth.uid?.let { uid ->
-                db.child(key).child(FAVS_NOTE).child(uid).setValue(uid).addOnCompleteListener {
+                db.child(key).child(FAVS_NODE).child(uid).setValue(uid).addOnCompleteListener {
                     if (it.isSuccessful) listener.onFinish(true)
                 }
             }
@@ -62,7 +60,7 @@ class DbManager {
     private fun removefromFavs(offer: Offer, listener: finishLoadListener) {
         offer.key?.let { // создаем узел favs и записываем в него uid пользователя
             offer.uid?.let { uid ->
-                db.child(it).child(FAVS_NOTE).child(uid).removeValue().addOnCompleteListener {
+                db.child(it).child(FAVS_NODE).child(uid).removeValue().addOnCompleteListener {
                     if (it.isSuccessful) listener.onFinish(true)
                 }
             }
@@ -110,12 +108,12 @@ class DbManager {
                     var offer: Offer? = null
 
                     item.children.forEach {
-                        if (offer == null) offer = it.child(OFFER_NOTE).getValue(Offer::class.java)
+                        if (offer == null) offer = it.child(OFFER_NODE).getValue(Offer::class.java)
                     }
-                    var infoItem = item.child(INFO_NOTE).getValue(InfoItem::class.java)
-                    val favsCounter = item.child(FAVS_NOTE).childrenCount.toString()
+                    val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
+                    val favsCounter = item.child(FAVS_NODE).childrenCount.toString()
                     val isFavs = auth.uid?.let {
-                        item.child(FAVS_NOTE).child(it).getValue(String::class.java)
+                        item.child(FAVS_NODE).child(it).getValue(String::class.java)
                     }
                     offer?.apply {
                         isFav = isFavs != null
@@ -135,16 +133,16 @@ class DbManager {
     }
 
     companion object {
-        const val OFFER_NOTE = "offer"
-        const val MAIN_NOTE = "main"
-        const val INFO_NOTE = "info"
-        const val FAVS_NOTE = "favs"
+        const val OFFER_NODE = "offer"
+        const val INFO_NODE = "info"
+        const val MAIN_NODE = "main"
+        const val FAVS_NODE = "favs"
     }
 }
 
 interface ReadDataCallback {
 
-    fun readData(list: ArrayList<Offer>)
+    fun readData(list: MutableList<Offer>)
 }
 
 interface finishLoadListener {

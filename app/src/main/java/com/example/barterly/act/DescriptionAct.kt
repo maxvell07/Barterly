@@ -1,8 +1,10 @@
 package com.example.barterly.act
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.barterly.BarterlyApp
@@ -29,6 +31,8 @@ class DescriptionAct : AppCompatActivity() {
         }
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
+        binding.fbTel.setOnClickListener{call()}
+        binding.fbEmail.setOnClickListener{}
     }
     private fun init(){
         adapter = ImageAdapter()
@@ -61,5 +65,11 @@ class DescriptionAct : AppCompatActivity() {
         tvCategory.setText(offer.category)
         adapter.array.addAll(images.filterNotNull())
         adapter.notifyDataSetChanged()
+    }
+    private fun call(){
+        val Calluri = "tel:${offer?.phone}"
+        val iCall = Intent(Intent.ACTION_DIAL)
+        iCall.data = Calluri.toUri()
+        startActivity(iCall)
     }
 }
