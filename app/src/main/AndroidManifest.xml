@@ -22,7 +22,7 @@
             android:name=".act.DescriptionAct"
             android:exported="false" />
         <activity
-            android:name=".act.EditAdsAct"
+            android:name=".act.EditOfferAct"
             android:exported="false" />
         <activity
             android:name=".act.MainActivity"

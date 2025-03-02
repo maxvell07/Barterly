@@ -21,9 +21,7 @@ import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
-import com.example.barterly.model.Offer
 import com.example.barterly.model.OfferResult
-import com.example.barterly.utils.Mapper.mapOfferToOfferResult
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -116,7 +114,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         mainContent.bnavview.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.new_offer -> {
-                    val i = Intent(this@MainActivity, EditAdsAct::class.java)
+                    val i = Intent(this@MainActivity, EditOfferAct::class.java)
                     startActivity(i)
                 }
 

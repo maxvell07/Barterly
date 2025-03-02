@@ -5,7 +5,7 @@ import android.net.Uri
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.barterly.R
-import com.example.barterly.act.EditAdsAct
+import com.example.barterly.act.EditOfferAct
 import io.ak1.pix.helpers.PixEventCallback
 import io.ak1.pix.helpers.addPixToActivity
 import io.ak1.pix.models.Mode
@@ -30,7 +30,7 @@ object ImagePiker {
     return options
     }
 
-    fun pickSeveralImages(context: EditAdsAct, imageCounter: Int) {
+    fun pickSeveralImages(context: EditOfferAct, imageCounter: Int) {
         context.addPixToActivity(R.id.placeholder, getOptions(imageCounter)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
@@ -41,7 +41,7 @@ object ImagePiker {
         }
     }
 
-    fun pickImages(context: EditAdsAct, imageCounter: Int) {
+    fun pickImages(context: EditOfferAct, imageCounter: Int) {
         val f = context.chooseImageFrag
         context.addPixToActivity(R.id.placeholder, getOptions(imageCounter)) { result ->
             when (result.status) {
@@ -55,7 +55,7 @@ object ImagePiker {
         }
     }
 
-    fun pickSingleImages(context: EditAdsAct) {
+    fun pickSingleImages(context: EditOfferAct) {
         val f = context.chooseImageFrag
         context.addPixToActivity(R.id.placeholder, getOptions(1)) { result ->
             when (result.status) {
@@ -68,11 +68,11 @@ object ImagePiker {
             }
         }
     }
-    private fun openChooseImageFrag(context: EditAdsAct, frag:Fragment){
+    private fun openChooseImageFrag(context: EditOfferAct, frag:Fragment){
         context.supportFragmentManager.beginTransaction().replace(R.id.placeholder,frag).commit()
     }
 
-    private fun closePixFragment(context: EditAdsAct){
+    private fun closePixFragment(context: EditOfferAct){
         val flist = context.supportFragmentManager.fragments
         flist.forEach{
             if (it.isVisible) context.supportFragmentManager.beginTransaction().remove(it).commit()
@@ -80,7 +80,7 @@ object ImagePiker {
     }
 
     fun getSeveralSelectedImages(
-        context: EditAdsAct,
+        context: EditOfferAct,
         uris: List<Uri>
     ) { // добавление картинки(ок) в эдитактивити
 
@@ -102,7 +102,7 @@ object ImagePiker {
         }
     }
 
-    private fun singleImage(context: EditAdsAct,uri:Uri) { // редактировать выбранную картинку в фрагменте
+    private fun singleImage(context: EditOfferAct, uri:Uri) { // редактировать выбранную картинку в фрагменте
      context.chooseImageFrag?.selectsingleImage(uri, context.editimagepos)
 
     }

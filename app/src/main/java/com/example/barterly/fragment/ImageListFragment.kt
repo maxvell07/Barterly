@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
-import com.example.barterly.act.EditAdsAct
+import com.example.barterly.act.EditOfferAct
 import com.example.barterly.databinding.ListImageFragBinding
 import com.example.barterly.dialoghelper.ProgressDialog
 import com.example.barterly.utils.AdapterDeleteCallback
@@ -94,7 +94,7 @@ class ImageListFragment(val fragClose:FragmentCloseInterface) : Fragment(),Adapt
         }
         additem?.setOnMenuItemClickListener {
             val imageCounter = ImagePiker.MAX_IMAGE_COUNT - adapter.list.size
-            ImagePiker.pickImages(activity as EditAdsAct,imageCounter )
+            ImagePiker.pickImages(activity as EditOfferAct,imageCounter )
             true
         }
 

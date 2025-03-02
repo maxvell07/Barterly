@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
-import com.example.barterly.act.EditAdsAct
+import com.example.barterly.act.EditOfferAct
 import com.example.barterly.databinding.SelectImageFragItemBinding
 import com.example.barterly.utils.AdapterDeleteCallback
 import com.example.barterly.utils.ImageManager
@@ -48,7 +48,7 @@ class SelectedImageRcvAdapter(val adapterDeleteCallback: AdapterDeleteCallback) 
         fun setData(item:Bitmap){
 
             viewBinding.btEditImage.setOnClickListener{
-                ImagePiker.pickSingleImages(context as EditAdsAct)
+                ImagePiker.pickSingleImages(context as EditOfferAct)
                 context.editimagepos =adapterPosition
 
             }

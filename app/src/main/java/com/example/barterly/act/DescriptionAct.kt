@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
@@ -40,6 +41,7 @@ class DescriptionAct : AppCompatActivity() {
             viewPager.adapter = adapter
         }
         getIntentFromMainAct()
+        updateImageCounter()
     }
 
     private fun getIntentFromMainAct(){
@@ -71,5 +73,14 @@ class DescriptionAct : AppCompatActivity() {
         val iCall = Intent(Intent.ACTION_DIAL)
         iCall.data = Calluri.toUri()
         startActivity(iCall)
+    }
+    private fun updateImageCounter(){
+        binding.viewPager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val counter ="${position+1}"+"/"+"${binding.viewPager.adapter?.itemCount}"
+                binding.imagecounter.text = counter
+            }
+        })
     }
 }

@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
 import com.example.barterly.act.DescriptionAct
-import com.example.barterly.act.EditAdsAct
+import com.example.barterly.act.EditOfferAct
 import com.example.barterly.act.MainActivity
-import com.example.barterly.model.Offer
 import com.example.barterly.databinding.CardItemBinding
 import com.example.barterly.model.OfferResult
-import com.example.barterly.utils.Mapper.mapOfferResultToOffer
 
 class OffersRcAdapter(val act: MainActivity) :
     RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
@@ -95,7 +93,7 @@ class OffersRcAdapter(val act: MainActivity) :
 
         private fun onClickEdit(offer: OfferResult): View.OnClickListener {
             return View.OnClickListener {
-                val i = Intent(act, EditAdsAct::class.java).apply {
+                val i = Intent(act, EditOfferAct::class.java).apply {
                     putExtra(MainActivity.EDIT_STATE, true)
                     putExtra(MainActivity.OFFER_KEY, offer.key)
                 }

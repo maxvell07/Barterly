@@ -1,6 +1,5 @@
 package com.example.barterly.dialogs
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -9,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.R
-import com.example.barterly.act.EditAdsAct
 
 class RecyclerDialogSpinner(var tvSelection:TextView, var dialog: AlertDialog) : RecyclerView.Adapter<RecyclerDialogSpinner.SpViewHolder>() {
 

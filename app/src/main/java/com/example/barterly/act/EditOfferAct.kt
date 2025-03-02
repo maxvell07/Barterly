@@ -1,13 +1,12 @@
 package com.example.barterly.act
 
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
@@ -25,13 +24,12 @@ import com.example.barterly.viewmodel.FirebaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
 
-class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
+class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
     private var ispermisssionGranted = false
@@ -50,7 +48,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
         checkeditstate()
-
+        updateImageCounter()
     }
 
     private fun checkeditstate() {
@@ -230,5 +228,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         supportFragmentManager.beginTransaction()
             .replace(R.id.placeholder, chooseImageFrag!!)
             .commit()
+    }
+    private fun updateImageCounter(){
+        binding.vpImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val counter ="${position+1}"+"/"+"${binding.vpImages.adapter?.itemCount}"
+                binding.imagecounter.text = counter
+            }
+        })
     }
 }
