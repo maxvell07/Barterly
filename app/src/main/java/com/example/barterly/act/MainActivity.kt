@@ -6,15 +6,17 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
-import com.example.barterly.accounthelper.GoogleAccConst
 import com.example.barterly.accounthelper.listener
 import com.example.barterly.adapters.offerlistener
 import com.example.barterly.adapters.OffersRcAdapter
@@ -29,14 +31,17 @@ import com.google.android.material.navigation.NavigationView.OnNavigationItemSel
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offerlistener {
     private lateinit var tvAccount: TextView
+    private lateinit var imAccount: ImageView
     private lateinit var binding: ActivityMainBinding
     private val dialoghelper = DialogHelper(this)
     val myAuth = Firebase.auth
     private lateinit var firebaseViewModel: FirebaseViewModel
     val offeradapter = OffersRcAdapter(this)
+    lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +52,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         init()
         initRcView()
         initViewModel()
+        binding.progress.visibility = View.VISIBLE
         firebaseViewModel.loadoffers()
         bottomNavMenuOnClick()
     }
@@ -57,10 +63,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
-            Log.d("MyLog", "Sign in Result")
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+    private fun onActivityResult() {
+        googleSignInLauncher = registerForActivityResult(
+            ActivityResultContracts
+                .StartActivityForResult()
+        ) { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
                 if (account != null) {
@@ -70,8 +78,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                 Log.d("MyLog", "Api error: ${e.message}")
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
-
     }
 
     override fun onStart() {
@@ -92,22 +98,25 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             } else {
                 View.GONE
             }
+            binding.progress.visibility = View.GONE
         }
-
     }
 
 
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
+        onActivityResult()
         var toggle = ActionBarDrawerToggle(
             this, binding.drawerid, binding.mainContent.toolbar,
             R.string.open,
             R.string.close
         )
+
         binding.drawerid.addDrawerListener(toggle)
         toggle.syncState()
         binding.navview.setNavigationItemSelectedListener(this)
         tvAccount = binding.navview.getHeaderView(0).findViewById(R.id.tvaccountemail)
+        imAccount = binding.navview.getHeaderView(0).findViewById(R.id.imageView)
     }
 
     private fun bottomNavMenuOnClick() = with(binding) {
@@ -185,11 +194,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             dialoghelper.accHelper.signInAnonymously(object : listener {
                 override fun onCompete() {
                     tvAccount.text = "Guest"
+                    imAccount.setImageResource(R.drawable.profile_image)
                 }
-
             })
-        } else {
+        } else if (user.isAnonymous) {
+            tvAccount.text = "Guest"
+            imAccount.setImageResource(R.drawable.profile_image)
+
+        } else if (!user.isAnonymous) {
             tvAccount.text = user.email
+            Picasso.get().load(user.photoUrl).into(imAccount)
         }
     }
 
