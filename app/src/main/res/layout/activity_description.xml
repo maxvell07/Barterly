@@ -1,253 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/gray"
-    android:orientation="vertical"
-    android:padding="5dp"
-    android:id="@+id/desc"
-
-    tools:context=".act.DescriptionAct">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tvTitleDes"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:background="@color/color_red"
-                android:textStyle="bold"
-                android:textSize="16dp"
-                android:text="Title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="#50A8EC"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitleDes" />
-
-            <TextView
-                android:id="@+id/imagecounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:padding="5dp"
-                android:text="1/3"
-                android:textColor="@color/gray"
-                app:layout_constraintBottom_toBottomOf="@+id/viewPager"
-                app:layout_constraintEnd_toEndOf="@+id/viewPager" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tvDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFEB3B"
-                android:padding="10dp"
-                android:text="TextView"
-                android:textColor="@color/black" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvPriceLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:text="@string/price"
-                    android:textColor="@color/color_red" />
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvTelLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/phone"
-                    android:textColor="@color/color_red"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvTel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvCategoryLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:text="@string/category"
-                    android:textColor="@color/color_red" />
-
-                <TextView
-                    android:id="@+id/tvCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvCountryLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:text="@string/country"
-                    android:textColor="@color/color_red" />
-
-                <TextView
-                    android:id="@+id/tvCountry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvCityLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:text="@string/city"
-                    android:textColor="@color/color_red" />
-
-                <TextView
-                    android:id="@+id/tvCity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvAdressLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:text="@string/adress"
-                    android:textColor="@color/color_red" />
-
-                <TextView
-                    android:id="@+id/tvAdress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:text="10500" />
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    android:layout_height="match_parent"
+    android:background="@color/light_gray"
+    android:padding="10dp">
 
     <LinearLayout
+        android:id="@+id/desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:radius="8dp"
+        tools:context=".act.DescriptionAct">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fbEmail"
-            android:layout_width="wrap_content"
+        <!-- First Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="5dp"
-            app:srcCompat="@drawable/ic_message"
-            />
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fbTel"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tvTitleDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_red_bg"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Title"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:background="@color/light_blue"
+                    android:clipToPadding="false"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:id="@+id/imagecounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/rounded_black_bg"
+                    android:padding="8dp"
+                    android:text="1/3"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Second Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="5dp"
-            app:srcCompat="@drawable/ic_phone"
-            />
+            android:padding="10dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_yellow_bg"
+                    android:padding="12dp"
+                    android:text="Description"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/price"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvPrice"
+                        android:padding="12dp"
+                        android:text="10500"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/phone"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTel"
+                        android:padding="12dp"
+                        android:text="123456789"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/category"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCategory"
+                        android:padding="12dp"
+                        android:text="Electronics"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/country"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCountry"
+                        android:padding="12dp"
+                        android:text="USA"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/city"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCity"
+                        android:padding="12dp"
+                        android:text="New York"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:padding="12dp"
+                        android:text="@string/adress"
+                        android:textColor="@color/color_red"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAdress"
+                        android:padding="12dp"
+                        android:text="5th Avenue"
+                        android:textColor="@color/black" />
+                </GridLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Floating Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fbEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/primary_light_color_pix"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_message" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fbTel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary_light_color_pix"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_phone" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </ScrollView>

@@ -12,11 +12,7 @@
     <ScrollView
         android:id="@+id/scrolview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,10 +20,11 @@
             android:layout_margin="5dp"
             android:orientation="vertical">
 
+            <!-- CardView for Image -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardimage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="10dp">
 
@@ -39,11 +36,7 @@
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/vpImages"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_height="match_parent" />
 
                     <TextView
                         android:id="@+id/imagecounter"
@@ -87,22 +80,22 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardinform"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Title -->
                     <TextView
                         android:id="@+id/title_offer_hint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_margin="10dp"
                         android:text="Заголовок"
                         android:textColor="@color/minimalistic_green"
                         android:textStyle="bold" />
@@ -114,21 +107,20 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
-                        android:ems="10"
                         android:hint="Заголовок"
                         android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray" />
 
+                    <!-- Divider -->
                     <LinearLayout
-                        android:id="@+id/divider_title"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
+                        android:background="@color/minimalistic_green" />
 
+                    <!-- Country Selection -->
                     <TextView
                         android:id="@+id/select_title_offer"
                         android:layout_width="match_parent"
@@ -150,14 +142,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/divider1"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
-
+                    <!-- City Selection -->
                     <TextView
                         android:id="@+id/hint_select_city"
                         android:layout_width="match_parent"
@@ -179,14 +164,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/divider2"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
-
+                    <!-- Phone -->
                     <TextView
                         android:id="@+id/hint_select_phone"
                         android:layout_width="match_parent"
@@ -204,21 +182,13 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
-                        android:ems="10"
                         android:hint="@string/phone"
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray" />
 
-                    <LinearLayout
-                        android:id="@+id/divider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
-
+                    <!-- Address -->
                     <TextView
                         android:id="@+id/hint_select_adress"
                         android:layout_width="match_parent"
@@ -236,30 +206,13 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
-                        android:ems="10"
                         android:hint="@string/adress_hint"
-                        android:inputType="number"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/category"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
+                    <!-- Category -->
                     <TextView
                         android:id="@+id/hint_select_category"
                         android:layout_width="match_parent"
@@ -281,14 +234,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/divider1_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
-
+                    <!-- Price -->
                     <TextView
                         android:id="@+id/hint_select_price"
                         android:layout_width="match_parent"
@@ -306,21 +252,13 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
-                        android:ems="10"
                         android:hint="@string/price_Hint"
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray" />
 
-                    <LinearLayout
-                        android:id="@+id/divider1_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green"
-                        android:orientation="horizontal" />
-
+                    <!-- Description -->
                     <TextView
                         android:id="@+id/hint_enter_discr"
                         android:layout_width="match_parent"
@@ -346,19 +284,18 @@
                         android:textColorHint="@color/gray" />
 
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+
+            <!-- Submit Button -->
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@color/minimalistic_black"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/minimalistic_green"
                 android:onClick="onClickPublish"
-                android:text="@string/publish"
-                android:textColor="@color/minimalistic_green" />
-
+                android:text="@string/publish" />
 
         </LinearLayout>
     </ScrollView>
