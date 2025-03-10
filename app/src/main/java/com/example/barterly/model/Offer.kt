@@ -1,5 +1,6 @@
 package com.example.barterly.model
 
+import android.graphics.Bitmap
 import java.io.Serializable
 
 data class Offer(
@@ -15,6 +16,9 @@ data class Offer(
     val uid: String? = null,
     var isFav: Boolean = false,
     var favCounter: String = "0",
+    var img1: String? = null,
+    var img2: String? = null,
+    var img3: String? = null,
 
     var viewcounter: String = "0",
     var emailcounter: String = "0",

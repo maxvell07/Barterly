@@ -13,11 +13,12 @@ import com.example.barterly.act.DescriptionAct
 import com.example.barterly.act.EditOfferAct
 import com.example.barterly.act.MainActivity
 import com.example.barterly.databinding.CardItemBinding
-import com.example.barterly.model.OfferResult
+import com.example.barterly.model.Offer
+import com.squareup.picasso.Picasso
 
 class OffersRcAdapter(val act: MainActivity) :
     RecyclerView.Adapter<OffersRcAdapter.OfferViewHolder>() {
-    val offerArray = ArrayList<OfferResult>()
+    val offerArray = ArrayList<Offer>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
@@ -33,7 +34,7 @@ class OffersRcAdapter(val act: MainActivity) :
         holder.setData(offerArray[position])
     }
 
-    fun updateAdapter(arr: List<OfferResult>) {
+    fun updateAdapter(arr: List<Offer>) {
         val difresul = DiffUtil.calculateDiff(DiffUtilHelper(offerArray, arr))
         difresul.dispatchUpdatesTo(this)
         offerArray.clear()
@@ -41,10 +42,15 @@ class OffersRcAdapter(val act: MainActivity) :
 
     }
 
+    override fun onViewRecycled(holder: OfferViewHolder) {
+        super.onViewRecycled(holder)
+        Picasso.get().cancelRequest(holder.binding.mainimage)
+    }
+
     class OfferViewHolder(val binding: CardItemBinding, val act: MainActivity) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(offer: OfferResult) = with(binding) {
+        fun setData(offer: Offer) = with(binding) {
             cardtitle.text = offer.title
             pricetitle.text = offer.price
             descriptiontitle.text = offer.description
@@ -54,12 +60,17 @@ class OffersRcAdapter(val act: MainActivity) :
             showEditPanel(isOwner(offer))
             mainonClick(offer)
 
-            offer.img1?.let {
-                mainimage.setImageBitmap(it)  // Устанавливаем изображение в ImageView
-                Log.d("image", it.toString())
+            offer.img1?.let { imageUrl ->
+                Picasso.get()
+                    .load(imageUrl)
+                    .tag(this)
+                    .placeholder(R.drawable.image) // Заглушка во время загрузки
+                    .error(R.drawable.image) // Если ошибка загрузки
+                    .into(mainimage) // Загружаем изображение в ImageView
+                Log.d("image", "Загружаем изображение: $imageUrl")
             }
         }
-        private fun mainonClick(offer: OfferResult) = with(binding){
+        private fun mainonClick(offer: Offer) = with(binding){
             ibEditOffer.setOnClickListener(onClickEdit(offer))
             ibDeleteOffer.setOnClickListener {
                 act.ondeleteoffer(offer)
@@ -81,7 +92,7 @@ class OffersRcAdapter(val act: MainActivity) :
             }
 
         }
-        private fun isFav(offer:OfferResult){
+        private fun isFav(offer:Offer){
             if (offer.isFav) {
                 binding.ibFav.setImageResource(R.drawable.ic_favorite_pressed)
             } else {
@@ -91,7 +102,7 @@ class OffersRcAdapter(val act: MainActivity) :
 
 
 
-        private fun onClickEdit(offer: OfferResult): View.OnClickListener {
+        private fun onClickEdit(offer: Offer): View.OnClickListener {
             return View.OnClickListener {
                 val i = Intent(act, EditOfferAct::class.java).apply {
                     putExtra(MainActivity.EDIT_STATE, true)
@@ -102,7 +113,7 @@ class OffersRcAdapter(val act: MainActivity) :
             }
         }
 
-        private fun isOwner(offer: OfferResult): Boolean {
+        private fun isOwner(offer: Offer): Boolean {
             return offer.uid == act.myAuth.uid
         }
 
@@ -118,9 +129,9 @@ class OffersRcAdapter(val act: MainActivity) :
 
 interface offerlistener {
 
-    fun onFavClick(offer: OfferResult)
-    fun onOfferViewed(offer: OfferResult)
+    fun onFavClick(offer: Offer)
+    fun onOfferViewed(offer: Offer)
 
-    fun ondeleteoffer(offer: OfferResult)
+    fun ondeleteoffer(offer: Offer)
 
 }

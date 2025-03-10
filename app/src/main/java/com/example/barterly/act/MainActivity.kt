@@ -23,7 +23,7 @@ import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
-import com.example.barterly.model.OfferResult
+import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -215,17 +215,17 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     }
 
-    override fun onFavClick(offer: OfferResult) {
+    override fun onFavClick(offer: Offer) {
         firebaseViewModel.onFavClick(offer)
     }
 
-    override fun onOfferViewed(offer: OfferResult) {
+    override fun onOfferViewed(offer: Offer) {
         firebaseViewModel.offerViewed(offer)
 
     }
 
 
-    override fun ondeleteoffer(offer: OfferResult) {
+    override fun ondeleteoffer(offer: Offer) {
         firebaseViewModel.deleteoffer(offer)
     }
 }

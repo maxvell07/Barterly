@@ -16,11 +16,11 @@ import com.example.barterly.databinding.ActivityEditAdsBinding
 import com.example.barterly.dialogs.DialogSpinnerHelper
 import com.example.barterly.fragment.FragmentCloseInterface
 import com.example.barterly.fragment.ImageListFragment
-import com.example.barterly.model.OfferResult
 import com.example.barterly.model.finishLoadListener
 import com.example.barterly.utils.CityHelper
 import com.example.barterly.utils.ImagePiker
 import com.example.barterly.viewmodel.FirebaseViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     private val dbmanager = DbManager()
     var editimagepos = 0
     private var iseditstate = false
-    private var offer: OfferResult? = null
+    private var offer: Offer? = null
     private lateinit var firebaseViewModel: FirebaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,11 +72,16 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         ) //проверяем у интента открывшего true или false
     }
 
-    private fun fillViews(offer: OfferResult) = with(binding) {
+    private fun fillViews(offer: Offer) = with(binding) {
         //observelive data
-        val images = listOf(
+        val images = listOfNotNull(
             offer.img1, offer.img2, offer.img3
         )
+        loadImagesToBitmaps(images) { bitmaps ->
+            imageViewAdapter.array.clear()
+            imageViewAdapter.array.addAll(bitmaps)
+            imageViewAdapter.notifyDataSetChanged()
+        }
 
         // Обновляем поля UI
 
@@ -89,12 +94,38 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         editTextdiscription.setText(offer.description)
         priceeditrext.setText(offer.price)
 
-        imageViewAdapter.array.addAll(images.filterNotNull())
-        imageViewAdapter.notifyDataSetChanged()
-
-
     }
 
+    private fun loadImagesToBitmaps(urls: List<String>, callback: (List<Bitmap>) -> Unit) {
+        val bitmaps = mutableListOf<Bitmap>()
+        var loadedCount = 0
+
+        for (url in urls) {
+            Picasso.get().load(url).tag(this).into(object : com.squareup.picasso.Target {
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                    bitmap?.let {
+                        bitmaps.add(it)
+                    }
+                    loadedCount++
+                    if (loadedCount == urls.size) {
+                        callback(bitmaps)
+                    }
+                }
+
+                override fun onBitmapFailed(
+                    e: Exception?,
+                    errorDrawable: android.graphics.drawable.Drawable?
+                ) {
+                    loadedCount++
+                    if (loadedCount == urls.size) {
+                        callback(bitmaps)
+                    }
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {}
+            })
+        }
+    }
 
     private fun init() {
 
@@ -209,9 +240,13 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
                 binding.priceeditrext.text.toString(),
                 binding.editTextdiscription.text.toString(),
                 dbmanager.db.push().key,// генерируем уникальный ключ офера
-                dbmanager.auth.uid
+                dbmanager.auth.uid,
             )
         }
+        val host =  "https://0247-94-142-136-113.ngrok-free.app"
+        offer.img1 = host+"/images/" + offer.key.toString() + "/img1.jpg"
+        offer.img2 = host+"/images/" + offer.key.toString() + "/img2.jpg"
+        offer.img3 = host+"/images/" + offer.key.toString() + "/img3.jpg"
         return offer
     }
 
@@ -229,13 +264,23 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
             .replace(R.id.placeholder, chooseImageFrag!!)
             .commit()
     }
-    private fun updateImageCounter(){
-        binding.vpImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+
+    private fun updateImageCounter() {
+        binding.vpImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                val counter ="${position+1}"+"/"+"${binding.vpImages.adapter?.itemCount}"
+                val counter = "${position + 1}" + "/" + "${binding.vpImages.adapter?.itemCount}"
                 binding.imagecounter.text = counter
             }
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Picasso.get().cancelTag(this)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Picasso.get().cancelTag(this)
     }
 }

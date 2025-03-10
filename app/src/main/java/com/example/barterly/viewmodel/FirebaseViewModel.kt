@@ -7,33 +7,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.barterly.model.DbManager
 import com.example.barterly.model.Offer
-import com.example.barterly.model.OfferResult
 import com.example.barterly.model.ReadDataCallback
 import com.example.barterly.model.finishLoadListener
 import com.example.barterly.service.FileRepository
-import com.example.barterly.utils.Mapper.mapOfferResultToOffer
-import com.example.barterly.utils.Mapper.mapOfferToOfferResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
     private val dbManager = DbManager()
-    val liveOffersData = MutableLiveData<ArrayList<OfferResult>>()
+    val liveOffersData = MutableLiveData<ArrayList<Offer>>()
 
     //suspend
     fun loadoffers() {
         dbManager.getAllOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 // Создаем новый список OfferResult с пустыми изображениями
-                val mappedList =
-                    list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
                 viewModelScope.launch(Dispatchers.IO) {
-                    val updatedList = mappedList.mapIndexed { index, offerResult ->
-                        val img1 = getImage(offerResult.key.toString(), "img1.jpg")
-                        val img2 = getImage(offerResult.key.toString(), "img2.jpg")
-                        val img3 = getImage(offerResult.key.toString(), "img3.jpg")
-                        offerResult.copy(img1 = img1, img2 = img2, img3 = img3)
+                    val updatedList = list.mapIndexed { index, offer ->
+                        val host  = "https://0247-94-142-136-113.ngrok-free.app"
+                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
+                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
+                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
                     }
                     // Обновляем LiveData
                     liveOffersData.postValue(ArrayList(updatedList))
@@ -42,35 +38,23 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
         })
     }
 
-    private fun fillViews(offer: OfferResult) {
-        //observelive data
-        //
-        viewModelScope.launch(Dispatchers.IO) {
-            val images = listOf(
-                getImage(offer.key.toString(), "img1.jpg"),
-                getImage(offer.key.toString(), "img2.jpg"),
-                getImage(offer.key.toString(), "img3.jpg")
-            )
-        }
-    }
-
-    suspend fun getImage(userId: String, fileName: String): Bitmap? {
-        return try {
-            val response = filerepository.getFile(userId, fileName)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    // Преобразуем байты в Bitmap
-                    BitmapFactory.decodeStream(it.byteStream())
-                }
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-
-    }
+//    suspend fun getImage(userId: String, fileName: String): Bitmap? {
+//        return try {
+//            val response = filerepository.getFile(userId, fileName)
+//            if (response.isSuccessful) {
+//                response.body()?.let {
+//                    // Преобразуем байты в Bitmap
+//                    BitmapFactory.decodeStream(it.byteStream())
+//                }
+//            } else {
+//                null
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            null
+//        }
+//
+//    }
 
     // написать метод который вызывает loadoffers а после подгружпет картинки к оферам
 
@@ -78,11 +62,9 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
         dbManager.getMyFavs(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 // Мапим список Offer -> OfferResult (изображения пока null)
-                val mappedList =
-                    list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
 
                 // Обновляем LiveData
-                liveOffersData.postValue(ArrayList(mappedList))
+                liveOffersData.postValue(ArrayList(list))
             }
         })
     }
@@ -91,22 +73,20 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
         dbManager.getMyOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 // Мапим список Offer -> OfferResult (изображения пока null)
-                val mappedList =
-                    list.map { offer -> mapOfferToOfferResult(offer, null, null, null) }
 
                 // Обновляем LiveData
-                liveOffersData.postValue(ArrayList(mappedList))
+                liveOffersData.postValue(ArrayList(list))
             }
         })
     }
 
-    fun deleteoffer(offerResult: OfferResult) {
-        val offer = mapOfferResultToOffer(offerResult) // Конвертируем OfferResult в Offer
+    fun deleteoffer(offer: Offer) {
+        val offer = offer // Конвертируем OfferResult в Offer
         dbManager.deleteoffer(offer, object : finishLoadListener {
             override fun onFinish(bol: Boolean) {
                 if (bol) {
                     val updatedList = liveOffersData.value
-                    updatedList?.remove(offerResult) // Удаляем по OfferResult
+                    updatedList?.remove(offer) // Удаляем по OfferResult
                     liveOffersData.postValue(updatedList)
                 }
             }
@@ -114,25 +94,25 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     }
 
 
-    fun offerViewed(offerResult: OfferResult) {
-        val offer = mapOfferResultToOffer(offerResult) // Конвертируем OfferResult в Offer
+    fun offerViewed(offer: Offer) {
+        val offer = offer // Конвертируем OfferResult в Offer
         dbManager.offerViewed(offer)
     }
 
-    fun onFavClick(offerResult: OfferResult) {
-        val offer = mapOfferResultToOffer(offerResult) // Конвертируем OfferResult в Offer
+    fun onFavClick(offer: Offer) {
+        val offer = offer // Конвертируем OfferResult в Offer
 
         dbManager.onFavClick(offer, object : finishLoadListener {
             override fun onFinish(bol: Boolean) {
                 val updatedList = liveOffersData.value
-                val pos = updatedList?.indexOf(offerResult)
+                val pos = updatedList?.indexOf(offer)
 
                 if (pos != null && pos != -1) {
                     val favCounter =
-                        if (offerResult.isFav) offerResult.favCounter.toInt() - 1 else offerResult.favCounter.toInt() + 1
+                        if (offer.isFav) offer.favCounter.toInt() - 1 else offer.favCounter.toInt() + 1
 
                     updatedList[pos] = updatedList[pos].copy(
-                        isFav = !offerResult.isFav,
+                        isFav = !offer.isFav,
                         favCounter = favCounter.toString()
                     )
                 }

@@ -1,6 +1,7 @@
 package com.example.barterly.act
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,14 +13,15 @@ import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
 import com.example.barterly.databinding.ActivityDescriptionBinding
-import com.example.barterly.model.OfferResult
+import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
+import com.squareup.picasso.Picasso
 
 class DescriptionAct : AppCompatActivity() {
     lateinit var binding: ActivityDescriptionBinding
     lateinit var adapter:ImageAdapter
     private lateinit var firebaseViewModel: FirebaseViewModel
-    var offer: OfferResult? =null
+    var offer: Offer? =null
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDescriptionBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -51,11 +53,14 @@ class DescriptionAct : AppCompatActivity() {
             offer?.let { fillOfferViews(it) }
         }
     }
-    private fun fillOfferViews(offer: OfferResult) = with(binding) {
+    private fun fillOfferViews(offer: Offer) = with(binding) {
         //observelive data
-        val images = listOf(
-            offer.img1, offer.img2, offer.img3
-        )
+        val images = ArrayList<String>().apply {
+            offer.img1?.let { add(it) }
+            offer.img2?.let { add(it) }
+            offer.img3?.let { add(it) }
+        }
+
         // Обновляем поля UI
         tvCountry.text = offer.country
         tvTel.setText(offer.phone)
@@ -65,9 +70,47 @@ class DescriptionAct : AppCompatActivity() {
         tvDesc.setText(offer.description)
         tvPrice.setText(offer.price)
         tvCategory.setText(offer.category)
-        adapter.array.addAll(images.filterNotNull())
-        adapter.notifyDataSetChanged()
+        adapter.array.clear()
+        loadImagesToBitmaps(images) { bitmaps ->
+            adapter.array.clear()
+            adapter.array.addAll(bitmaps)
+            adapter.notifyDataSetChanged()
+        }
+
     }
+
+    private fun loadImagesToBitmaps(urls: List<String>, callback: (List<Bitmap>) -> Unit) {
+        val bitmaps = mutableListOf<Bitmap>()
+        var loadedCount = 0
+
+        for (url in urls) {
+            if (!isDestroyed) {
+            Picasso.get().load(url).tag(this).into(object : com.squareup.picasso.Target {
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                    bitmap?.let {
+                        bitmaps.add(it)
+                    }
+                    loadedCount++
+                    if (loadedCount == urls.size) {
+                        callback(bitmaps)
+                    }
+                }
+
+                override fun onBitmapFailed(
+                    e: Exception?,
+                    errorDrawable: android.graphics.drawable.Drawable?
+                ) {
+                    loadedCount++
+                    if (loadedCount == urls.size) {
+                        callback(bitmaps)
+                    }
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {}
+            })
+        }}
+    }
+
     private fun call(){
         val Calluri = "tel:${offer?.phone}"
         val iCall = Intent(Intent.ACTION_DIAL)
@@ -82,5 +125,15 @@ class DescriptionAct : AppCompatActivity() {
                 binding.imagecounter.text = counter
             }
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Picasso.get().cancelTag(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Picasso.get().cancelTag(this)
     }
 }

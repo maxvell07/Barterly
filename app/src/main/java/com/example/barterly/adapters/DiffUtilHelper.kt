@@ -1,9 +1,9 @@
 package com.example.barterly.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.barterly.model.OfferResult
+import com.example.barterly.model.Offer
 
-class DiffUtilHelper(val oldlist: ArrayList<OfferResult>, val newlist: List<OfferResult>): DiffUtil.Callback() { // обновляем только изменения (для анимации в списке оферов при deleteoffer)
+class DiffUtilHelper(val oldlist: ArrayList<Offer>, val newlist: List<Offer>): DiffUtil.Callback() { // обновляем только изменения (для анимации в списке оферов при deleteoffer)
     override fun getOldListSize(): Int {
         return oldlist.size
     }
