@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.model.DbManager
 import com.example.barterly.model.Offer
 import com.example.barterly.model.ReadDataCallback
@@ -25,7 +26,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                 // Создаем новый список OfferResult с пустыми изображениями
                 viewModelScope.launch(Dispatchers.IO) {
                     val updatedList = list.mapIndexed { index, offer ->
-                        val host  = "https://0247-94-142-136-113.ngrok-free.app"
+                        val host  = ServerConnectionConstants.URL
                         val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
                         val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
                         val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
@@ -37,24 +38,6 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             }
         })
     }
-
-//    suspend fun getImage(userId: String, fileName: String): Bitmap? {
-//        return try {
-//            val response = filerepository.getFile(userId, fileName)
-//            if (response.isSuccessful) {
-//                response.body()?.let {
-//                    // Преобразуем байты в Bitmap
-//                    BitmapFactory.decodeStream(it.byteStream())
-//                }
-//            } else {
-//                null
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            null
-//        }
-//
-//    }
 
     // написать метод который вызывает loadoffers а после подгружпет картинки к оферам
 

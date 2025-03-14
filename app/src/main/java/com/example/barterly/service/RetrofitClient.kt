@@ -1,6 +1,7 @@
 package com.example.barterly.service
 
 import android.util.Log
+import com.example.barterly.constants.ServerConnectionConstants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,7 +16,7 @@ object RetrofitClient {
     }.apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-    private const val BASE_URL = " https://0247-94-142-136-113.ngrok-free.app/"
+    private const val BASE_URL = ServerConnectionConstants.URL
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)

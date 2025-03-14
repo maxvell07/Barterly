@@ -12,6 +12,7 @@ import com.example.barterly.R
 import com.example.barterly.act.DescriptionAct
 import com.example.barterly.act.EditOfferAct
 import com.example.barterly.act.MainActivity
+import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.databinding.CardItemBinding
 import com.example.barterly.model.Offer
 import com.squareup.picasso.Picasso
@@ -61,6 +62,7 @@ class OffersRcAdapter(val act: MainActivity) :
             mainonClick(offer)
 
             offer.img1?.let { imageUrl ->
+                Log.d("url",imageUrl)
                 Picasso.get()
                     .load(imageUrl)
                     .tag(this)
