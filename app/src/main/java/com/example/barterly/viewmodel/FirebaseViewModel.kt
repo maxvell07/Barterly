@@ -44,10 +44,17 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     fun loadMyFavs() {
         dbManager.getMyFavs(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
-                // Мапим список Offer -> OfferResult (изображения пока null)
-
-                // Обновляем LiveData
-                liveOffersData.postValue(ArrayList(list))
+                viewModelScope.launch(Dispatchers.IO) {
+                    val updatedList = list.mapIndexed { index, offer ->
+                        val host  = ServerConnectionConstants.URL
+                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
+                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
+                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
+                    }
+                    // Обновляем LiveData
+                    liveOffersData.postValue(ArrayList(updatedList))
+                }
             }
         })
     }
@@ -55,10 +62,17 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     fun loadMyOffers() {
         dbManager.getMyOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
-                // Мапим список Offer -> OfferResult (изображения пока null)
-
-                // Обновляем LiveData
-                liveOffersData.postValue(ArrayList(list))
+                viewModelScope.launch(Dispatchers.IO) {
+                    val updatedList = list.mapIndexed { index, offer ->
+                        val host  = ServerConnectionConstants.URL
+                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
+                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
+                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
+                    }
+                    // Обновляем LiveData
+                    liveOffersData.postValue(ArrayList(updatedList))
+                }
             }
         })
     }
