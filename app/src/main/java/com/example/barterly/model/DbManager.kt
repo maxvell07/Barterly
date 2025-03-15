@@ -60,7 +60,7 @@ class DbManager {
     private fun removefromFavs(offer: Offer, listener: finishLoadListener) {
         offer.key?.let { // создаем узел favs и записываем в него uid пользователя
             offer.uid?.let { uid ->
-                db.child(it).child(FAVS_NODE).child(uid).removeValue().addOnCompleteListener {
+                db.child(it).child(FAVS_NODE).child(auth.uid.toString()).removeValue().addOnCompleteListener { // work
                     if (it.isSuccessful) listener.onFinish(true)
                 }
             }
@@ -137,6 +137,7 @@ class DbManager {
         const val INFO_NODE = "info"
         const val MAIN_NODE = "main"
         const val FAVS_NODE = "favs"
+        const val OFFERS_LIMIT = 2
     }
 }
 

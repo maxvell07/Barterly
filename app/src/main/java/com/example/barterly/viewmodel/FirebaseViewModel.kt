@@ -97,7 +97,6 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     }
 
     fun onFavClick(offer: Offer) {
-        val offer = offer // Конвертируем OfferResult в Offer
 
         dbManager.onFavClick(offer, object : finishLoadListener {
             override fun onFinish(bol: Boolean) {

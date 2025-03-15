@@ -15,6 +15,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.accounthelper.listener
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         binding.progress.visibility = View.VISIBLE
         firebaseViewModel.loadoffers()
         bottomNavMenuOnClick()
+        scrollListner()
     }
 
 
@@ -207,13 +209,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         }
     }
 
-    companion object {
-
-        const val EDIT_STATE = "edit_state"
-        const val OFFER_DATA = "offer_data"
-        const val OFFER_KEY = "offer_key"
-
-    }
 
     override fun onFavClick(offer: Offer) {
         firebaseViewModel.onFavClick(offer)
@@ -227,6 +222,28 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     override fun ondeleteoffer(offer: Offer) {
         firebaseViewModel.deleteoffer(offer)
+    }
+
+    private fun scrollListner() = with(binding.mainContent) {
+        rcView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(
+                recyclerView: RecyclerView,
+                newState: Int
+            ) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(SCROL) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                }
+            }
+        })
+    }
+
+    companion object {
+
+        const val EDIT_STATE = "edit_state"
+        const val OFFER_DATA = "offer_data"
+        const val OFFER_KEY = "offer_key"
+        const val SCROL = 1
     }
 }
 

@@ -10,7 +10,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
-import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.model.Offer
 import com.example.barterly.model.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
@@ -232,19 +231,23 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         val offer: Offer
         binding.apply {
             offer = Offer(
-                binding.editTitleOffer.text.toString(),
                 binding.selectCountry.text.toString(),
                 binding.selectCity.text.toString(),
                 binding.phoneEditText.text.toString(),
                 binding.adresseditText.text.toString(),
                 binding.selectCategory.text.toString(),
+                binding.editTitleOffer.text.toString(),
                 binding.priceeditrext.text.toString(),
                 binding.editTextdiscription.text.toString(),
+                "empty",
+                "empty",
+                "empty",
                 dbmanager.db.push().key,// генерируем уникальный ключ офера
+                "0",
                 dbmanager.auth.uid,
+                System.currentTimeMillis().toString()
             )
         }
-        val host =  ServerConnectionConstants.URL
         offer.img1 = "/images/" + offer.key.toString() + "/img1.jpg"
         offer.img2 = "/images/" + offer.key.toString() + "/img2.jpg"
         offer.img3 = "/images/" + offer.key.toString() + "/img3.jpg"

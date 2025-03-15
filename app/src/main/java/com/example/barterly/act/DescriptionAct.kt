@@ -55,12 +55,6 @@ class DescriptionAct : AppCompatActivity() {
     }
     private fun fillOfferViews(offer: Offer) = with(binding) {
         //observelive data
-        val images = ArrayList<String>().apply {
-            offer.img1?.let { add(it) }
-            offer.img2?.let { add(it) }
-            offer.img3?.let { add(it) }
-        }
-
         // Обновляем поля UI
         tvCountry.text = offer.country
         tvTel.setText(offer.phone)
@@ -70,7 +64,15 @@ class DescriptionAct : AppCompatActivity() {
         tvDesc.setText(offer.description)
         tvPrice.setText(offer.price)
         tvCategory.setText(offer.category)
+
         adapter.array.clear()
+
+        val images = ArrayList<String>().apply {
+            offer.img1?.let { add(it) }
+            offer.img2?.let { add(it) }
+            offer.img3?.let { add(it) }
+        }
+
         loadImagesToBitmaps(images) { bitmaps ->
             adapter.array.clear()
             adapter.array.addAll(bitmaps)
