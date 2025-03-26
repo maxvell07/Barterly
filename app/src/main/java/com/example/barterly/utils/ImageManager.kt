@@ -17,7 +17,7 @@ import java.io.InputStream
 
 object ImageManager {
 
-    const val MAX_IMAGE_SIZE = 1000
+    const val MAX_IMAGE_SIZE = 800 //качество
     const val WIDTH = 0
     const val HEIGHT = 1
 

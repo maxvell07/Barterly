@@ -37,4 +37,10 @@ interface FileService {
         @Path("folderName") folderName: String,
         @Path("filename") filename: String
     ): Response<ResponseBody>
+
+    @DELETE("images/{folderName}")
+    suspend fun deleteAllFilesInFolder(
+        @Path("folderName") folderName: String
+    ): Response<ResponseBody>
+
 }

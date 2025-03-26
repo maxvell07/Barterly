@@ -1,6 +1,8 @@
 package com.example.barterly.service
 
 import com.example.barterly.utils.prepareFilePart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -25,4 +27,19 @@ class FileRepository(private val fileService: FileService) {
     suspend fun getFile(folderName: String, filename: String): Response<ResponseBody> {
         return fileService.getFile(folderName, filename)
     }
+    suspend fun deleteAllFiles(folderName: String): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response: Response<ResponseBody> = RetrofitClient.fileService.deleteAllFilesInFolder(folderName)
+                if (response.isSuccessful) {
+                    response.body()?.string() ?: "Успешно, но без ответа"
+                } else {
+                    "Ошибка: ${response.errorBody()?.string()}"
+                }
+            } catch (e: Exception) {
+                "Ошибка сети: ${e.message}"
+            }
+        }
+    }
+
 }

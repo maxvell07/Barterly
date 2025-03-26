@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         }
     }
 
-
     private fun init() {
         setSupportActionBar(binding.mainContent.toolbar)
         onActivityResult()
@@ -125,8 +124,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         mainContent.bnavview.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.new_offer -> {
+                    if (myAuth.currentUser?.isAnonymous !=true){
                     val i = Intent(this@MainActivity, EditOfferAct::class.java)
-                    startActivity(i)
+                    startActivity(i)}
                 }
 
                 R.id.home -> {
@@ -244,6 +244,15 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         const val OFFER_DATA = "offer_data"
         const val OFFER_KEY = "offer_key"
         const val SCROL = 1
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        firebaseViewModel.liveOffersData.removeObservers(this)
     }
 }
 

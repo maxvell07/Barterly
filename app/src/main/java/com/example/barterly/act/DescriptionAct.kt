@@ -131,11 +131,13 @@ class DescriptionAct : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        firebaseViewModel.liveOffersData.removeObservers(this)
         Picasso.get().cancelTag(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        firebaseViewModel.liveOffersData.removeObservers(this)
         Picasso.get().cancelTag(this)
     }
 }

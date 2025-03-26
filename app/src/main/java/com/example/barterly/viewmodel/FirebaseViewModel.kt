@@ -26,10 +26,16 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                 // Создаем новый список OfferResult с пустыми изображениями
                 viewModelScope.launch(Dispatchers.IO) {
                     val updatedList = list.mapIndexed { index, offer ->
-                        val host  = ServerConnectionConstants.URL
-                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
-                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
-                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        val host = ServerConnectionConstants.URL
+                        val img1: String
+                        val img2: String
+                        val img3: String
+                        img1 =
+                            if (offer.img1 != "") host + "/images/" + offer.key.toString() + "/img1.jpg" else ""
+                        img2 =
+                            if (offer.img2 != "") host + "/images/" + offer.key.toString() + "/img2.jpg" else ""
+                        img3 =
+                            if (offer.img3 != "") host + "/images/" + offer.key.toString() + "/img3.jpg" else ""
                         offer.copy(img1 = img1, img2 = img2, img3 = img3)
                     }
                     // Обновляем LiveData
@@ -46,10 +52,10 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
                     val updatedList = list.mapIndexed { index, offer ->
-                        val host  = ServerConnectionConstants.URL
-                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
-                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
-                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        val host = ServerConnectionConstants.URL
+                        val img1 = host + "/images/" + offer.key.toString() + "/img1.jpg"
+                        val img2 = host + "/images/" + offer.key.toString() + "/img2.jpg"
+                        val img3 = host + "/images/" + offer.key.toString() + "/img3.jpg"
                         offer.copy(img1 = img1, img2 = img2, img3 = img3)
                     }
                     // Обновляем LiveData
@@ -64,10 +70,10 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
                     val updatedList = list.mapIndexed { index, offer ->
-                        val host  = ServerConnectionConstants.URL
-                        val img1 = host+"/images/"+offer.key.toString()+"/img1.jpg"
-                        val img2 = host+"/images/"+offer.key.toString()+"/img2.jpg"
-                        val img3 = host+"/images/"+offer.key.toString()+"/img3.jpg"
+                        val host = ServerConnectionConstants.URL
+                        val img1 = host + "/images/" + offer.key.toString() + "/img1.jpg"
+                        val img2 = host + "/images/" + offer.key.toString() + "/img2.jpg"
+                        val img3 = host + "/images/" + offer.key.toString() + "/img3.jpg"
                         offer.copy(img1 = img1, img2 = img2, img3 = img3)
                     }
                     // Обновляем LiveData
@@ -88,8 +94,14 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                 }
             }
         })
+        deleteAllImages(offer.key.toString())
     }
 
+    fun deleteAllImages(key: String) {
+        viewModelScope.launch {
+            filerepository.deleteAllFiles(key.toString())
+        }
+    }
 
     fun offerViewed(offer: Offer) {
         val offer = offer // Конвертируем OfferResult в Offer

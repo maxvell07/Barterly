@@ -103,7 +103,8 @@ object ImagePiker {
     }
 
     private fun singleImage(context: EditOfferAct, uri:Uri) { // редактировать выбранную картинку в фрагменте
-     context.chooseImageFrag?.selectsingleImage(uri, context.editimagepos)
+     context.chooseImageFrag?.selectSingleImage(uri, context.editimagepos)
 
     }
+
 }

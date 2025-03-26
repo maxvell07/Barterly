@@ -3,6 +3,7 @@ package com.example.barterly.act
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +33,6 @@ import java.io.IOException
 class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var binding: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
-    private var ispermisssionGranted = false
     lateinit var imageViewAdapter: ImageAdapter
     var chooseImageFrag: ImageListFragment? = null
     private val dbmanager = DbManager()
@@ -163,26 +163,28 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickGetImages(view: View) {
         if (imageViewAdapter.array.size == 0) {
-
+//            firebaseViewModel.deleteAllImages(offer?.key.toString())
             ImagePiker.pickSeveralImages(this, 3)
 
         } else {
             openChoosenImageFrag(null)
             chooseImageFrag?.updateAdapterFromEdit(imageViewAdapter.array)
+
         }
     }
 
     fun onClickPublish(view: View) {
+        firebaseViewModel.deleteAllImages(offer?.key.toString())
         val offertemp = filloffer()
         if (iseditstate) {
+            Log.d("asdf","asdasff")
             dbmanager.publishOffer(offertemp.copy(key = offer?.key), onPublishFinish())
             uploadImagesAndDelete(offer?.key.toString())
         } else {
             dbmanager.publishOffer(offertemp, onPublishFinish())
             uploadImagesAndDelete(offertemp.key.toString())
         }
-
-        // отправка на сервер картинок
+//        firebaseViewModel.loadoffers()
     }
 
     private fun uploadImagesAndDelete(offerKey: String) {
@@ -210,7 +212,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         return try {
             val file = File(this.cacheDir, fileName)
             FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out)
             }
             file
         } catch (e: IOException) {
@@ -281,10 +283,13 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
 
     override fun onStop() {
         super.onStop()
+        firebaseViewModel.liveOffersData.removeObservers(this)
         Picasso.get().cancelTag(this)
     }
+
     override fun onDestroy() {
         super.onDestroy()
+        firebaseViewModel.liveOffersData.removeObservers(this)
         Picasso.get().cancelTag(this)
     }
 }

@@ -22,25 +22,25 @@ import com.example.barterly.utils.AdapterDeleteCallback
 import com.example.barterly.utils.ImageManager
 import com.example.barterly.utils.ImagePiker
 import com.example.barterly.utils.ItemTouchMoveCallback
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class ImageListFragment(val fragClose:FragmentCloseInterface) : Fragment(),AdapterDeleteCallback {
+class ImageListFragment(private val fragClose: FragmentCloseInterface) : Fragment(), AdapterDeleteCallback {
 
-    lateinit var binding: ListImageFragBinding
-    val adapter = SelectedImageRcvAdapter(this)
-    val dragcallback = ItemTouchMoveCallback(adapter)
-    val touchHelper = ItemTouchHelper(dragcallback)
-    private var additem:MenuItem? = null
+    private var _binding: ListImageFragBinding? = null
+    private val binding get() = _binding!!
+
+    private val adapter = SelectedImageRcvAdapter(this)
+    private val touchHelper = ItemTouchHelper(ItemTouchMoveCallback(adapter))
+
+    private var addItem: MenuItem? = null
     private var job: Job? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = ListImageFragBinding.inflate(inflater)
+    ): View {
+        _binding = ListImageFragBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,16 +48,23 @@ class ImageListFragment(val fragClose:FragmentCloseInterface) : Fragment(),Adapt
         super.onViewCreated(view, savedInstanceState)
         setUpToolBar()
         touchHelper.attachToRecyclerView(binding.rcvSelectImage)
-        binding.rcvSelectImage.layoutManager = LinearLayoutManager(activity)
-        binding.rcvSelectImage.adapter =adapter
+        binding.rcvSelectImage.layoutManager = LinearLayoutManager(requireContext())
+        binding.rcvSelectImage.adapter = adapter
     }
 
-    fun updateAdapterFromEdit(bitmaplist: List<Bitmap>){
-        adapter.updateAdapter(bitmaplist,true)
+    fun updateAdapterFromEdit(bitmapList: List<Bitmap>) {
+        adapter.updateAdapter(bitmapList, true)
     }
 
     override fun onClickDel() {
-        additem?.isVisible = true
+        addItem?.isVisible = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rcvSelectImage.adapter = null // Освобождаем RecyclerView
+        _binding = null // Освобождаем память
+        job?.cancel() // Отменяем корутину
     }
 
     override fun onDetach() {
@@ -66,52 +73,56 @@ class ImageListFragment(val fragClose:FragmentCloseInterface) : Fragment(),Adapt
         job?.cancel()
     }
 
-    fun resizeSelectedImages(newlist:ArrayList<Uri>,needclear :Boolean,activity: Activity){
-
+    fun resizeSelectedImages(newList: ArrayList<Uri>, needClear: Boolean, activity: Activity) {
         job = CoroutineScope(Dispatchers.Main).launch {
             val dialog = ProgressDialog.createLoadingDialog(activity)
-            val bitmaplist = ImageManager.imageResize(newlist, activity)
+            val bitmapList = withContext(Dispatchers.IO) {
+                ImageManager.imageResize(newList, activity)
+            }
             dialog.dismiss()
-            adapter.updateAdapter(bitmaplist,needclear)
-            if (adapter.list.size == 3) additem?.isVisible = false
+            adapter.updateAdapter(bitmapList, needClear)
+            if (adapter.list.size == 3) addItem?.isVisible = false
         }
-
     }
-    private fun setUpToolBar(){
+
+    private fun setUpToolBar() {
         binding.toolbarfrag.inflateMenu(R.menu.menu_imagefrag)
-        val deleteitem = binding.toolbarfrag.menu.findItem(R.id.delete_image)
-        additem = binding.toolbarfrag.menu.findItem(R.id.add_image)
-        if (adapter.list.size == 3) additem?.isVisible = false
+        val deleteItem = binding.toolbarfrag.menu.findItem(R.id.delete_image)
+        addItem = binding.toolbarfrag.menu.findItem(R.id.add_image)
+        addItem?.isVisible = adapter.list.size < 3
 
-        binding.toolbarfrag.setNavigationOnClickListener{
-            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
-            Toast.makeText(binding.root.context, "cancel",Toast.LENGTH_SHORT).show()
+        binding.toolbarfrag.setNavigationOnClickListener {
+            parentFragmentManager.beginTransaction().remove(this).commit()
+            Toast.makeText(requireContext(), "cancel", Toast.LENGTH_SHORT).show()
         }
-        deleteitem.setOnMenuItemClickListener {
-            adapter.updateAdapter(ArrayList(),true)
-            additem?.isVisible = true
+
+        deleteItem.setOnMenuItemClickListener {
+            adapter.updateAdapter(ArrayList(), true)
+            addItem?.isVisible = true
             true
         }
-        additem?.setOnMenuItemClickListener {
+
+        addItem?.setOnMenuItemClickListener {
             val imageCounter = ImagePiker.MAX_IMAGE_COUNT - adapter.list.size
-            ImagePiker.pickImages(activity as EditOfferAct,imageCounter )
+            ImagePiker.pickImages(activity as EditOfferAct, imageCounter)
             true
         }
-
     }
-    fun updateAdapter(newlist:ArrayList<Uri>,activity:Activity){
 
-        resizeSelectedImages(newlist,false,activity)
-
+    fun updateAdapter(newList: ArrayList<Uri>, activity: Activity) {
+        resizeSelectedImages(newList, false, activity)
     }
-    fun selectsingleImage(uri:Uri,pos:Int){
 
-        val loadbar = binding.rcvSelectImage[pos].findViewById<ProgressBar>(R.id.loadbarimage)
+    fun selectSingleImage(uri: Uri, pos: Int) {
+        val loadBar = binding.rcvSelectImage[pos].findViewById<ProgressBar>(R.id.loadbarimage)
+
         job = CoroutineScope(Dispatchers.Main).launch {
-            loadbar.visibility = View.VISIBLE
-            val bitmaplist = ImageManager.imageResize(arrayListOf(uri),activity as Activity)
-            loadbar.visibility = View.GONE
-            adapter.list[pos] = bitmaplist[0]
+            loadBar.visibility = View.VISIBLE
+            val bitmapList = withContext(Dispatchers.IO) {
+                ImageManager.imageResize(arrayListOf(uri), activity as Activity)
+            }
+            loadBar.visibility = View.GONE
+            adapter.list[pos] = bitmapList[0]
             adapter.notifyItemChanged(pos)
         }
     }
