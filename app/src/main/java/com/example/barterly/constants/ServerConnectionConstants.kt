@@ -1,5 +1,5 @@
 package com.example.barterly.constants
 
 object ServerConnectionConstants {
-    const val URL = "http://10.0.2.2:3000"
+    const val URL = "https://2f96-94-142-136-113.ngrok-free.app"
 }

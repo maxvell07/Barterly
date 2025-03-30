@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         init()
         initRcView()
         initViewModel()
-        binding.progress.visibility = View.VISIBLE
+//        binding.progress.visibility = View.VISIBLE
         firebaseViewModel.loadoffers()
         bottomNavMenuOnClick()
         scrollListner()

@@ -22,6 +22,7 @@ class DescriptionAct : AppCompatActivity() {
     lateinit var adapter:ImageAdapter
     private lateinit var firebaseViewModel: FirebaseViewModel
     var offer: Offer? =null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDescriptionBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)

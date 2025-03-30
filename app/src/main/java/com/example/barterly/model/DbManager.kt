@@ -18,7 +18,11 @@ class DbManager {
             db.child(offer.key ?: "empty").child(auth.uid!!)
                 .child(OFFER_NODE)
                 .setValue(offer).addOnCompleteListener {
-                    finishLoadListener.onFinish(it.isSuccessful)
+                    val offerFilter = OfferFilter(offer.time, "${offer.category}_${offer.time}")
+                    db.child(offer.key ?: "empty")
+                        .child(FILTER_NODE).setValue(offerFilter).addOnCompleteListener {
+                            finishLoadListener.onFinish(it.isSuccessful)
+                        }
                 }
         }
     }
@@ -60,9 +64,10 @@ class DbManager {
     private fun removefromFavs(offer: Offer, listener: finishLoadListener) {
         offer.key?.let { // создаем узел favs и записываем в него uid пользователя
             offer.uid?.let { uid ->
-                db.child(it).child(FAVS_NODE).child(auth.uid.toString()).removeValue().addOnCompleteListener { // work
-                    if (it.isSuccessful) listener.onFinish(true)
-                }
+                db.child(it).child(FAVS_NODE).child(auth.uid.toString()).removeValue()
+                    .addOnCompleteListener { // work
+                        if (it.isSuccessful) listener.onFinish(true)
+                    }
             }
         }
     }
@@ -80,10 +85,13 @@ class DbManager {
     }
 
     fun getAllOffers(readCallback: ReadDataCallback?) {
-        val query = db.orderByChild(auth.uid + "/offer/price")
+        val query = db.orderByChild("/filter/time")
         readDataFromDb(query, readCallback)
     }
-
+    fun getAllOffersFromCat(readCallback: ReadDataCallback?) {
+        val query = db.orderByChild("/filter/time")
+        readDataFromDb(query, readCallback)
+    }
     fun deleteoffer(offer: Offer, listener: finishLoadListener) {
         if (offer.key == null || offer.uid == null) return
         db.child(offer.key).child(offer.uid).removeValue().addOnCompleteListener {
@@ -133,6 +141,7 @@ class DbManager {
     }
 
     companion object {
+        const val FILTER_NODE = "filter"
         const val OFFER_NODE = "offer"
         const val INFO_NODE = "info"
         const val MAIN_NODE = "main"

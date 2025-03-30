@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
+import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.model.Offer
 import com.example.barterly.model.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
@@ -40,6 +41,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     private var iseditstate = false
     private var offer: Offer? = null
     private lateinit var firebaseViewModel: FirebaseViewModel
+    private val host = ServerConnectionConstants.URL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +61,12 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
                 offer = offers.find { it.key == key }
                 offer?.let { fillViews(it) }
             }
-            if (offer != null) {
-                fillViews(offer!!)
-            }
+//            if (offer != null) {
+//                fillViews(offer!!)
+//            }
         }
+        Log.d("offer"," offerkey =${offer?.key}")
+        Log.d("offer"," offerimg1 =${offer?.img1}")
     }
 
     private fun iseditstate(): Boolean {
@@ -74,15 +78,6 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
 
     private fun fillViews(offer: Offer) = with(binding) {
         //observelive data
-        val images = listOfNotNull(
-            offer.img1, offer.img2, offer.img3
-        )
-        loadImagesToBitmaps(images) { bitmaps ->
-            imageViewAdapter.array.clear()
-            imageViewAdapter.array.addAll(bitmaps)
-            imageViewAdapter.notifyDataSetChanged()
-        }
-
         // Обновляем поля UI
 
         selectCountry.text = offer.country
@@ -93,6 +88,20 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         selectCategory.setText(offer.category)
         editTextdiscription.setText(offer.description)
         priceeditrext.setText(offer.price)
+
+        imageViewAdapter.array.clear()
+
+        val images = ArrayList<String>().apply {
+            offer.img1?.let { add(it) }
+            offer.img2?.let { add(it) }
+            offer.img3?.let { add(it) }
+        }
+
+        loadImagesToBitmaps(images) { bitmaps ->
+            imageViewAdapter.array.clear()
+            imageViewAdapter.array.addAll(bitmaps)
+            imageViewAdapter.notifyDataSetChanged()
+        }
 
     }
 
@@ -177,35 +186,43 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         firebaseViewModel.deleteAllImages(offer?.key.toString())
         val offertemp = filloffer()
         if (iseditstate) {
-            Log.d("asdf","asdasff")
-            dbmanager.publishOffer(offertemp.copy(key = offer?.key), onPublishFinish())
-            uploadImagesAndDelete(offer?.key.toString())
+            dbmanager.publishOffer(offertemp, onPublishFinish())
+            uploadImagesAndDelete(offertemp.key.toString())
         } else {
             dbmanager.publishOffer(offertemp, onPublishFinish())
             uploadImagesAndDelete(offertemp.key.toString())
         }
-//        firebaseViewModel.loadoffers()
+    }
+
+    private fun fileNamesList(): List<String> {
+        var fileNames: List<String>  = emptyList()
+        when (imageViewAdapter.itemCount){
+            1 -> fileNames = listOf("img1.jpg")
+            2 -> fileNames = listOf("img1.jpg", "img2.jpg")
+            3 -> fileNames = listOf("img1.jpg", "img2.jpg","img3.jpg")
+        }
+        return  fileNames
     }
 
     private fun uploadImagesAndDelete(offerKey: String) {
-        val fileNames = listOf("img1.jpg", "img2.jpg", "img3.jpg")
-
+        var fileNames = fileNamesList()
         CoroutineScope(Dispatchers.IO).launch {
-            imageViewAdapter.array.forEachIndexed { index, bitmap ->
+            val bitmaps = imageViewAdapter.array.toList() // Создаём копию списка перед изменением
+            bitmaps.forEachIndexed { index, bitmap ->
                 if (index < fileNames.size) {
                     val fileName = fileNames[index]
                     val file = saveBitmapToFile(bitmap, fileName)
 
                     if (file != null) {
-                        firebaseViewModel.filerepository.uploadFile(offerKey, file).let { success ->
-                            if (success.isSuccessful) {
-                                file.delete() // Удаляем файл после успешной загрузки
-                            }
+                        val success = firebaseViewModel.filerepository.uploadFile(offerKey, file)
+                        if (success.isSuccessful) {
+                            file.delete() // Удаляем файл после успешной загрузки
                         }
                     }
                 }
             }
         }
+
     }
 
     private fun saveBitmapToFile(bitmap: Bitmap, fileName: String): File? {
@@ -230,9 +247,9 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun filloffer(): Offer {
-        val offer: Offer
+        val offertemp: Offer
         binding.apply {
-            offer = Offer(
+            offertemp = Offer(
                 binding.selectCountry.text.toString(),
                 binding.selectCity.text.toString(),
                 binding.phoneEditText.text.toString(),
@@ -244,16 +261,24 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
                 "empty",
                 "empty",
                 "empty",
-                dbmanager.db.push().key,// генерируем уникальный ключ офера
+                offer?.key?: dbmanager.db.push().key,// генерируем уникальный ключ офера
                 "0",
                 dbmanager.auth.uid,
                 System.currentTimeMillis().toString()
             )
         }
-        offer.img1 = "/images/" + offer.key.toString() + "/img1.jpg"
-        offer.img2 = "/images/" + offer.key.toString() + "/img2.jpg"
-        offer.img3 = "/images/" + offer.key.toString() + "/img3.jpg"
-        return offer
+        offertemp.img1 = "/images/" + offertemp.key.toString() + "/img1.jpg"
+        offertemp.img2 = "/images/" + offertemp.key.toString() + "/img2.jpg"
+        offertemp.img3 = "/images/" + offertemp.key.toString() + "/img3.jpg"
+        return offertemp
+    }
+
+    private fun checkDiffImageAdapter(offer: Offer){
+        when (imageViewAdapter.itemCount){
+            1 -> offer.img1 = "/images/" + offer.key.toString() + "/img1.jpg"
+            2 -> offer.img2 = "/images/" + offer.key.toString() + "/img2.jpg"
+            3 -> offer.img3 = "/images/" + offer.key.toString() + "/img3.jpg"
+        }
     }
 
     override fun onFragClose(list: ArrayList<Bitmap>) {
