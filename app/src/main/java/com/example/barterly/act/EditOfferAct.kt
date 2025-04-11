@@ -172,7 +172,6 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
 
     fun onClickGetImages(view: View) {
         if (imageViewAdapter.array.size == 0) {
-//            firebaseViewModel.deleteAllImages(offer?.key.toString())
             ImagePiker.pickSeveralImages(this, 3)
 
         } else {

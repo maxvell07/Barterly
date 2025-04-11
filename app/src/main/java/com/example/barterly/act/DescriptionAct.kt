@@ -1,8 +1,11 @@
 package com.example.barterly.act
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -13,6 +16,7 @@ import com.example.barterly.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.adapters.ImageAdapter
 import com.example.barterly.databinding.ActivityDescriptionBinding
+import com.example.barterly.dialoghelper.BuyOrTradeDialog
 import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.squareup.picasso.Picasso
@@ -36,7 +40,29 @@ class DescriptionAct : AppCompatActivity() {
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
         binding.fbTel.setOnClickListener{call()}
-        binding.fbEmail.setOnClickListener{}
+        binding.fbEmail.setOnClickListener{
+            val dialog = BuyOrTradeDialog(
+                onBuyClicked = {
+                    // действие на "Купить"
+                    openWhatsAppDirect(offer?.phone.toString())
+                },
+                onTradeClicked = {
+                    // действие на "Обмен"
+                }
+            )
+            dialog.show(supportFragmentManager, "BuyOrTradeDialog")
+        }
+
+    }
+    fun openWhatsAppDirect(phoneNumber: String) {
+        try {
+            val uri = Uri.parse("smsto:$phoneNumber") // SMS URI
+            val intent = Intent(Intent.ACTION_SENDTO, uri)
+            intent.setPackage("com.whatsapp") // Указываем пакет WhatsApp
+            this.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp не установлен", Toast.LENGTH_SHORT).show()
+        }
     }
     private fun init(){
         adapter = ImageAdapter()
