@@ -1,7 +1,6 @@
 package com.example.barterly.viewmodel
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,7 +27,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             override fun readData(list: MutableList<Offer>) {
                 // Создаем новый список OfferResult с пустыми изображениями
                 viewModelScope.launch(Dispatchers.IO) {
-                    val updatedList = list.mapIndexed { index, offer ->
+                    var updatedList = list.mapIndexed { index, offer ->
                         val host = ServerConnectionConstants.URL
                         val img1: String
                         val img2: String
@@ -38,6 +37,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                         img3 = host +offer.img3
                         offer.copy(img1 = img1, img2 = img2, img3 = img3)
                     }
+                    updatedList = updatedList.reversed()
                     // Обновляем LiveData
                     liveOffersData.postValue(ArrayList(updatedList))
                 }

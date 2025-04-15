@@ -1,12 +1,12 @@
-package com.example.barterly.dialoghelper
+package com.example.barterly.dialogs
 
 import android.app.Dialog
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import com.example.barterly.R
 
@@ -30,7 +30,7 @@ class BuyOrTradeDialog(
             dialog.dismiss()
         }
 
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         return dialog
     }
 

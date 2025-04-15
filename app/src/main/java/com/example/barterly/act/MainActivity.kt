@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                 View.GONE
             }
             binding.progress.visibility = View.GONE
+            binding.mainContent.rcView.scrollToPosition(0)
         }
     }
 
@@ -231,9 +232,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                 newState: Int
             ) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROL) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-                }
+//                if (!recyclerView.canScrollVertically(SCROL) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                  пока не использую
+//                }
             }
         })
     }
@@ -241,7 +242,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     companion object {
 
         const val EDIT_STATE = "edit_state"
-        const val OFFER_DATA = "offer_data"
+//      const val OFFER_DATA = "offer_data"
         const val OFFER_KEY = "offer_key"
         const val SCROL = 1
     }

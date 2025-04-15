@@ -1,22 +1,26 @@
 package com.example.barterly.act
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.BarterlyApp
 import com.example.barterly.R
+import com.example.barterly.adapters.DialogOfferAdapter
 import com.example.barterly.adapters.ImageAdapter
 import com.example.barterly.databinding.ActivityDescriptionBinding
-import com.example.barterly.dialoghelper.BuyOrTradeDialog
+import com.example.barterly.dialogs.BuyOrTradeDialog
 import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.squareup.picasso.Picasso
@@ -26,6 +30,7 @@ class DescriptionAct : AppCompatActivity() {
     lateinit var adapter:ImageAdapter
     private lateinit var firebaseViewModel: FirebaseViewModel
     var offer: Offer? =null
+    var selectedOfferForTrade:Offer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDescriptionBinding.inflate(layoutInflater)
@@ -42,28 +47,101 @@ class DescriptionAct : AppCompatActivity() {
         binding.fbTel.setOnClickListener{call()}
         binding.fbEmail.setOnClickListener{
             val dialog = BuyOrTradeDialog(
+
                 onBuyClicked = {
                     // действие на "Купить"
                     openWhatsAppDirect(offer?.phone.toString())
                 },
                 onTradeClicked = {
-                    // действие на "Обмен"
+
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)
+                    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewOptions)
+                    recyclerView.layoutManager = LinearLayoutManager(this)
+
+                    // Сначала создаём диалог
+                    val alertDialog = AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .create()
+
+                    // Потом настраиваем адаптер
+                    recyclerView.adapter = DialogOfferAdapter(firebaseViewModel.liveOffersData.value ?: emptyList()) { selectedOffer ->
+                        selectedOfferForTrade = selectedOffer
+                        Toast.makeText(this, "Выбран: ${selectedOffer.title}", Toast.LENGTH_SHORT).show()
+                        sendOfferToWhatsApp(selectedOfferForTrade)
+                        alertDialog.dismiss()
+                    }
+
+                    alertDialog.show()
                 }
+
             )
             dialog.show(supportFragmentManager, "BuyOrTradeDialog")
         }
 
     }
+    private fun sendOfferToWhatsApp(myoffer: Offer?) {
+        var phoneNumber = offer?.phone?.replace(" ", "") ?: return // Убираем пробелы
+
+        // Если номер начинается с 8, заменяем его на +7 (международный формат для России)
+        if (phoneNumber.startsWith("8")) {
+            phoneNumber = "7" + phoneNumber.substring(1)
+        }
+
+        // Проверяем, чтобы номер был в международном формате
+        if (phoneNumber.length != 11 || !phoneNumber.startsWith("7")) {
+            Toast.makeText(this, "Неверный формат номера", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val message = """
+        Привет! Предлагаю обмен:
+        
+        ${myoffer?.title ?: "Без названия"}
+        Цена: ${myoffer?.price ?: "0"} ₽
+        ${myoffer?.description ?: ""}
+    """.trimIndent()
+
+        // Ссылки на картинки (предполагается, что картинки уже загружены в облако)
+        val imageUrl1 = myoffer?.img1 ?: ""
+        val imageUrl2 = myoffer?.img2 ?: ""
+
+        // Добавляем ссылки на картинки в сообщение
+        val messageWithImages = """
+        $message
+        
+        Картинка 1: $imageUrl1
+        Картинка 2: $imageUrl2
+    """.trimIndent()
+
+        try {
+            // Формируем правильный URL для WhatsApp с текстом и картинками
+            val uri = "https://wa.me/$phoneNumber?text=${Uri.encode(messageWithImages)}".toUri()
+
+            val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                setPackage("com.whatsapp") // Указываем пакет WhatsApp
+            }
+
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Не удалось открыть WhatsApp", Toast.LENGTH_SHORT).show()
+            Log.d("whatsapp2","${e.message}")
+        }
+    }
+
+
+
     fun openWhatsAppDirect(phoneNumber: String) {
         try {
-            val uri = Uri.parse("smsto:$phoneNumber") // SMS URI
+            val uri = "smsto:$phoneNumber".toUri() // SMS URI
             val intent = Intent(Intent.ACTION_SENDTO, uri)
             intent.setPackage("com.whatsapp") // Указываем пакет WhatsApp
             this.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "WhatsApp не установлен", Toast.LENGTH_SHORT).show()
+            Log.d("whatsapp","${e.message}")
         }
     }
+
     private fun init(){
         adapter = ImageAdapter()
         binding.apply {
@@ -71,6 +149,7 @@ class DescriptionAct : AppCompatActivity() {
         }
         getIntentFromMainAct()
         updateImageCounter()
+        firebaseViewModel.loadMyOffers()
     }
 
     private fun getIntentFromMainAct(){
@@ -84,13 +163,13 @@ class DescriptionAct : AppCompatActivity() {
         //observelive data
         // Обновляем поля UI
         tvCountry.text = offer.country
-        tvTel.setText(offer.phone)
+        tvTel.text = offer.phone
         tvCity.text = offer.city
-        tvTitleDes.setText(offer.title)
-        tvAdress.setText(offer.adress)
-        tvDesc.setText(offer.description)
-        tvPrice.setText(offer.price)
-        tvCategory.setText(offer.category)
+        tvTitleDes.text = offer.title
+        tvAdress.text = offer.adress
+        tvDesc.text = offer.description
+        tvPrice.text = offer.price
+        tvCategory.text = offer.category
 
         adapter.array.clear()
 
@@ -103,7 +182,7 @@ class DescriptionAct : AppCompatActivity() {
         loadImagesToBitmaps(images) { bitmaps ->
             adapter.array.clear()
             adapter.array.addAll(bitmaps)
-            adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged() //плохо, но пока так
         }
 
     }
@@ -141,9 +220,9 @@ class DescriptionAct : AppCompatActivity() {
     }
 
     private fun call(){
-        val Calluri = "tel:${offer?.phone}"
+        val callUri = "tel:${offer?.phone}"
         val iCall = Intent(Intent.ACTION_DIAL)
-        iCall.data = Calluri.toUri()
+        iCall.data = callUri.toUri()
         startActivity(iCall)
     }
     private fun updateImageCounter(){
