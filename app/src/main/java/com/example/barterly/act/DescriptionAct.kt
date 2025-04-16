@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -31,11 +32,12 @@ class DescriptionAct : AppCompatActivity() {
     private lateinit var firebaseViewModel: FirebaseViewModel
     var offer: Offer? =null
     var selectedOfferForTrade:Offer? = null
+    var dialog: BuyOrTradeDialog? =null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDescriptionBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.desc)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -46,36 +48,52 @@ class DescriptionAct : AppCompatActivity() {
         init()
         binding.fbTel.setOnClickListener{call()}
         binding.fbEmail.setOnClickListener{
-            val dialog = BuyOrTradeDialog(
+            dialog = BuyOrTradeDialog(
 
                 onBuyClicked = {
-                    // действие на "Купить"
-                    openWhatsAppDirect(offer?.phone.toString())
-                },
-                onTradeClicked = {
-
-                    val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)
-                    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewOptions)
-                    recyclerView.layoutManager = LinearLayoutManager(this)
-
-                    // Сначала создаём диалог
-                    val alertDialog = AlertDialog.Builder(this)
-                        .setView(dialogView)
-                        .create()
-
-                    // Потом настраиваем адаптер
-                    recyclerView.adapter = DialogOfferAdapter(firebaseViewModel.liveOffersData.value ?: emptyList()) { selectedOffer ->
-                        selectedOfferForTrade = selectedOffer
-                        Toast.makeText(this, "Выбран: ${selectedOffer.title}", Toast.LENGTH_SHORT).show()
-                        sendOfferToWhatsApp(selectedOfferForTrade)
-                        alertDialog.dismiss()
+                    val phone = offer?.phone
+                    if (!phone.isNullOrBlank()) {
+                        openWhatsAppDirect(phone)
+                    } else {
+                        Toast.makeText(this, "Номер телефона недоступен", Toast.LENGTH_SHORT).show()
                     }
 
-                    alertDialog.show()
+                },
+                onTradeClicked = {
+                    firebaseViewModel.liveOffersData.observe(this) { offers ->
+                        // Проверяем, активна ли еще Activity
+                        if (isFinishing || isDestroyed) return@observe
+
+                        val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)
+                        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewOptions)
+                        recyclerView.layoutManager = LinearLayoutManager(this)
+
+                        val alertDialog = AlertDialog.Builder(this@DescriptionAct)
+                            .setView(dialogView)
+                            .create()
+
+                        recyclerView.adapter = DialogOfferAdapter(offers) { selectedOffer ->
+                            selectedOfferForTrade = selectedOffer
+                            Toast.makeText(this, "Выбран: ${selectedOffer.title}", Toast.LENGTH_SHORT).show()
+                            sendOfferToWhatsApp(selectedOfferForTrade)
+                            alertDialog.dismiss()
+                        }
+
+                        dialogView.findViewById<Button>(R.id.btnClose).setOnClickListener {
+                            alertDialog.dismiss()
+                        }
+
+                        // Защита от WindowLeaked
+                        if (!isFinishing && !isDestroyed) {
+                            alertDialog.show()
+                        }
+                    }
                 }
 
+
+
             )
-            dialog.show(supportFragmentManager, "BuyOrTradeDialog")
+            dialog?.show(supportFragmentManager, "BuyOrTradeDialog")
         }
 
     }
@@ -238,12 +256,14 @@ class DescriptionAct : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         firebaseViewModel.liveOffersData.removeObservers(this)
+        dialog?.dismiss()
         Picasso.get().cancelTag(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         firebaseViewModel.liveOffersData.removeObservers(this)
+        dialog?.dismiss()
         Picasso.get().cancelTag(this)
     }
 }

@@ -24,6 +24,7 @@ import com.example.barterly.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.dialoghelper.DialogConst
 import com.example.barterly.dialoghelper.DialogHelper
+import com.example.barterly.fragment.FilterDialogFragment
 import com.example.barterly.model.Offer
 import com.example.barterly.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+//        setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
@@ -64,6 +65,23 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.filter -> {
+                val filterDialog = FilterDialogFragment { category, city, country, priceFrom, priceTo, sortByTime ->
+//                    firebaseViewModel.loadFilteredOffers(
+//                        category, city, country, priceFrom, priceTo, sortByTime
+//                    )
+                }
+                if (!isFinishing && !isDestroyed) {
+                    filterDialog.show(supportFragmentManager, "FilterDialog")
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private fun onActivityResult() {
         googleSignInLauncher = registerForActivityResult(
