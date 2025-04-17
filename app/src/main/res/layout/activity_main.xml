@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="start"
-    tools:context=".act.MainActivity">
+    tools:context=".presentation.view.act.MainActivity">
     <include
         android:id="@+id/main_content"
         layout="@layout/main_content"
