@@ -187,11 +187,11 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         firebaseViewModel.deleteAllImages(offer?.key.toString())
         val offertemp = filloffer()
         if (iseditstate) {
-            dbmanager.publishOffer(offertemp, onPublishFinish())
             uploadImagesAndDelete(offertemp.key.toString())
+            dbmanager.publishOffer(offertemp, onPublishFinish())
         } else {
-            dbmanager.publishOffer(offertemp, onPublishFinish())
             uploadImagesAndDelete(offertemp.key.toString())
+            dbmanager.publishOffer(offertemp, onPublishFinish())
         }
     }
 
@@ -251,35 +251,30 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         val offertemp: Offer
         binding.apply {
             offertemp = Offer(
-                binding.selectCountry.text.toString(),
-                binding.selectCity.text.toString(),
-                binding.phoneEditText.text.toString(),
-                binding.adresseditText.text.toString(),
-                binding.selectCategory.text.toString(),
-                binding.editTitleOffer.text.toString(),
-                binding.priceeditrext.text.toString(),
-                binding.editTextdiscription.text.toString(),
-                "empty",
-                "empty",
-                "empty",
-                offer?.key?: dbmanager.db.push().key,// генерируем уникальный ключ офера
+                selectCountry.text.toString(),
+                selectCity.text.toString(),
+                phoneEditText.text.toString(),
+                adresseditText.text.toString(),
+                selectCategory.text.toString(),
+                editTitleOffer.text.toString(),
+                priceeditrext.text.toString(),
+                editTextdiscription.text.toString(),
+                "empty", "empty", "empty", // временно, потом подставим реальные пути
+                offer?.key ?: dbmanager.db.push().key,
                 "0",
                 dbmanager.auth.uid,
                 System.currentTimeMillis().toString()
             )
         }
-        offertemp.img1 = "/images/" + offertemp.key.toString() + "/img1.jpg"
-        offertemp.img2 = "/images/" + offertemp.key.toString() + "/img2.jpg"
-        offertemp.img3 = "/images/" + offertemp.key.toString() + "/img3.jpg"
-        return offertemp
-    }
 
-    private fun checkDiffImageAdapter(offer: Offer){
-        when (imageViewAdapter.itemCount){
-            1 -> offer.img1 = "/images/" + offer.key.toString() + "/img1.jpg"
-            2 -> offer.img2 = "/images/" + offer.key.toString() + "/img2.jpg"
-            3 -> offer.img3 = "/images/" + offer.key.toString() + "/img3.jpg"
-        }
+        val imgBasePath = "/images/${offertemp.key}/"
+        val count = imageViewAdapter.itemCount
+
+        offertemp.img1 = if (count >= 1) imgBasePath + "img1.jpg" else "empty"
+        offertemp.img2 = if (count >= 2) imgBasePath + "img2.jpg" else "empty"
+        offertemp.img3 = if (count >= 3) imgBasePath + "img3.jpg" else "empty"
+
+        return offertemp
     }
 
     override fun onFragClose(list: ArrayList<Bitmap>) {

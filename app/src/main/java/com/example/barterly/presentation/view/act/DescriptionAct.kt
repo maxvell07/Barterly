@@ -36,9 +36,8 @@ class DescriptionAct : AppCompatActivity() {
     var dialog: BuyOrTradeDialog? =null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityDescriptionBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        binding = ActivityDescriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.desc)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -61,9 +60,8 @@ class DescriptionAct : AppCompatActivity() {
 
                 },
                 onTradeClicked = {
-                    firebaseViewModel.liveOffersData.observe(this) { offers ->
+                    firebaseViewModel.liveOffersData.value.let { offers ->
                         // Проверяем, активна ли еще Activity
-                        if (isFinishing || isDestroyed) return@observe
 
                         val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)
                         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewOptions)
@@ -73,7 +71,7 @@ class DescriptionAct : AppCompatActivity() {
                             .setView(dialogView)
                             .create()
 
-                        recyclerView.adapter = DialogOfferAdapter(offers) { selectedOffer ->
+                        recyclerView.adapter = DialogOfferAdapter(offers as List<Offer>) { selectedOffer ->
                             selectedOfferForTrade = selectedOffer
                             Toast.makeText(this, "Выбран: ${selectedOffer.title}", Toast.LENGTH_SHORT).show()
                             sendOfferToWhatsApp(selectedOfferForTrade)
