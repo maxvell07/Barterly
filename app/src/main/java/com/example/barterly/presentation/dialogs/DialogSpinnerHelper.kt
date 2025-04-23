@@ -1,4 +1,4 @@
-package com.example.barterly.util.dialogs
+package com.example.barterly.presentation.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater

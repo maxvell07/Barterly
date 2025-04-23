@@ -16,7 +16,7 @@ import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.data.model.Offer
 import com.example.barterly.data.model.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
-import com.example.barterly.util.dialogs.DialogSpinnerHelper
+import com.example.barterly.presentation.dialogs.DialogSpinnerHelper
 import com.example.barterly.presentation.view.fragment.FragmentCloseInterface
 import com.example.barterly.presentation.view.fragment.ImageListFragment
 import com.example.barterly.data.model.finishLoadListener

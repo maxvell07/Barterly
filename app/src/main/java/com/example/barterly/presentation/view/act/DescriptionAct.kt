@@ -21,7 +21,7 @@ import com.example.barterly.R
 import com.example.barterly.presentation.adapters.DialogOfferAdapter
 import com.example.barterly.presentation.adapters.ImageAdapter
 import com.example.barterly.databinding.ActivityDescriptionBinding
-import com.example.barterly.util.dialogs.BuyOrTradeDialog
+import com.example.barterly.presentation.dialogs.BuyOrTradeDialog
 import com.example.barterly.data.model.Offer
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
 import com.squareup.picasso.Picasso

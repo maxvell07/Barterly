@@ -22,8 +22,8 @@ import com.example.barterly.data.source.accounthelper.listener
 import com.example.barterly.presentation.adapters.offerlistener
 import com.example.barterly.presentation.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
-import com.example.barterly.util.dialoghelper.DialogConst
-import com.example.barterly.util.dialoghelper.DialogHelper
+import com.example.barterly.presentation.dialoghelper.DialogConst
+import com.example.barterly.presentation.dialoghelper.DialogHelper
 import com.example.barterly.presentation.view.fragment.FilterDialogFragment
 import com.example.barterly.data.model.Offer
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel

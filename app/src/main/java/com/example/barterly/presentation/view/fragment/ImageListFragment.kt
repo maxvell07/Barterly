@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.barterly.R
 import com.example.barterly.presentation.view.act.EditOfferAct
 import com.example.barterly.databinding.ListImageFragBinding
-import com.example.barterly.util.dialoghelper.ProgressDialog
+import com.example.barterly.presentation.dialoghelper.ProgressDialog
 import com.example.barterly.util.AdapterDeleteCallback
 import com.example.barterly.util.ImageManager
 import com.example.barterly.util.ImagePiker
