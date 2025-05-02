@@ -172,7 +172,7 @@ class DescriptionAct : AppCompatActivity() {
     private fun getIntentFromMainAct(){
         var key = intent.getSerializableExtra(MainActivity.OFFER_KEY) as String
         firebaseViewModel.liveOffersData.observe(this) { offers ->
-            offer = offers.find { it.key == key }
+            offer = offers?.find { it.key == key }
             offer?.let { fillOfferViews(it) }
         }
     }

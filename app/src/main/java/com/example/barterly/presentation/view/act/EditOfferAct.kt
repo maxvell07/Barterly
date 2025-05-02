@@ -60,7 +60,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         if (iseditstate) {
             var key = intent.getSerializableExtra(MainActivity.OFFER_KEY) as String
             firebaseViewModel.liveOffersData.observe(this) { offers ->
-                offer = offers.find { it.key == key }
+                offer = offers?.find { it.key == key }
                 offer?.let { fillViews(it) }
             }
 //            if (offer != null) {

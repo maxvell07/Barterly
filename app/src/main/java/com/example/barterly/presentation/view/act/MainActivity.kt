@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.di.BarterlyApp
 import com.example.barterly.R
+import com.example.barterly.data.model.FiltersCriteries
 import com.example.barterly.data.source.accounthelper.listener
 import com.example.barterly.presentation.adapters.offerlistener
 import com.example.barterly.presentation.adapters.OffersRcAdapter
@@ -47,19 +48,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         init()
         initRcView()
         initViewModel()
-//        binding.progress.visibility = View.VISIBLE
         firebaseViewModel.loadoffers()
         bottomNavMenuOnClick()
         scrollListner()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -69,10 +67,17 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         return when (item.itemId) {
             R.id.filter -> {
                 val filterDialog = FilterDialogFragment { category, city, country, priceFrom, priceTo, sortByTime ->
-//                    firebaseViewModel.loadFilteredOffers(
-//                        category, city, country, priceFrom, priceTo, sortByTime
-//                    )
+                    val criteria = FiltersCriteries(
+                        category = category,
+                        city = city,
+                        country = country,
+                        priceFrom = priceFrom,
+                        priceTo = priceTo,
+                        sortByTime = sortByTime
+                    )
+                    firebaseViewModel.applyFilters(criteria)
                 }
+
                 if (!isFinishing && !isDestroyed) {
                     filterDialog.show(supportFragmentManager, "FilterDialog")
                 }
@@ -111,16 +116,14 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     }
 
     private fun initViewModel() { //отслеживаем изменения в данных и обновляем адаптер
-        firebaseViewModel.liveOffersData.observe(this) {
-            offeradapter.updateAdapter(it)
-            binding.mainContent.tvEmpty.visibility = if (it.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+        firebaseViewModel.filteredOffers.observe(this) { list ->
+            offeradapter.updateAdapter(list)
+            binding.mainContent.tvEmpty.visibility =
+                if (list.isEmpty()) View.VISIBLE else View.GONE
             binding.progress.visibility = View.GONE
             binding.mainContent.rcView.scrollToPosition(0)
         }
+
     }
 
     private fun init() {

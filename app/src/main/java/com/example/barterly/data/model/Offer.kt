@@ -27,3 +27,13 @@ data class Offer(
     var callscounter: String = "0"
 
 ) : Serializable
+
+fun Offer.matches(criteria: FiltersCriteries): Boolean {
+    criteria.category?.let { if (this.category != it) return false }
+    criteria.city    ?.let { if (this.city     != it) return false }
+    criteria.country ?.let { if (this.country  != it) return false }
+    criteria.priceFrom?.let { this.price?.toIntOrNull()?.let { price -> if (price < it) return false } }
+    criteria.priceTo  ?.let { this.price?.toIntOrNull()?.let { price -> if (price > it) return false } }
+    return true
+}
+

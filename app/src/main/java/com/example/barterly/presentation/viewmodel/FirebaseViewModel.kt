@@ -1,13 +1,17 @@
 package com.example.barterly.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.data.model.DbManager
+import com.example.barterly.data.model.FiltersCriteries
 import com.example.barterly.data.model.Offer
 import com.example.barterly.data.model.ReadDataCallback
 import com.example.barterly.data.model.finishLoadListener
+import com.example.barterly.data.model.matches
 import com.example.barterly.data.source.service.FileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,30 +19,45 @@ import kotlinx.coroutines.launch
 class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
     private val dbManager = DbManager()
-    val liveOffersData = MutableLiveData<ArrayList<Offer>>()
+    val liveOffersData = MutableLiveData<ArrayList<Offer>?>()
 
-//    fun clear() {
-//        liveOffersData.value =
-//    }
-    //suspend
+    val filterslivedata = MutableLiveData<FiltersCriteries>(FiltersCriteries())
+
+
+    fun applyFilters(criteria: FiltersCriteries) {
+        filterslivedata.value = criteria
+    }
+    val filteredOffers: LiveData<List<Offer>> = MediatorLiveData<List<Offer>>().apply {
+        fun recalc() {
+            val offers   = liveOffersData.value.orEmpty()
+            val criteria = filterslivedata.value ?: FiltersCriteries()
+            // фильтрация
+            var result = offers.filter { it.matches(criteria) }
+            // сортировка по времени, если нужно
+            if (criteria.sortByTime) {
+                result = result.sortedByDescending { it.time /* или своё поле времени */ }
+            }
+            value = result
+        }
+        addSource(liveOffersData) { recalc() }
+        addSource(filterslivedata) { recalc() }
+    }
+
     fun loadoffers() {
-        dbManager.getAllOffers(object : ReadDataCallback {
+        DbManager().getAllOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
-                // Создаем новый список OfferResult с пустыми изображениями
                 viewModelScope.launch(Dispatchers.IO) {
-                    var updatedList = list.mapIndexed { index, offer ->
-                        val host = ServerConnectionConstants.URL
-                        val img1: String
-                        val img2: String
-                        val img3: String
-                        img1 = host +offer.img1
-                        img2 = host +offer.img2
-                        img3 = host +offer.img3
-                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
-                    }
-                    updatedList = updatedList.reversed()
-                    // Обновляем LiveData
-                    liveOffersData.postValue(ArrayList(updatedList))
+                    val host = ServerConnectionConstants.URL
+                    val updated = list
+                        .map {
+                            it.copy(
+                                img1 = host + it.img1,
+                                img2 = host + it.img2,
+                                img3 = host + it.img3
+                            )
+                        }
+                        .reversed()
+                    liveOffersData.postValue(updated as ArrayList<Offer>?)
                 }
             }
         })
@@ -47,36 +66,36 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     // написать метод который вызывает loadoffers а после подгружпет картинки к оферам
 
     fun loadMyFavs() {
-        dbManager.getMyFavs(object : ReadDataCallback {
+        DbManager().getMyFavs(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val updatedList = list.mapIndexed { index, offer ->
-                        val host = ServerConnectionConstants.URL
-                        val img1 = host + offer.img1
-                        val img2 = host + offer.img2
-                        val img3 = host + offer.img3
-                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
+                    val host = ServerConnectionConstants.URL
+                    val updated = list.map {
+                        it.copy(
+                            img1 = host + it.img1,
+                            img2 = host + it.img2,
+                            img3 = host + it.img3
+                        )
                     }
-                    // Обновляем LiveData
-                    liveOffersData.postValue(ArrayList(updatedList))
+                    liveOffersData.postValue(updated as ArrayList<Offer>?)
                 }
             }
         })
     }
 
     fun loadMyOffers() {
-        dbManager.getMyOffers(object : ReadDataCallback {
+        DbManager().getMyOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val updatedList = list.mapIndexed { index, offer ->
-                        val host = ServerConnectionConstants.URL
-                        val img1 = host + offer.img1
-                        val img2 = host + offer.img2
-                        val img3 = host + offer.img3
-                        offer.copy(img1 = img1, img2 = img2, img3 = img3)
+                    val host = ServerConnectionConstants.URL
+                    val updated = list.map {
+                        it.copy(
+                            img1 = host + it.img1,
+                            img2 = host + it.img2,
+                            img3 = host + it.img3
+                        )
                     }
-                    // Обновляем LiveData
-                    liveOffersData.postValue(ArrayList(updatedList))
+                    liveOffersData.postValue(updated as ArrayList<Offer>?)
                 }
             }
         })
@@ -103,7 +122,6 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     }
 
     fun offerViewed(offer: Offer) {
-        val offer = offer // Конвертируем OfferResult в Offer
         dbManager.offerViewed(offer)
     }
 
@@ -128,6 +146,5 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             }
         })
     }
-
 
 }
