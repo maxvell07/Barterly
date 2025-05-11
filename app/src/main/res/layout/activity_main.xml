@@ -31,5 +31,4 @@
         app:subheaderColor="#000000"
         app:menu="@menu/drawer_main_menu" />
 
-
 </androidx.drawerlayout.widget.DrawerLayout>

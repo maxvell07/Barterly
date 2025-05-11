@@ -49,7 +49,7 @@
 
         <CheckBox
             android:id="@+id/cbSortByTime"
-            android:text="Сортировать по времени"
+            android:text="Сортировать по ..."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
