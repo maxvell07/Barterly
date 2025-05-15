@@ -14,18 +14,19 @@ class FileRepository(private val fileService: FileService) {
         return fileService.uploadFile(folderName, filePart)
     }
 
-    suspend fun updateFile(folderName: String, filename: String, file: File): Response<ResponseBody> {
-        val filePart = prepareFilePart("image", file)
-        return fileService.updateFile(folderName, filename, filePart)
-    }
+//    suspend fun updateFile(folderName: String, filename: String, file: File): Response<ResponseBody> {
+//        val filePart = prepareFilePart("image", file)
+//        return fileService.updateFile(folderName, filename, filePart)
+//    }
+//
+//    suspend fun deleteFile(folderName: String, filename: String): Response<ResponseBody> {
+//        return fileService.deleteFile(folderName, filename)
+//    }
+//
+//    suspend fun getFile(folderName: String, filename: String): Response<ResponseBody> {
+//        return fileService.getFile(folderName, filename)
+//    }
 
-    suspend fun deleteFile(folderName: String, filename: String): Response<ResponseBody> {
-        return fileService.deleteFile(folderName, filename)
-    }
-
-    suspend fun getFile(folderName: String, filename: String): Response<ResponseBody> {
-        return fileService.getFile(folderName, filename)
-    }
     suspend fun deleteAllFiles(folderName: String): String {
         return withContext(Dispatchers.IO) {
             try {

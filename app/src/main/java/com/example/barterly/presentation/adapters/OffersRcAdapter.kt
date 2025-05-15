@@ -1,7 +1,6 @@
 package com.example.barterly.presentation.adapters
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,16 +60,15 @@ class OffersRcAdapter(val act: MainActivity) :
             mainonClick(offer)
 
             offer.img1?.let { imageUrl ->
-                Log.d("url",imageUrl)
                 Picasso.get()
                     .load(imageUrl)
                     .tag(this)
                     .placeholder(R.drawable.image) // Заглушка во время загрузки
                     .error(R.drawable.image) // Если ошибка загрузки
                     .into(mainimage) // Загружаем изображение в ImageView
-                Log.d("image", "Загружаем изображение: $imageUrl")
             }
         }
+
         private fun mainonClick(offer: Offer) = with(binding){
             ibEditOffer.setOnClickListener(onClickEdit(offer))
             ibDeleteOffer.setOnClickListener {

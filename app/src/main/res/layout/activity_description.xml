@@ -40,6 +40,7 @@
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
+                    android:scaleType="centerCrop"
                     android:background="@color/light_blue"
                     android:clipToPadding="false"
                     android:padding="10dp"/>

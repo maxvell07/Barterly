@@ -11,7 +11,7 @@ import com.example.barterly.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class FilterDialogFragment(
-    private val onApplyFilter: (category: String?, city: String?, country: String?, priceFrom: Int?, priceTo: Int?, sortByTime: Boolean) -> Unit
+    private val onApplyFilter: (category: String?, city: String?, country: String?, priceFrom: Int?, priceTo: Int?) -> Unit
 ) : BottomSheetDialogFragment() {
 
     private lateinit var categoryInput: EditText
@@ -34,7 +34,6 @@ class FilterDialogFragment(
         countryInput = view.findViewById(R.id.etCountry)
         priceFromInput = view.findViewById(R.id.etPriceFrom)
         priceToInput = view.findViewById(R.id.etPriceTo)
-        sortByTimeCheckbox = view.findViewById(R.id.cbSortByTime)
         applyButton = view.findViewById(R.id.btnApply)
 
         applyButton.setOnClickListener {
@@ -43,10 +42,9 @@ class FilterDialogFragment(
             val country = countryInput.text.toString().ifBlank { null }
             val priceFrom = priceFromInput.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull()
             val priceTo = priceToInput.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull()
-            val sortByTime = sortByTimeCheckbox.isChecked
 
             // Передаем данные в функцию обработки фильтрации
-            onApplyFilter(category, city, country, priceFrom, priceTo, sortByTime)
+            onApplyFilter(category, city, country, priceFrom, priceTo)
             dismiss()
         }
 

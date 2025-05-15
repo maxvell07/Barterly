@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.barterly.di.BarterlyApp
 import com.example.barterly.R
 import com.example.barterly.presentation.adapters.ImageAdapter
-import com.example.barterly.constants.ServerConnectionConstants
 import com.example.barterly.data.model.Offer
 import com.example.barterly.data.model.DbManager
 import com.example.barterly.databinding.ActivityEditAdsBinding
@@ -43,7 +42,6 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     private var iseditstate = false
     private var offer: Offer? = null
     private lateinit var firebaseViewModel: FirebaseViewModel
-    private val host = ServerConnectionConstants.URL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +61,6 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
                 offer = offers?.find { it.key == key }
                 offer?.let { fillViews(it) }
             }
-//            if (offer != null) {
-//                fillViews(offer!!)
-//            }
         }
         Log.d("offer"," offerkey =${offer?.key}")
         Log.d("offer"," offerimg1 =${offer?.img1}")

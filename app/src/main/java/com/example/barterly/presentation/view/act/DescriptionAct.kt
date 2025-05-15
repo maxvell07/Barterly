@@ -257,7 +257,6 @@ class DescriptionAct : AppCompatActivity() {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Не удалось открыть звонилку", Toast.LENGTH_SHORT).show()
             Log.e("CALL_ERROR", "${e.message}", e)
         }
     }

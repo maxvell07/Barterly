@@ -28,6 +28,7 @@ import com.example.barterly.presentation.dialoghelper.DialogHelper
 import com.example.barterly.presentation.view.fragment.FilterDialogFragment
 import com.example.barterly.data.model.Offer
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
+import com.example.barterly.presentation.viewmodel.OfferListType
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -50,11 +51,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
+
         init()
         initRcView()
         initViewModel()
+
+        firebaseViewModel.setCurrentType(OfferListType.ALL)
         firebaseViewModel.loadoffers()
+
         bottomNavMenuOnClick()
         scrollListner()
     }
@@ -66,14 +72,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.filter -> {
-                val filterDialog = FilterDialogFragment { category, city, country, priceFrom, priceTo, sortByTime ->
+                val filterDialog = FilterDialogFragment { category, city, country, priceFrom, priceTo ->
                     val criteria = FiltersCriteries(
                         category = category,
                         city = city,
                         country = country,
                         priceFrom = priceFrom,
-                        priceTo = priceTo,
-                        sortByTime = sortByTime
+                        priceTo = priceTo
                     )
                     firebaseViewModel.applyFilters(criteria)
                 }
@@ -115,15 +120,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         binding.mainContent.bnavview.selectedItemId = R.id.home
     }
 
-    private fun initViewModel() { //отслеживаем изменения в данных и обновляем адаптер
-        firebaseViewModel.filteredOffers.observe(this) { list ->
-            offeradapter.updateAdapter(list)
-            binding.mainContent.tvEmpty.visibility =
-                if (list.isEmpty()) View.VISIBLE else View.GONE
+    private fun initViewModel() {
+        firebaseViewModel.liveDataFilter.observe(this) { list ->
+            offeradapter.updateAdapter(list as List<Offer>)
+            binding.mainContent.tvEmpty.visibility = if (list.isNullOrEmpty()) View.VISIBLE else View.GONE
             binding.progress.visibility = View.GONE
             binding.mainContent.rcView.scrollToPosition(0)
         }
-
     }
 
     private fun init() {
@@ -146,29 +149,30 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         mainContent.bnavview.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.new_offer -> {
-                    if (myAuth.currentUser?.isAnonymous !=true){
-                    val i = Intent(this@MainActivity, EditOfferAct::class.java)
-                    startActivity(i)}
+                    if (myAuth.currentUser?.isAnonymous != true) {
+                        val i = Intent(this@MainActivity, EditOfferAct::class.java)
+                        startActivity(i)
+                    }
                 }
-
                 R.id.home -> {
-                    firebaseViewModel.loadoffers()
+                    firebaseViewModel.updateCurrentType(OfferListType.ALL)
+                    firebaseViewModel.loadoffers()  // тут будет фильтрация применена в loadOffers при получении
                     mainContent.toolbar.title = getString(R.string.other)
                 }
-
                 R.id.my_offers -> {
-
-                    firebaseViewModel.loadMyOffers()
+                    firebaseViewModel.updateCurrentType(OfferListType.MY)
+                    firebaseViewModel.loadMyOffers() // фильтрация не применяется
                     mainContent.toolbar.title = getString(R.string.ad1)
                 }
-
                 R.id.favorites -> {
-                    firebaseViewModel.loadMyFavs()
+                    firebaseViewModel.updateCurrentType(OfferListType.FAV)
+                    firebaseViewModel.loadMyFavs() // фильтрация не применяется
                     mainContent.toolbar.title = getString(R.string.offer_my_favs)
                 }
             }
             true
         }
+
     }
 
     private fun initRcView() {
@@ -188,12 +192,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             }
 
             R.id.id_sign_up -> {
-                //Toast.makeText(this,"Main2",Toast.LENGTH_SHORT).show()
                 dialoghelper.createSignDialog(DialogConst.SIGN_UP_STATE)
             }
 
             R.id.id_sign_in -> {
-                //Toast.makeText(this,"Main2",Toast.LENGTH_SHORT).show()
                 dialoghelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
 
@@ -232,15 +234,14 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     }
 
 
+
     override fun onFavClick(offer: Offer) {
         firebaseViewModel.onFavClick(offer)
     }
 
     override fun onOfferViewed(offer: Offer) {
         firebaseViewModel.offerViewed(offer)
-
     }
-
 
     override fun ondeleteoffer(offer: Offer) {
         firebaseViewModel.deleteoffer(offer)
@@ -263,7 +264,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     companion object {
 
         const val EDIT_STATE = "edit_state"
-//      const val OFFER_DATA = "offer_data"
         const val OFFER_KEY = "offer_key"
         const val SCROL = 1
     }

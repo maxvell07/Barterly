@@ -47,16 +47,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
-        <CheckBox
-            android:id="@+id/cbSortByTime"
-            android:text="Сортировать по ..."
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/btnApply"
             android:text="Применить фильтр"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+        <Button
+            android:id="@+id/btnReset"
+            android:text="Сбросить фильтр"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />

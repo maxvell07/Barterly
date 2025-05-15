@@ -146,7 +146,6 @@ class DbManager {
         const val INFO_NODE = "info"
         const val MAIN_NODE = "main"
         const val FAVS_NODE = "favs"
-        const val OFFERS_LIMIT = 2
     }
 }
 

@@ -1,7 +1,5 @@
 package com.example.barterly.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,31 +14,62 @@ import com.example.barterly.data.source.service.FileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
+enum class OfferListType {
+    ALL, MY, FAV
+}
+
 class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
     private val dbManager = DbManager()
     val liveOffersData = MutableLiveData<ArrayList<Offer>?>()
-
+    val myOffersData = MutableLiveData<ArrayList<Offer>?>()
+    val favOffersData = MutableLiveData<ArrayList<Offer>?>()
     val filterslivedata = MutableLiveData<FiltersCriteries>(FiltersCriteries())
+
+    val liveDataFilter = MutableLiveData<ArrayList<Offer>?>()
+
+    // Текущий активный тип списка
+    var currentType: OfferListType = OfferListType.ALL
+        private set
+
+    fun updateCurrentType(type: OfferListType) {
+        currentType = type
+    }
 
 
     fun applyFilters(criteria: FiltersCriteries) {
-        filterslivedata.value = criteria
-    }
-    val filteredOffers: LiveData<List<Offer>> = MediatorLiveData<List<Offer>>().apply {
-        fun recalc() {
-            val offers   = liveOffersData.value.orEmpty()
-            val criteria = filterslivedata.value ?: FiltersCriteries()
-            // фильтрация
-            var result = offers.filter { it.matches(criteria) }
-            // сортировка по времени, если нужно
-            if (criteria.sortByTime) {
-                result = result.sortedByDescending { it.time /* или своё поле времени */ }
+        filterslivedata.postValue(criteria)
+
+        if (currentType != OfferListType.ALL) {
+            val listToShow: List<Offer> = when (currentType) {
+                OfferListType.MY -> myOffersData.value ?: emptyList()
+                OfferListType.FAV -> favOffersData.value ?: emptyList()
+                else -> emptyList()
             }
-            value = result
+            liveDataFilter.postValue(ArrayList(listToShow)) // ← исправлено
+            return
         }
-        addSource(liveOffersData) { recalc() }
-        addSource(filterslivedata) { recalc() }
+
+        val offersToFilter = liveOffersData.value ?: return
+
+        val filtered = offersToFilter
+            .filter { it.matches(criteria) }
+            .let { list ->
+                if (criteria.sortByTime == true) list.sortedByDescending { it.time } else list
+            }
+
+        liveDataFilter.postValue(ArrayList(filtered)) // ← это уже было правильно
+    }
+
+
+
+
+    // Устанавливаем текущий тип списка и сразу фильтруем по текущим критериям
+    fun setCurrentType(type: OfferListType) {
+        currentType = type
+        val criteria = filterslivedata.value ?: FiltersCriteries()
+        applyFilters(criteria)
     }
 
     fun loadoffers() {
@@ -58,12 +87,12 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                         }
                         .reversed()
                     liveOffersData.postValue(updated as ArrayList<Offer>?)
+                    // Если сейчас активен ALL - обновляем filtered
+                    if (currentType == OfferListType.ALL) applyFilters(filterslivedata.value ?: FiltersCriteries())
                 }
             }
         })
     }
-
-    // написать метод который вызывает loadoffers а после подгружпет картинки к оферам
 
     fun loadMyFavs() {
         DbManager().getMyFavs(object : ReadDataCallback {
@@ -77,7 +106,8 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                             img3 = host + it.img3
                         )
                     }
-                    liveOffersData.postValue(updated as ArrayList<Offer>?)
+                    favOffersData.postValue(updated as ArrayList<Offer>?)
+                    if (currentType == OfferListType.FAV) applyFilters(filterslivedata.value ?: FiltersCriteries())
                 }
             }
         })
@@ -95,7 +125,8 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                             img3 = host + it.img3
                         )
                     }
-                    liveOffersData.postValue(updated as ArrayList<Offer>?)
+                    myOffersData.postValue(updated as ArrayList<Offer>?)
+                    if (currentType == OfferListType.MY) applyFilters(filterslivedata.value ?: FiltersCriteries())
                 }
             }
         })
@@ -146,5 +177,4 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
             }
         })
     }
-
 }
