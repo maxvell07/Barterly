@@ -137,9 +137,9 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
         dbManager.deleteoffer(offer, object : finishLoadListener {
             override fun onFinish(bol: Boolean) {
                 if (bol) {
-                    val updatedList = liveOffersData.value
+                    val updatedList = liveDataFilter.value
                     updatedList?.remove(offer) // Удаляем по OfferResult
-                    liveOffersData.postValue(updatedList)
+                    liveDataFilter.postValue(updatedList)
                 }
             }
         })
@@ -160,7 +160,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
 
         dbManager.onFavClick(offer, object : finishLoadListener {
             override fun onFinish(bol: Boolean) {
-                val updatedList = liveOffersData.value
+                val updatedList = liveDataFilter.value
                 val pos = updatedList?.indexOf(offer)
 
                 if (pos != null && pos != -1) {
@@ -173,7 +173,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                     )
                 }
 
-                liveOffersData.postValue(updatedList)
+                liveDataFilter.postValue(updatedList)
             }
         })
     }

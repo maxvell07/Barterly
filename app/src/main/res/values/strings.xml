@@ -38,8 +38,8 @@
     <string name="price_Hint">*Цена</string>
     <string name="description">Описание</string>
     <string name="description_hint">*Описание</string>
-    <string name="adress_hint">*Адресс</string>
-    <string name="adress">Адресс</string>
+    <string name="adress_hint">*Адрес</string>
+    <string name="adress">Адрес</string>
     <string name="publish">Опубликовать</string>
     <string name="offer_my_favs">Избраное</string>
 

@@ -60,7 +60,7 @@ class DescriptionAct : AppCompatActivity() {
 
                 },
                 onTradeClicked = {
-                    firebaseViewModel.liveOffersData.value.let { offers ->
+                    firebaseViewModel.myOffersData.value.let { offers ->
                         // Проверяем, активна ли еще Activity
 
                         val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)

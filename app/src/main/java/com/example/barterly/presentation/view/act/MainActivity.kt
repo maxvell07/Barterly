@@ -125,7 +125,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
             offeradapter.updateAdapter(list as List<Offer>)
             binding.mainContent.tvEmpty.visibility = if (list.isNullOrEmpty()) View.VISIBLE else View.GONE
             binding.progress.visibility = View.GONE
-            binding.mainContent.rcView.scrollToPosition(0)
         }
     }
 

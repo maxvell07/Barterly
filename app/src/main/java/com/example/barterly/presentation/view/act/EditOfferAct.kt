@@ -1,11 +1,13 @@
 package com.example.barterly.presentation.view.act
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -41,6 +43,11 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     var editimagepos = 0
     private var iseditstate = false
     private var offer: Offer? = null
+    private lateinit var titleEdit: EditText
+    private lateinit var phoneEdit: EditText
+    private lateinit var addressEdit: EditText
+    private lateinit var priceEdit: EditText
+    private lateinit var descriptionEdit: EditText
     private lateinit var firebaseViewModel: FirebaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,11 +55,67 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
         binding = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
+        titleEdit = findViewById(R.id.edit_title_offer)
+        phoneEdit = findViewById(R.id.phone_edit_text)
+        addressEdit = findViewById(R.id.adresseditText)
+        priceEdit = findViewById(R.id.priceeditrext)
+        descriptionEdit = findViewById(R.id.editTextdiscription)
         init()
         checkeditstate()
         updateImageCounter()
+        findViewById<android.widget.Button>(R.id.button).setOnClickListener {
+            if (validateFields()) {
+                onClickPublish()
+            }
+        }
+    }
+    private fun validateFields(): Boolean {
+        var isValid = true
+
+        // Список обязательных EditText
+        val editFields = listOf(
+            R.id.edit_title_offer,
+            R.id.phone_edit_text,
+            R.id.adresseditText,
+            R.id.priceeditrext,
+            R.id.editTextdiscription
+        )
+
+        // Проверяем EditText: если пустой — делаем hint красным
+        editFields.forEach { id ->
+            val editText = findViewById<EditText>(id)
+            if (editText.text.isNullOrBlank()) {
+                editText.setHintTextColor(Color.RED)
+                isValid = false
+            }
+        }
+
+        val selectViews = listOf(
+            binding.selectCategory to getString(R.string.select_category),
+            binding.selectCountry to getString(R.string.select_country),
+            binding.selectCity to getString(R.string.select_city)
+        )
+
+        selectViews.forEach { (textView, defaultText) ->
+            if (textView.text.toString() == defaultText) {
+                isValid = false
+            }
+        }
+        return isValid
     }
 
+    private fun onClickPublish() {
+        // Загрузка и публикация объявления
+        firebaseViewModel.deleteAllImages(offer?.key.toString())
+        val offertemp = filloffer()
+        if (iseditstate) {
+            uploadImagesAndDelete(offertemp.key.toString())
+            dbmanager.publishOffer(offertemp, onPublishFinish())
+        } else {
+            uploadImagesAndDelete(offertemp.key.toString())
+            dbmanager.publishOffer(offertemp, onPublishFinish())
+        }
+    }
     private fun checkeditstate() {
         iseditstate = iseditstate()
         if (iseditstate) {
@@ -175,18 +238,6 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
             openChoosenImageFrag(null)
             chooseImageFrag?.updateAdapterFromEdit(imageViewAdapter.array)
 
-        }
-    }
-
-    fun onClickPublish(view: View) {
-        firebaseViewModel.deleteAllImages(offer?.key.toString())
-        val offertemp = filloffer()
-        if (iseditstate) {
-            uploadImagesAndDelete(offertemp.key.toString())
-            dbmanager.publishOffer(offertemp, onPublishFinish())
-        } else {
-            uploadImagesAndDelete(offertemp.key.toString())
-            dbmanager.publishOffer(offertemp, onPublishFinish())
         }
     }
 
