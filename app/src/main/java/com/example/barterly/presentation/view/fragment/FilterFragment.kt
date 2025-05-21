@@ -5,29 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import com.example.barterly.R
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.example.barterly.data.model.FiltersCriteries
+import com.example.barterly.di.BarterlyApp
 
-class FilterDialogFragment(
-    private val onApplyFilter: (category: String?, city: String?, country: String?, priceFrom: Int?, priceTo: Int?) -> Unit
-) : BottomSheetDialogFragment() {
+class FilterFragment : Fragment() {
 
     private lateinit var categoryInput: EditText
     private lateinit var cityInput: EditText
     private lateinit var countryInput: EditText
     private lateinit var priceFromInput: EditText
     private lateinit var priceToInput: EditText
-    private lateinit var sortByTimeCheckbox: CheckBox
     private lateinit var applyButton: Button
+    private lateinit var resetButton: Button
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_filter_dialog, container, false)
+
+        val viewModel = (requireActivity().application as BarterlyApp).firebaseViewModel
 
         categoryInput = view.findViewById(R.id.etCategory)
         cityInput = view.findViewById(R.id.etCity)
@@ -35,20 +37,29 @@ class FilterDialogFragment(
         priceFromInput = view.findViewById(R.id.etPriceFrom)
         priceToInput = view.findViewById(R.id.etPriceTo)
         applyButton = view.findViewById(R.id.btnApply)
+        resetButton = view.findViewById(R.id.btnReset)
 
         applyButton.setOnClickListener {
-            val category = categoryInput.text.toString().ifBlank { null }
-            val city = cityInput.text.toString().ifBlank { null }
-            val country = countryInput.text.toString().ifBlank { null }
-            val priceFrom = priceFromInput.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull()
-            val priceTo = priceToInput.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull()
+            val filters = FiltersCriteries(
+                category = categoryInput.text.toString().ifBlank { null },
+                city = cityInput.text.toString().ifBlank { null },
+                country = countryInput.text.toString().ifBlank { null },
+                priceFrom = priceFromInput.text.toString().toIntOrNull(),
+                priceTo = priceToInput.text.toString().toIntOrNull()
+            )
+            viewModel.applyFilters(filters)
+            parentFragmentManager.popBackStack()
+        }
 
-            // Передаем данные в функцию обработки фильтрации
-            onApplyFilter(category, city, country, priceFrom, priceTo)
-            dismiss()
+        resetButton.setOnClickListener {
+            viewModel.clearFilters()
+            parentFragmentManager.popBackStack()
         }
 
         return view
     }
-}
 
+    companion object {
+        fun newInstance(): FilterFragment = FilterFragment()
+    }
+}

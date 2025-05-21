@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation ("androidx.fragment:fragment-ktx:1.6.2")
     implementation  ("io.ak1.pix:piximagepicker:1.6.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

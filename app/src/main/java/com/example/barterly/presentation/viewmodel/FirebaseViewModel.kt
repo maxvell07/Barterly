@@ -36,6 +36,9 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     fun updateCurrentType(type: OfferListType) {
         currentType = type
     }
+    fun clearFilters() {
+        applyFilters(FiltersCriteries())
+    }
 
 
     fun applyFilters(criteria: FiltersCriteries) {

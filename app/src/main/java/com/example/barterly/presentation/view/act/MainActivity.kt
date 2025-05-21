@@ -18,15 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barterly.di.BarterlyApp
 import com.example.barterly.R
-import com.example.barterly.data.model.FiltersCriteries
 import com.example.barterly.data.source.accounthelper.listener
 import com.example.barterly.presentation.adapters.offerlistener
 import com.example.barterly.presentation.adapters.OffersRcAdapter
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.presentation.dialoghelper.DialogConst
 import com.example.barterly.presentation.dialoghelper.DialogHelper
-import com.example.barterly.presentation.view.fragment.FilterDialogFragment
 import com.example.barterly.data.model.Offer
+import com.example.barterly.presentation.view.fragment.FilterFragment
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
 import com.example.barterly.presentation.viewmodel.OfferListType
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -65,32 +64,36 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         scrollListner()
     }
 
+    private var filterMenuItem: MenuItem? = null
+    private var currentTabId = R.id.home
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        filterMenuItem = menu?.findItem(R.id.filter)
+        updateFilterMenuVisibility()
         return super.onCreateOptionsMenu(menu)
     }
+
+    private fun updateFilterMenuVisibility() {
+        filterMenuItem?.isVisible = (currentTabId == R.id.home)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.filter -> {
-                val filterDialog = FilterDialogFragment { category, city, country, priceFrom, priceTo ->
-                    val criteria = FiltersCriteries(
-                        category = category,
-                        city = city,
-                        country = country,
-                        priceFrom = priceFrom,
-                        priceTo = priceTo
-                    )
-                    firebaseViewModel.applyFilters(criteria)
-                }
-
                 if (!isFinishing && !isDestroyed) {
-                    filterDialog.show(supportFragmentManager, "FilterDialog")
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.main_content, FilterFragment.newInstance()) // важный ID
+                        .addToBackStack(null)
+                        .commit()
                 }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
 
     private fun onActivityResult() {
@@ -146,32 +149,34 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
 
     private fun bottomNavMenuOnClick() = with(binding) {
         mainContent.bnavview.setOnItemSelectedListener { item ->
+            currentTabId = item.itemId
+
             when (item.itemId) {
                 R.id.new_offer -> {
                     if (myAuth.currentUser?.isAnonymous != true) {
-                        val i = Intent(this@MainActivity, EditOfferAct::class.java)
-                        startActivity(i)
+                        startActivity(Intent(this@MainActivity, EditOfferAct::class.java))
                     }
                 }
                 R.id.home -> {
                     firebaseViewModel.updateCurrentType(OfferListType.ALL)
-                    firebaseViewModel.loadoffers()  // тут будет фильтрация применена в loadOffers при получении
+                    firebaseViewModel.loadoffers()
                     mainContent.toolbar.title = getString(R.string.other)
                 }
                 R.id.my_offers -> {
                     firebaseViewModel.updateCurrentType(OfferListType.MY)
-                    firebaseViewModel.loadMyOffers() // фильтрация не применяется
+                    firebaseViewModel.loadMyOffers()
                     mainContent.toolbar.title = getString(R.string.ad1)
                 }
                 R.id.favorites -> {
                     firebaseViewModel.updateCurrentType(OfferListType.FAV)
-                    firebaseViewModel.loadMyFavs() // фильтрация не применяется
+                    firebaseViewModel.loadMyFavs()
                     mainContent.toolbar.title = getString(R.string.offer_my_favs)
                 }
             }
+
+            updateFilterMenuVisibility()  // обновляем видимость кнопки при смене вкладки
             true
         }
-
     }
 
     private fun initRcView() {
