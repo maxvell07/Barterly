@@ -11,6 +11,7 @@ import com.example.barterly.data.model.ReadDataCallback
 import com.example.barterly.data.model.finishLoadListener
 import com.example.barterly.data.model.matches
 import com.example.barterly.data.source.service.FileRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -39,6 +40,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     fun clearFilters() {
         applyFilters(FiltersCriteries())
     }
+    private val auth = FirebaseAuth.getInstance()
 
 
     fun applyFilters(criteria: FiltersCriteries) {

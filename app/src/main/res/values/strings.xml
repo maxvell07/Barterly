@@ -42,5 +42,14 @@
     <string name="adress">Адрес</string>
     <string name="publish">Опубликовать</string>
     <string name="offer_my_favs">Избраное</string>
+    <string name="no_offers_found">Пустой список объявлений</string>
+    <string name="no_favorites_found">Нет избранных объявлений</string>
+    <string name="no_myoffers_found">Нет собственных объявлений</string>
+    <string name="error_email_already_in_use">Этот адрес электронной почты уже используется.</string>
+    <string name="error_invalid_email">Неверный адрес электронной почты.</string>
+    <string name="error_weak_password">Пароль слишком слабый.</string>
+    <string name="error_wrong_password">Неверный пароль.</string>
+    <string name="error_user_not_found">Пользователь не найден.</string>
+    <string name="link_email_failed">Не удалось привязать адрес электронной почты.</string>
 
 </resources>

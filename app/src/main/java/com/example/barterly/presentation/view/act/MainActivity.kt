@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,37 +13,38 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import com.example.barterly.di.BarterlyApp
 import com.example.barterly.R
-import com.example.barterly.data.source.accounthelper.listener
-import com.example.barterly.presentation.adapters.offerlistener
-import com.example.barterly.presentation.adapters.OffersRcAdapter
+import com.example.barterly.data.source.accounthelper.AccountHelper.Listener
 import com.example.barterly.databinding.ActivityMainBinding
 import com.example.barterly.presentation.dialoghelper.DialogConst
 import com.example.barterly.presentation.dialoghelper.DialogHelper
-import com.example.barterly.data.model.Offer
+import com.example.barterly.presentation.view.fragment.FavoritesFragment
 import com.example.barterly.presentation.view.fragment.FilterFragment
+import com.example.barterly.presentation.view.fragment.HomeFragment
+import com.example.barterly.presentation.view.fragment.MyOffersFragment
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
-import com.example.barterly.presentation.viewmodel.OfferListType
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offerlistener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
     private lateinit var tvAccount: TextView
     private lateinit var imAccount: ImageView
     private lateinit var binding: ActivityMainBinding
-    private val dialoghelper = DialogHelper(this)
-    val myAuth = Firebase.auth
     private lateinit var firebaseViewModel: FirebaseViewModel
-    val offeradapter = OffersRcAdapter(this)
+    private lateinit var dialoghelper: DialogHelper
     lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
+
+    private var filterMenuItem: MenuItem? = null
+    private var currentTabId = R.id.home
+    val myAuth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,20 +52,41 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
         setContentView(binding.root)
 
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
+        dialoghelper = DialogHelper(this)
 
-        init()
-        initRcView()
-        initViewModel()
-
-        firebaseViewModel.setCurrentType(OfferListType.ALL)
-        firebaseViewModel.loadoffers()
-
-        bottomNavMenuOnClick()
-        scrollListner()
+        initUI()
+        initGoogleAuth()
+        setupBottomNav()
     }
 
-    private var filterMenuItem: MenuItem? = null
-    private var currentTabId = R.id.home
+    private fun initUI() {
+        setSupportActionBar(binding.mainContent.toolbar)
+
+        val toggle = ActionBarDrawerToggle(
+            this, binding.drawerid, binding.mainContent.toolbar,
+            R.string.open, R.string.close
+        )
+        binding.drawerid.addDrawerListener(toggle)
+        toggle.syncState()
+
+        binding.navview.setNavigationItemSelectedListener(this)
+        tvAccount = binding.navview.getHeaderView(0).findViewById(R.id.tvaccountemail)
+        imAccount = binding.navview.getHeaderView(0).findViewById(R.id.imageView)
+    }
+
+    private fun initGoogleAuth() {
+        googleSignInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { dialoghelper.accHelper.signInFirebaseWithGoogle(it) }
+            } catch (e: ApiException) {
+                Log.d("MyLog", "Google sign-in error: ${e.message}")
+            }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -81,36 +102,47 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.filter -> {
-                if (!isFinishing && !isDestroyed) {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.main_content, FilterFragment.newInstance()) // важный ID
-                        .addToBackStack(null)
-                        .commit()
-                }
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_content, FilterFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-
-
-    private fun onActivityResult() {
-        googleSignInLauncher = registerForActivityResult(
-            ActivityResultContracts
-                .StartActivityForResult()
-        ) { result ->
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                if (account != null) {
-                    dialoghelper.accHelper.signInFireBaseWithGoogle(account.idToken!!)
+    private fun setupBottomNav() = with(binding.mainContent) {
+        bnavview.setOnItemSelectedListener { item ->
+            currentTabId = item.itemId
+            when (item.itemId) {
+                R.id.new_offer -> {
+                    if (myAuth.currentUser?.isAnonymous != true) {
+                        startActivity(Intent(this@MainActivity, EditOfferAct::class.java))
+                    }
                 }
-            } catch (e: ApiException) {
-                Log.d("MyLog", "Api error: ${e.message}")
+                R.id.home -> {
+                    setFragment(HomeFragment())
+                    toolbar.title = getString(R.string.other)
+                }
+                R.id.my_offers -> {
+                    setFragment(MyOffersFragment())
+                    toolbar.title = getString(R.string.ad1)
+                }
+                R.id.favorites -> {
+                    setFragment(FavoritesFragment())
+                    toolbar.title = getString(R.string.offer_my_favs)
+                }
             }
+            updateFilterMenuVisibility()
+            true
         }
+    }
+
+    private fun setFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 
     override fun onStart() {
@@ -121,88 +153,20 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
     override fun onResume() {
         super.onResume()
         binding.mainContent.bnavview.selectedItemId = R.id.home
-    }
-
-    private fun initViewModel() {
-        firebaseViewModel.liveDataFilter.observe(this) { list ->
-            offeradapter.updateAdapter(list as List<Offer>)
-            binding.mainContent.tvEmpty.visibility = if (list.isNullOrEmpty()) View.VISIBLE else View.GONE
-            binding.progress.visibility = View.GONE
-        }
-    }
-
-    private fun init() {
-        setSupportActionBar(binding.mainContent.toolbar)
-        onActivityResult()
-        var toggle = ActionBarDrawerToggle(
-            this, binding.drawerid, binding.mainContent.toolbar,
-            R.string.open,
-            R.string.close
-        )
-
-        binding.drawerid.addDrawerListener(toggle)
-        toggle.syncState()
-        binding.navview.setNavigationItemSelectedListener(this)
-        tvAccount = binding.navview.getHeaderView(0).findViewById(R.id.tvaccountemail)
-        imAccount = binding.navview.getHeaderView(0).findViewById(R.id.imageView)
-    }
-
-    private fun bottomNavMenuOnClick() = with(binding) {
-        mainContent.bnavview.setOnItemSelectedListener { item ->
-            currentTabId = item.itemId
-
-            when (item.itemId) {
-                R.id.new_offer -> {
-                    if (myAuth.currentUser?.isAnonymous != true) {
-                        startActivity(Intent(this@MainActivity, EditOfferAct::class.java))
-                    }
-                }
-                R.id.home -> {
-                    firebaseViewModel.updateCurrentType(OfferListType.ALL)
-                    firebaseViewModel.loadoffers()
-                    mainContent.toolbar.title = getString(R.string.other)
-                }
-                R.id.my_offers -> {
-                    firebaseViewModel.updateCurrentType(OfferListType.MY)
-                    firebaseViewModel.loadMyOffers()
-                    mainContent.toolbar.title = getString(R.string.ad1)
-                }
-                R.id.favorites -> {
-                    firebaseViewModel.updateCurrentType(OfferListType.FAV)
-                    firebaseViewModel.loadMyFavs()
-                    mainContent.toolbar.title = getString(R.string.offer_my_favs)
-                }
-            }
-
-            updateFilterMenuVisibility()  // обновляем видимость кнопки при смене вкладки
-            true
-        }
-    }
-
-    private fun initRcView() {
-        binding.apply {
-
-            mainContent.rcView.layoutManager = LinearLayoutManager(this@MainActivity)
-            mainContent.rcView.adapter = offeradapter
-        }
+        setFragment(HomeFragment())
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         when (item.itemId) {
-
             R.id.my_ads -> {
-                Toast.makeText(this, "Main1", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "My Ads", Toast.LENGTH_SHORT).show()
             }
-
             R.id.id_sign_up -> {
                 dialoghelper.createSignDialog(DialogConst.SIGN_UP_STATE)
             }
-
             R.id.id_sign_in -> {
                 dialoghelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
-
             R.id.id_sign_out -> {
                 if (myAuth.currentUser?.isAnonymous == true) {
                     binding.drawerid.closeDrawer(GravityCompat.START)
@@ -213,72 +177,30 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener, offe
                 dialoghelper.accHelper.signOutGoogle()
             }
         }
-
         binding.drawerid.closeDrawer(GravityCompat.START)
         return true
     }
 
     fun uiUpdate(user: FirebaseUser?) {
-
         if (user == null) {
-            dialoghelper.accHelper.signInAnonymously(object : listener {
-                override fun onCompete() {
+            dialoghelper.accHelper.signInAnonymously(object : Listener {
+                override fun onComplete() {
                     tvAccount.text = "Guest"
                     imAccount.setImageResource(R.drawable.profile_image)
                 }
             })
-        } else if (user.isAnonymous) {
-            tvAccount.text = "Guest"
-            imAccount.setImageResource(R.drawable.profile_image)
-
-        } else if (!user.isAnonymous) {
-            tvAccount.text = user.email
-            Picasso.get().load(user.photoUrl).into(imAccount)
+        } else {
+            tvAccount.text = user.email ?: "Guest"
+            if (user.photoUrl != null) {
+                Picasso.get().load(user.photoUrl).into(imAccount)
+            } else {
+                imAccount.setImageResource(R.drawable.profile_image)
+            }
         }
     }
 
-
-
-    override fun onFavClick(offer: Offer) {
-        firebaseViewModel.onFavClick(offer)
-    }
-
-    override fun onOfferViewed(offer: Offer) {
-        firebaseViewModel.offerViewed(offer)
-    }
-
-    override fun ondeleteoffer(offer: Offer) {
-        firebaseViewModel.deleteoffer(offer)
-    }
-
-    private fun scrollListner() = with(binding.mainContent) {
-        rcView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(
-                recyclerView: RecyclerView,
-                newState: Int
-            ) {
-                super.onScrollStateChanged(recyclerView, newState)
-//                if (!recyclerView.canScrollVertically(SCROL) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                  пока не использую
-//                }
-            }
-        })
-    }
-
     companion object {
-
         const val EDIT_STATE = "edit_state"
         const val OFFER_KEY = "offer_key"
-        const val SCROL = 1
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        firebaseViewModel.liveOffersData.removeObservers(this)
     }
 }
-

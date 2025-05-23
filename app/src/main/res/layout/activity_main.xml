@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         android:background="@color/gray"/>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navview"
         android:layout_width="wrap_content"
@@ -26,9 +27,10 @@
         android:layout_gravity="start"
         android:background="@color/white"
         android:fitsSystemWindows="true"
+        android:visibility="visible"
         app:headerLayout="@layout/nav_header_layout"
         app:itemTextColor="#000000"
-        app:subheaderColor="#000000"
-        app:menu="@menu/drawer_main_menu" />
+        app:menu="@menu/drawer_main_menu"
+        app:subheaderColor="#000000" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
