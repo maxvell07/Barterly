@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
-            android:background="@color/color_red"
+            android:background="@color/minimalistic_black"
             android:fontFamily="sans-serif-condensed"
             android:padding="2dp"
             android:text="TextView"
@@ -40,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,44 +69,40 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="end"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/descriptiontitle">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/price_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="@color/minimalistic_pink1"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center_horizontal"
-                android:paddingStart="10dp"
-                android:paddingTop="5dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="5dp"
-                android:text="Цена:"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="@drawable/bg_price_field">
 
-            <TextView
-                android:id="@+id/pricetitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/minimalistic_pink1"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center_horizontal"
-                android:paddingStart="10dp"
-                android:paddingTop="5dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="5dp"
-                android:text="0"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/price_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:text="Цена:"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/pricetitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:text="10500"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
+
 
         <!-- Divider -->
         <Space
@@ -172,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton

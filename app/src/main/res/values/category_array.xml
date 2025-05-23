@@ -2,12 +2,26 @@
 <resources>
 
     <string-array name="category">
-
         <item>Машины</item>
         <item>Техника</item>
         <item>Одежда</item>
         <item>Для дома</item>
-
+        <item>Электроника</item>
+        <item>Мебель</item>
+        <item>Книги</item>
+        <item>Игрушки</item>
+        <item>Спорт и отдых</item>
+        <item>Инструменты</item>
+        <item>Украшения</item>
+        <item>Косметика и уход</item>
+        <item>Детские товары</item>
+        <item>Животные</item>
+        <item>Хобби и творчество</item>
+        <item>Продукты</item>
+        <item>Музыкальные инструменты</item>
+        <item>Строительные материалы</item>
+        <item>Услуги</item>
+        <item>Прочее</item>
     </string-array>
 
 </resources>

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
     android:fitsSystemWindows="true"
-    tools:context=".act.EditOfferAct">
+    tools:context=".presentation.view.act.EditOfferAct">
 
     <ScrollView
         android:id="@+id/scrolview"
@@ -97,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:text="Заголовок"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <EditText
@@ -107,6 +107,8 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
+                        android:maxLength="25"
+                        android:maxLines="1"
                         android:hint="Заголовок"
                         android:inputType="text"
                         android:padding="8dp"
@@ -118,7 +120,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_marginStart="10dp"
-                        android:background="@color/minimalistic_green" />
+                        android:background="@color/primary" />
 
                     <!-- Country Selection -->
                     <TextView
@@ -128,7 +130,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:text="@string/country"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <TextView
@@ -150,7 +152,7 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/city"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <TextView
@@ -172,7 +174,7 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/phone"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <EditText
@@ -182,6 +184,8 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
+                        android:maxLines="1"
+                        android:maxLength="11"
                         android:hint="@string/phone"
                         android:inputType="number"
                         android:padding="8dp"
@@ -196,7 +200,7 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/adress"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <EditText
@@ -206,6 +210,8 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
+                        android:maxLines="1"
+                        android:maxLength="20"
                         android:hint="@string/adress_hint"
                         android:inputType="text"
                         android:padding="8dp"
@@ -220,7 +226,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:text="@string/category"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <TextView
@@ -242,7 +248,7 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/price"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <EditText
@@ -252,6 +258,8 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="10dp"
                         android:background="@null"
+                        android:maxLines="1"
+                        android:maxLength="10"
                         android:hint="@string/price_Hint"
                         android:inputType="number"
                         android:padding="8dp"
@@ -266,7 +274,7 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/description"
-                        android:textColor="@color/minimalistic_green"
+                        android:textColor="@color/primary"
                         android:textStyle="bold" />
 
                     <EditText
@@ -293,7 +301,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/minimalistic_green"
+                android:backgroundTint="@color/primary"
                 android:onClick="onClickPublish"
                 android:text="@string/publish" />
 
