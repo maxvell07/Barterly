@@ -1,13 +1,16 @@
 package com.example.barterly.presentation.view.act
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -24,6 +27,7 @@ import com.example.barterly.presentation.view.fragment.FavoritesFragment
 import com.example.barterly.presentation.view.fragment.FilterFragment
 import com.example.barterly.presentation.view.fragment.HomeFragment
 import com.example.barterly.presentation.view.fragment.MyOffersFragment
+import com.example.barterly.presentation.view.fragment.NoInternetFragment
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -33,7 +37,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    NoInternetFragment.RetryListener {
 
     private lateinit var tvAccount: TextView
     private lateinit var imAccount: ImageView
@@ -50,13 +55,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        checkNetworkAndStart()
         firebaseViewModel = (application as BarterlyApp).firebaseViewModel
         dialoghelper = DialogHelper(this)
 
         initUI()
         initGoogleAuth()
         setupBottomNav()
+    }
+
+    private fun checkNetworkAndStart() {
+        if (isNetworkAvailable(this) && !isFinishing && !isDestroyed) {
+            setFragment(HomeFragment())
+            findViewById<FrameLayout>(R.id.fullscreen_container).visibility = View.GONE
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fullscreen_container, NoInternetFragment())
+                .commit()
+            findViewById<FrameLayout>(R.id.fullscreen_container).visibility = View.VISIBLE
+        }
+    }
+
+    fun isNetworkAvailable(context: Context): Boolean {
+        val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo?.isConnectedOrConnecting == true
+    }
+
+    fun showNoInternetFragment() {
+        findViewById<FrameLayout>(R.id.fullscreen_container).visibility = View.VISIBLE
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fullscreen_container, NoInternetFragment())
+            .commit()
     }
 
     private fun initUI() {
@@ -108,6 +137,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .commit()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -121,16 +151,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         startActivity(Intent(this@MainActivity, EditOfferAct::class.java))
                     }
                 }
+
                 R.id.home -> {
-                    setFragment(HomeFragment())
+                    checkNetworkAndStart()
+                    if (!isFinishing && !isDestroyed) {
+                        setFragment(HomeFragment())
+                    }
+
                     toolbar.title = getString(R.string.other)
                 }
+
                 R.id.my_offers -> {
-                    setFragment(MyOffersFragment())
+                    checkNetworkAndStart()
+                    if (!isFinishing && !isDestroyed) {
+                        setFragment(MyOffersFragment())
+                    }
                     toolbar.title = getString(R.string.ad1)
                 }
+
                 R.id.favorites -> {
-                    setFragment(FavoritesFragment())
+                    checkNetworkAndStart()
+                    if (!isFinishing && !isDestroyed) {
+                        setFragment(FavoritesFragment())
+                    }
                     toolbar.title = getString(R.string.offer_my_favs)
                 }
             }
@@ -150,23 +193,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         uiUpdate(myAuth.currentUser)
     }
 
+    //    override fun onResume() {
+//        super.onResume()
+//        binding.mainContent.bnavview.selectedItemId = R.id.home
+//        setFragment(HomeFragment())
+//    }
     override fun onResume() {
         super.onResume()
-        binding.mainContent.bnavview.selectedItemId = R.id.home
-        setFragment(HomeFragment())
+
+        // Проверка, показываем ли мы уже NoInternetFragment
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (currentFragment is NoInternetFragment) {
+            return
+        }
+        if (!isFinishing && !isDestroyed) {
+            binding.mainContent.bnavview.selectedItemId = R.id.home
+            setFragment(HomeFragment())
+        }
     }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.my_ads -> {
-                Toast.makeText(this, "My Ads", Toast.LENGTH_SHORT).show()
             }
+
             R.id.id_sign_up -> {
                 dialoghelper.createSignDialog(DialogConst.SIGN_UP_STATE)
             }
+
             R.id.id_sign_in -> {
                 dialoghelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
+
             R.id.id_sign_out -> {
                 if (myAuth.currentUser?.isAnonymous == true) {
                     binding.drawerid.closeDrawer(GravityCompat.START)
@@ -196,6 +255,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 imAccount.setImageResource(R.drawable.profile_image)
             }
+        }
+    }
+
+    override fun onRetrySuccess() {
+        if (!isFinishing && !isDestroyed) {
+            findViewById<FrameLayout>(R.id.fullscreen_container).visibility = View.GONE
+            setFragment(HomeFragment())
         }
     }
 
