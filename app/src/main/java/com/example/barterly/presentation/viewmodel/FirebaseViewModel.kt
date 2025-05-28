@@ -1,5 +1,6 @@
 package com.example.barterly.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,9 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     val myOffersData = MutableLiveData<ArrayList<Offer>?>()
     val favOffersData = MutableLiveData<ArrayList<Offer>?>()
     val filterslivedata = MutableLiveData<FiltersCriteries>(FiltersCriteries())
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
 
     val liveDataFilter = MutableLiveData<ArrayList<Offer>?>()
 
@@ -34,13 +38,10 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     var currentType: OfferListType = OfferListType.ALL
         private set
 
-    fun updateCurrentType(type: OfferListType) {
-        currentType = type
-    }
     fun clearFilters() {
         applyFilters(FiltersCriteries())
     }
-    private val auth = FirebaseAuth.getInstance()
+
 
 
     fun applyFilters(criteria: FiltersCriteries) {
@@ -78,28 +79,31 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
     }
 
     fun loadoffers() {
+        _isLoading.postValue(true)
         DbManager().getAllOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
                     val host = ServerConnectionConstants.URL
-                    val updated = list
-                        .map {
-                            it.copy(
-                                img1 = host + it.img1,
-                                img2 = host + it.img2,
-                                img3 = host + it.img3
-                            )
-                        }
-                        .reversed()
+                    val updated = list.map {
+                        it.copy(
+                            img1 = host + it.img1,
+                            img2 = host + it.img2,
+                            img3 = host + it.img3
+                        )
+                    }.reversed()
                     liveOffersData.postValue(updated as ArrayList<Offer>?)
-                    // Если сейчас активен ALL - обновляем filtered
-                    if (currentType == OfferListType.ALL) applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    if (currentType == OfferListType.ALL) {
+                        applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    }
+                    _isLoading.postValue(false) // когда всё загружено
                 }
             }
         })
     }
 
+
     fun loadMyFavs() {
+        _isLoading.postValue(true)
         DbManager().getMyFavs(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -112,13 +116,17 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                         )
                     }
                     favOffersData.postValue(updated as ArrayList<Offer>?)
-                    if (currentType == OfferListType.FAV) applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    if (currentType == OfferListType.FAV) {
+                        applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    }
+                    _isLoading.postValue(false)
                 }
             }
         })
     }
 
     fun loadMyOffers() {
+        _isLoading.postValue(true)
         DbManager().getMyOffers(object : ReadDataCallback {
             override fun readData(list: MutableList<Offer>) {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -131,7 +139,10 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                         )
                     }
                     myOffersData.postValue(updated as ArrayList<Offer>?)
-                    if (currentType == OfferListType.MY) applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    if (currentType == OfferListType.MY) {
+                        applyFilters(filterslivedata.value ?: FiltersCriteries())
+                    }
+                    _isLoading.postValue(false)
                 }
             }
         })
