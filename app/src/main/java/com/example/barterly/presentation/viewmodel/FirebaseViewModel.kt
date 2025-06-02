@@ -12,7 +12,6 @@ import com.example.barterly.data.model.ReadDataCallback
 import com.example.barterly.data.model.finishLoadListener
 import com.example.barterly.data.model.matches
 import com.example.barterly.data.source.service.FileRepository
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -95,7 +94,7 @@ class FirebaseViewModel(val filerepository: FileRepository) : ViewModel() {
                     if (currentType == OfferListType.ALL) {
                         applyFilters(filterslivedata.value ?: FiltersCriteries())
                     }
-                    _isLoading.postValue(false) // когда всё загружено
+                    _isLoading.postValue(false) // когда всё загруженно
                 }
             }
         })

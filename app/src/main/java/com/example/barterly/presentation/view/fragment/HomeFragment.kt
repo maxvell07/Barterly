@@ -48,7 +48,14 @@ class HomeFragment : Fragment(), OfferListener {
             adapter.updateAdapter(safeList)
             binding.tvEmpty.visibility = if (safeList.isEmpty()) View.VISIBLE else View.GONE
         }
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
+        }
 
+    }
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadoffers()  // или другой метод загрузки для конкретного фрагмента
     }
 
     override fun onFavClick(offer: Offer) {

@@ -288,10 +288,18 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     private fun onPublishFinish(): finishLoadListener {
         return object : finishLoadListener {
             override fun onFinish(Bol: Boolean) {
+                setResult(RESULT_OK) // сообщаем что успешно
                 finish()
             }
         }
     }
+
+    override fun onBackPressed() {
+        setResult(RESULT_CANCELED)
+        super.onBackPressed()
+    }
+
+
 
     fun filloffer(): Offer {
         val offertemp: Offer
