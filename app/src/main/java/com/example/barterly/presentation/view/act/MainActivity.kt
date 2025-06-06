@@ -16,10 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.barterly.di.BarterlyApp
@@ -32,8 +30,6 @@ import com.example.barterly.presentation.view.fragment.NoInternetFragment
 import com.example.barterly.presentation.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -54,6 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var filterMenuItem: MenuItem? = null
     private var currentTabId = R.id.home
     val myAuth = Firebase.auth
+    lateinit var fullscreen : FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,21 +73,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                firebaseViewModel.loadoffers()
+                /* TODO */ //подумать
             }
             currentTabId = R.id.home
         }
     }
 
     private fun checkNetworkAndStart() {
-        val fullscreen = findViewById<FrameLayout>(R.id.fullscreen_container)
+       fullscreen = findViewById<FrameLayout>(R.id.fullscreen_container)
         if (isNetworkAvailable(this) && !isFinishing && !isDestroyed) {
             fullscreen.visibility = View.GONE
         } else {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fullscreen_container, NoInternetFragment())
-                .commit()
             fullscreen.visibility = View.VISIBLE
+            showNoInternetFragment()
+
         }
     }
 
@@ -100,7 +96,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun showNoInternetFragment() {
-        val fullscreen = findViewById<FrameLayout>(R.id.fullscreen_container)
         fullscreen.visibility = View.VISIBLE
         supportFragmentManager.beginTransaction()
             .replace(R.id.fullscreen_container, NoInternetFragment())
@@ -252,8 +247,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRetrySuccess() {
         if (!isFinishing && !isDestroyed) {
-            findViewById<FrameLayout>(R.id.fullscreen_container).visibility = View.GONE
-            navController.navigate(R.id.home)
+            fullscreen.visibility = View.GONE
         }
     }
 

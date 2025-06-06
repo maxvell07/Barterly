@@ -43,7 +43,7 @@ class FavoritesFragment : Fragment(), OfferListener {
         viewModel.setCurrentType(OfferListType.FAV)
         viewModel.loadMyFavs()
 
-        viewModel.liveDataFilter.observe(viewLifecycleOwner) { list ->
+        viewModel.favOffersData.observe(viewLifecycleOwner) { list ->
             val safeList = list ?: emptyList()
             adapter.updateAdapter(safeList)
             binding.tvEmpty.visibility = if (safeList.isEmpty()) View.VISIBLE else View.GONE

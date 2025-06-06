@@ -43,7 +43,7 @@ class MyOffersFragment : Fragment(), OfferListener {
         viewModel.setCurrentType(OfferListType.MY)
         viewModel.loadMyOffers()
 
-        viewModel.liveDataFilter.observe(viewLifecycleOwner) { list ->
+        viewModel.myOffersData.observe(viewLifecycleOwner) { list ->
             val safeList = list ?: emptyList()
             adapter.updateAdapter(safeList)
             binding.tvEmpty.visibility = if (safeList.isEmpty()) View.VISIBLE else View.GONE
@@ -56,6 +56,7 @@ class MyOffersFragment : Fragment(), OfferListener {
         super.onResume()
         viewModel.loadMyOffers()  // или другой метод загрузки для конкретного фрагмента
     }
+
 
     override fun onFavClick(offer: Offer) {
         viewModel.onFavClick(offer)

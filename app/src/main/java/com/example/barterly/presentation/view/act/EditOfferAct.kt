@@ -115,6 +115,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
             uploadImagesAndDelete(offertemp.key.toString())
             dbmanager.publishOffer(offertemp, onPublishFinish())
         }
+        firebaseViewModel.loadoffers()
     }
     private fun checkeditstate() {
         iseditstate = iseditstate()
