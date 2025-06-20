@@ -23,7 +23,6 @@ class DialogSpinnerHelper {
         dialog.setView(rootView)
         adapter.updateAdapter(list)
         setSearchView(adapter, list, srView)
-
         dialog.show()
     }
 
