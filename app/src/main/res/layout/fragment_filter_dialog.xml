@@ -12,28 +12,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etCategory"
-            android:hint="Категория"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/etCountry"
-            android:hint="Страна"
+        <!-- Категория -->
+        <TextView
+            android:id="@+id/select_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:background="@drawable/bg_spinner_field"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:drawableRight="@drawable/ic_arrow_drop_down"
+            android:padding="12dp"
+            android:text="Выберите категорию"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <EditText
-            android:id="@+id/etCity"
-            android:hint="Город"
+        <!-- Страна -->
+        <TextView
+            android:id="@+id/select_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:background="@drawable/bg_spinner_field"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:drawableRight="@drawable/ic_arrow_drop_down"
+            android:padding="12dp"
+            android:text="Выберите страну"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
 
+        <!-- Город -->
+        <TextView
+            android:id="@+id/select_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_spinner_field"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:drawableRight="@drawable/ic_arrow_drop_down"
+            android:padding="12dp"
+            android:text="Выберите город"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
 
-
+        <!-- Цена от -->
         <EditText
             android:id="@+id/etPriceFrom"
             android:hint="Цена от"
@@ -42,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
+        <!-- Цена до -->
         <EditText
             android:id="@+id/etPriceTo"
             android:hint="Цена до"
@@ -50,13 +81,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
-
+        <!-- Кнопка применить -->
         <Button
             android:id="@+id/btnApply"
             android:text="Применить фильтр"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
+
+        <!-- Кнопка сбросить -->
         <Button
             android:id="@+id/btnReset"
             android:text="Сбросить фильтр"

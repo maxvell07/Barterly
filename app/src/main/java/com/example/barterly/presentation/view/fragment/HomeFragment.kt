@@ -1,6 +1,8 @@
 package com.example.barterly.presentation.view.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +48,14 @@ class HomeFragment : Fragment(), OfferListener {
             adapter.updateAdapter(safeList)
             binding.tvEmpty.visibility = if (safeList.isEmpty()) View.VISIBLE else View.GONE
         }
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
+        }
 
+    }
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadoffers()  // или другой метод загрузки для конкретного фрагмента
     }
 
     override fun onFavClick(offer: Offer) {
@@ -54,6 +63,10 @@ class HomeFragment : Fragment(), OfferListener {
     }
 
     override fun onOfferViewed(offer: Offer) {
+        if (!isNetworkAvailable()) {
+            (requireActivity() as MainActivity).showNoInternetFragment()
+            return
+        }
         val intent = Intent(requireContext(), DescriptionAct::class.java).apply {
             putExtra(MainActivity.OFFER_KEY, offer.key)
         }
@@ -64,8 +77,16 @@ class HomeFragment : Fragment(), OfferListener {
     override fun onDeleteOffer(offer: Offer) {
         viewModel.deleteoffer(offer)
     }
+    private fun isNetworkAvailable(): Boolean {
+        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo?.isConnectedOrConnecting == true
+    }
 
     override fun onEditOffer(offer: Offer) {
+        if (!isNetworkAvailable()) {
+            (requireActivity() as MainActivity).showNoInternetFragment()
+            return
+        }
         val intent = Intent(requireContext(), EditOfferAct::class.java).apply {
             putExtra(MainActivity.EDIT_STATE, true)
             putExtra(MainActivity.OFFER_KEY, offer.key)

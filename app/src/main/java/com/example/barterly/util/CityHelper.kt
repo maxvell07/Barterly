@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.util.Locale
 
 object CityHelper {
+
     fun getAllCountries(context: Context): ArrayList<String> {
         var arr = ArrayList<String>()
         try {

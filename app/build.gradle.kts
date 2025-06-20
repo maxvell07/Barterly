@@ -40,7 +40,6 @@ android {
     }
 }
 
-
 dependencies {
 
     implementation ("androidx.recyclerview:recyclerview:1.4.0")
@@ -48,6 +47,8 @@ dependencies {
     implementation (libs.play.services.auth)
     implementation(libs.androidx.core.ktx)
     implementation (libs.picasso)
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")

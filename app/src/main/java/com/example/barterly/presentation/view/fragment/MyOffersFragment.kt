@@ -16,6 +16,8 @@ import com.example.barterly.presentation.view.act.DescriptionAct
 import com.example.barterly.presentation.view.act.EditOfferAct
 import com.example.barterly.presentation.view.act.MainActivity
 import com.example.barterly.presentation.viewmodel.OfferListType
+import android.content.Context
+import android.net.ConnectivityManager
 
 class MyOffersFragment : Fragment(), OfferListener {
 
@@ -41,18 +43,30 @@ class MyOffersFragment : Fragment(), OfferListener {
         viewModel.setCurrentType(OfferListType.MY)
         viewModel.loadMyOffers()
 
-        viewModel.liveDataFilter.observe(viewLifecycleOwner) { list ->
+        viewModel.myOffersData.observe(viewLifecycleOwner) { list ->
             val safeList = list ?: emptyList()
             adapter.updateAdapter(safeList)
             binding.tvEmpty.visibility = if (safeList.isEmpty()) View.VISIBLE else View.GONE
         }
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
+        }
     }
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadMyOffers()  // или другой метод загрузки для конкретного фрагмента
+    }
+
 
     override fun onFavClick(offer: Offer) {
         viewModel.onFavClick(offer)
     }
 
     override fun onOfferViewed(offer: Offer) {
+        if (!isNetworkAvailable()) {
+            (requireActivity() as MainActivity).showNoInternetFragment()
+            return
+        }
         val intent = Intent(requireContext(), DescriptionAct::class.java).apply {
             putExtra(MainActivity.OFFER_KEY, offer.key)
         }
@@ -65,10 +79,19 @@ class MyOffersFragment : Fragment(), OfferListener {
     }
 
     override fun onEditOffer(offer: Offer) {
+        if (!isNetworkAvailable()) {
+            (requireActivity() as MainActivity).showNoInternetFragment()
+            return
+        }
         val intent = Intent(requireContext(), EditOfferAct::class.java).apply {
             putExtra(MainActivity.EDIT_STATE, true)
             putExtra(MainActivity.OFFER_KEY, offer.key)
         }
         startActivity(intent)
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo?.isConnectedOrConnecting == true
     }
 }

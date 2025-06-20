@@ -13,6 +13,14 @@
         layout="@layout/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/fullscreen_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/white" />
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="match_parent"

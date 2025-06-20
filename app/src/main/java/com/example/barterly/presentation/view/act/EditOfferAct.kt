@@ -115,6 +115,7 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
             uploadImagesAndDelete(offertemp.key.toString())
             dbmanager.publishOffer(offertemp, onPublishFinish())
         }
+        firebaseViewModel.loadoffers()
     }
     private fun checkeditstate() {
         iseditstate = iseditstate()
@@ -288,10 +289,18 @@ class EditOfferAct : AppCompatActivity(), FragmentCloseInterface {
     private fun onPublishFinish(): finishLoadListener {
         return object : finishLoadListener {
             override fun onFinish(Bol: Boolean) {
+                setResult(RESULT_OK) // сообщаем что успешно
                 finish()
             }
         }
     }
+
+    override fun onBackPressed() {
+        setResult(RESULT_CANCELED)
+        super.onBackPressed()
+    }
+
+
 
     fun filloffer(): Offer {
         val offertemp: Offer

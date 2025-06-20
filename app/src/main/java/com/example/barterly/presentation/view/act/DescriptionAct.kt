@@ -61,7 +61,6 @@ class DescriptionAct : AppCompatActivity() {
                 },
                 onTradeClicked = {
                     firebaseViewModel.myOffersData.value.let { offers ->
-                        // Проверяем, активна ли еще Activity
 
                         val dialogView = layoutInflater.inflate(R.layout.dialog_with_offers_list, null)
                         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewOptions)
@@ -80,9 +79,8 @@ class DescriptionAct : AppCompatActivity() {
 
                         dialogView.findViewById<Button>(R.id.btnClose).setOnClickListener {
                             alertDialog.dismiss()
-                        }
+                        } // закрываем диалог после выбора
 
-                        // Защита от WindowLeaked
                         if (!isFinishing && !isDestroyed) {
                             alertDialog.show()
                         }
@@ -118,7 +116,7 @@ class DescriptionAct : AppCompatActivity() {
         ${myoffer?.description ?: ""}
     """.trimIndent()
 
-        // Ссылки на картинки (предполагается, что картинки уже загружены в облако)
+        // Ссылки на картинки
         val imageUrl1 = myoffer?.img1 ?: ""
         val imageUrl2 = myoffer?.img2 ?: ""
 
